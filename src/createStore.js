@@ -1,0 +1,26 @@
+import { createStore as reduxCreateStore, combineReducers } from 'redux'
+
+// Configure the store
+function createStore(initialReducers, ...args) {
+  if (typeof initialReducers !== "object") {
+    throw new Error("initialReducers should be an object suitable to be passed to combineReducers")
+  }
+  const reducers = {...initialReducers}
+  const createReducer = () => combineReducers(reducers)
+  const store = reduxCreateStore(createReducer(), ...args)
+
+  // Add a dictionary to keep track of the registered reducers
+  store.reducers = reducers
+
+  // Create an inject reducer function
+  // This function adds the reducer, and creates a new combined reducer
+  store.injectReducer = (key, reducer) => {
+    store.reducers[key] = reducer
+    store.replaceReducer(createReducer(store.reducers))
+  }
+
+  // Return the modified store
+  return store
+}
+
+export default createStore

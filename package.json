@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "react-redux": "^7.1.1",
     "redux": "^4.0.4"
+  },
+  "scripts": {
+    "test": "react-scripts test"
+  },
+  "devDependencies": {
+    "react-scripts": "^3.2.0"
   }
 }
