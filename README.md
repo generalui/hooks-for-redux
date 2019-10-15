@@ -118,6 +118,7 @@ returned update: `(updateState) => dispatched action (Object)`
 #### getStore
 
 ```jsx
+import {getStore} from 'hooks-for-redux'
 getStore() => store
 ```
 
@@ -127,6 +128,7 @@ getStore() => store
 
 #### setStore
 ```jsx
+import {setStore} from 'hooks-for-redux'
 setStore(store) => store
 ```
 
@@ -141,6 +143,7 @@ Call setStore to provide manually create your own store for hooks-for-redux to u
 
 #### createStore
 ```jsx
+import {createStore} from 'hooks-for-redux'
 createStore(reducersMap, [preloadedState], [enhancer]) => store
 ```
 
@@ -176,3 +179,10 @@ The injectReducer method is described here https://redux.js.org/recipes/code-spl
 
 > NOTE: Just as any other reducer passed to React.combineReducers, the reducer passed to injectReducer doesn't get passed the store's entire state. It only gets passed, and should return, its own state data which is stored in the top-level state under the provided reducerName.
 
+## License
+
+hooks-for-redux is [MIT licensed](./LICENSE).
+
+## Produced By
+
+hooks-for-redux was [developed in JavaScript for React and Redux at GenUI.co](https://www.genui.co).
