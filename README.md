@@ -2,40 +2,50 @@
 
 Wouldn't it be nice if you could use the elegant syntax of React-hooks when dealing with Redux?
 
-### Example-A
-Note, below is a *complete redux + react application*! Hooks-for-redux dramatically reduces the redux-specific code required to build your app.
+# Examples
 
-Define your redux-hooks like this:
+### Example-A
+This is a *complete* redux + react application. Hooks-for-redux dramatically reduces the redux-specific code required to build your app.
+
+Define your redux-hooks:
 ```jsx
 // NameHook.js
 import {useReduxState} from 'hooks-for-redux'
 
-const [subscribeToName, updateName] = useReduxState('name', 'Alice')
-export {subscribeToName, updateName}
+// One line is sufficient to define & initialize your redux hook:
+// EFFECT: initializes store.name = 'Alice'
+// OUT:
+//  useNameSubscription:
+//    Use this hook in your React renderer to subscribe to changes.
+//  updateName:
+//    Use to update store.name's value
+const [useNameSubscription, updateName] = useReduxState('name', 'Alice')
+
+export {useNameSubscription, updateName}
 ```
 
-Use your redux-hooks in your components:
+Use your redux-hooks:
 ```jsx
 // App.jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {subscribeToName, updateName} from './NameHook.js'
+import {useNameSubscription, updateName} from './NameHook.js'
 
 export default () =>
   <p onClick={
     () => updateName((name) => name == 'Alice' ? 'Bob' : 'Alice')
   }>
-    Hello there, {subscribeToName()}! Click to change me.
+    Hello there, {useNameSubscription()}! Click to change me.
   </p>
 ```
 
-Configure your redux Provider using getStore:
+Configure your redux Provider:
 ```jsx
 // index.js
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { getStore } from 'hooks-for-redux'
 import App from './App'
-import {getStore} from 'hooks-for-redux'
 
 ReactDOM.render(
   <Provider store={getStore()}>
@@ -52,20 +62,20 @@ Instead of returning the raw update function, you can build your own. Your code 
 // NameHook.js
 import {useReduxState} from 'hooks-for-redux'
 
-const [subscribeToName, updateName] = useReduxState('name', 'Alice')
+const [useNameSubscription, updateName] = useReduxState('name', 'Alice')
 const toggleName = () =>
   updateName((name) => name == 'Alice' ? 'Bob' : 'Alice')
-export {subscribeToName, toggleName}
+export {useNameSubscription, toggleName}
 ```
 
 ```jsx
 // App.jsx
 import React from 'react';
-import {subscribeToName, toggleName} from './NameHook.js'
+import {useNameSubscription, toggleName} from './NameHook.js'
 
 export default () =>
   <p onClick={toggleName}>
-    Hello there, {subscribeToName()}! Click to change me.
+    Hello there, {useNameSubscription()}! Click to change me.
   </p>
 ```
 > Use the `index.js` file from Example-A to complete this app.
