@@ -17,7 +17,7 @@
   "bugs": "https://github.com/generalui/hooks-for-redux/issues",
   "homepage": "https://github.com/generalui/hooks-for-redux",
   "description": "The Standard Library for JavaScript that aught to be.",
-  "license": "ISC",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/generalui/hooks-for-redux.git"
