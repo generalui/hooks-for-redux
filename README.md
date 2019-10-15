@@ -2,9 +2,15 @@
 
 Wouldn't it be nice if you could use the elegant syntax of React-hooks when dealing with Redux?
 
-# Examples
+## INSTALL
 
-### Example-A
+```
+npm install hooks-for-redux
+```
+
+## Examples
+
+#### Example-A
 This is a *complete* redux + react application. Hooks-for-redux dramatically reduces the redux-specific code required to build your app.
 
 Define your redux-hooks:
@@ -49,7 +55,7 @@ ReactDOM.render(
 );
 ```
 
-### Example-B
+#### Example-B
 Instead of returning the raw update function, you can build your own. Your code will be less brittle and more testable the more specific you can make your transactional redux update functions ('reducers'). Example-A can be improved by only exporting the exact updates allowed by your redux-hook:
 
 ```jsx
@@ -76,7 +82,7 @@ export default () =>
 ```
 > Use the `index.js` file from Example-A to complete this app.
 
-### Primary API
+## APIs
 
 #### useReduxState
 ```jsx
@@ -107,8 +113,6 @@ returned update: `(updateState) => dispatched action (Object)`
 
   - **OUT**: same as redux's store.dispatch: https://redux.js.org/api/store#dispatchaction
   - **EFFECT**: dispatches a redux update as defined by the updateState parameter.
-
-### Support API
 
 #### getStore
 
