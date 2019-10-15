@@ -12,13 +12,6 @@ Define your redux-hooks:
 // NameHook.js
 import {useReduxState} from 'hooks-for-redux'
 
-// One line is sufficient to define & initialize your redux hook:
-// EFFECT: initializes store.name = 'Alice'
-// OUT:
-//  useNameSubscription:
-//    Use this hook in your React renderer to subscribe to changes.
-//  updateName:
-//    Use to update store.name's value
 const [useNameSubscription, updateName] = useReduxState('name', 'Alice')
 
 export {useNameSubscription, updateName}
