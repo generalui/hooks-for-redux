@@ -12,7 +12,8 @@ Define your redux-hooks:
 // NameHook.js
 import {useReduxState} from 'hooks-for-redux'
 
-const [useNameSubscription, updateName] = useReduxState('name', 'Alice')
+const [useNameSubscription, updateName] =
+  useReduxState('name', 'Alice')
 
 export {useNameSubscription, updateName}
 ```
@@ -34,7 +35,7 @@ export default () =>
 
 Configure your redux Provider:
 ```jsx
-// index.js
+// index.jsx
 import React from 'react';
 import { Provider } from 'react-redux';
 import { getStore } from 'hooks-for-redux'
@@ -49,15 +50,17 @@ ReactDOM.render(
 ```
 
 ### Example-B
-Instead of returning the raw update function, you can build your own. Your code will be less brittle and more testable the more specific you cam make your transactional redux update functions. Example-A can be improved by only exporting the exact updates allowed by your redux-hook:
+Instead of returning the raw update function, you can build your own. Your code will be less brittle and more testable the more specific you can make your transactional redux update functions ('reducers'). Example-A can be improved by only exporting the exact updates allowed by your redux-hook:
 
 ```jsx
 // NameHook.js
 import {useReduxState} from 'hooks-for-redux'
 
 const [useNameSubscription, updateName] = useReduxState('name', 'Alice')
+
 const toggleName = () =>
   updateName((name) => name == 'Alice' ? 'Bob' : 'Alice')
+
 export {useNameSubscription, toggleName}
 ```
 
@@ -73,7 +76,7 @@ export default () =>
 ```
 > Use the `index.js` file from Example-A to complete this app.
 
-### API
+### Primary API
 
 #### useReduxState
 
@@ -81,27 +84,34 @@ In most cases, all you really need is useReduxState, as seen in the example abov
 
 ```jsx
 useReduxState(storeKey, initialState) => [useSubscription, update]
-
-IN:
-  storeKey:     string
-  initialState: non-null, non-undefined
-
-OUT: [useSubscription, update]
-  useSubscription: () => current state
-    REQUIRED: must be called within a render function
-    EFFECT:
-      Will cause the Component to be re-rendered
-      after update is called; when re-rendered, will
-      return the latest state.
-
-  update: (updateState) => update action
-    IN: function or non-null/undefined
-      if (function) (currentState) => nextState
-      else nextState = updateState
-
-    OUT: same as redux's store.dispatch (1)
 ```
-1. https://redux.js.org/api/store#dispatchaction
+
+* **IN**: (storeKey, initialState)
+  - storeKey:     string
+  - initialState: non-null, non-undefined
+
+* **OUT**: [useSubscription, update]
+```jsx
+useSubscription: () => current state
+```
+  - **IN**: nothing
+  - **OUT**: current state
+  - **REQUIRED**: must be called within a Component's render function
+  - **EFFECT**:
+    - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useSubscription` will return the latest, updated value within that render.
+    - Internally, useSubscription is simply:<br>`useSelector(state => state[storeKey])`<br>see: https://react-redux.js.org/next/api/hooks for details.
+
+```jsx
+update: (updateState) => dispatched action (Object)
+```
+  - **IN**: reducer(function) or non-null/undefined
+    - *reducer(function):* `reducer = updateState == (currentState) => nextState`
+    - *non-null/undefined:* `reducer = () => updateState`
+
+  - **OUT**: same as redux's store.dispatch: https://redux.js.org/api/store#dispatchaction
+  - **EFFECT**: dispatches a redux update as defined by the updateState parameter.
+
+### Support API
 
 #### getStore
 ```jsx
@@ -130,7 +140,7 @@ REQUIRED:
 
 #### createStore
 
-Create a basic redux store with injectReducer support.
+Create a basic redux store with injectReducer support. Use this to configure your store's middleware.
 
 ```jsx
 createStore(reducersMap, [preloadedState], [enhancer]) => store
@@ -144,6 +154,10 @@ OUT: redux store supporting .injectReducer
 ```
 1. https://redux.js.org/api/combinereducers
 1. https://redux.js.org/api/createstore
+
+### Compatibility API
+
+If you want to provide your own redux store, you'll need to implement injectReducer. See below.
 
 #### store.injectReducer
 
