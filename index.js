@@ -1,1 +1,1 @@
-export import "./source"
+export * from "./src"

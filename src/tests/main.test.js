@@ -3,7 +3,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { Provider } from 'react-redux';
 
-import { getStore } from '../index'
+import { getStore } from '../../index'
 
 import {subscribeToName, updateName} from './NameHook.js'
 
