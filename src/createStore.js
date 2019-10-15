@@ -1,7 +1,7 @@
-import { createStore as reduxCreateStore, combineReducers } from 'redux'
+const { createStore: reduxCreateStore, combineReducers } = require('redux')
 
 // Configure the store
-function createStore(initialReducers = {}, ...args) {
+module.exports = (initialReducers = {}, ...args) => {
   if (typeof initialReducers !== "object") {
     console.error({initialReducers, args})
     throw new Error("initialReducers should be an object suitable to be passed to combineReducers")
@@ -23,5 +23,3 @@ function createStore(initialReducers = {}, ...args) {
   // Return the modified store
   return store
 }
-
-export default createStore

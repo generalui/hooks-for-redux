@@ -1,7 +1,7 @@
-import {getStore} from './storeRegistry'
-import {useSelector} from 'react-redux'
+const {getStore} = require('./storeRegistry')
+const {useSelector} = require('react-redux')
 
-export default (storeKey, initialState) => {
+module.exports = (storeKey, initialState) => {
   const store = getStore()
   const useSubscription = () => useSelector(storeState => storeState[storeKey])
   const update = (updateState) => store.dispatch({type: storeKey, updateState})
