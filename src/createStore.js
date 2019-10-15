@@ -1,11 +1,12 @@
 import { createStore as reduxCreateStore, combineReducers } from 'redux'
 
 // Configure the store
-function createStore(initialReducers, ...args) {
+function createStore(initialReducers = {}, ...args) {
   if (typeof initialReducers !== "object") {
+    console.error({initialReducers, args})
     throw new Error("initialReducers should be an object suitable to be passed to combineReducers")
   }
-  const reducers = {...initialReducers}
+  const reducers = {...initialReducers, _stub_: (s) => s || 0}
   const createReducer = () => combineReducers(reducers)
   const store = reduxCreateStore(createReducer(), ...args)
 
