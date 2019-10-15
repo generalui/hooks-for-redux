@@ -86,6 +86,7 @@ export default () =>
 
 #### useReduxState
 ```jsx
+import {useReduxState} from 'hooks-for-redux'
 useReduxState(storeKey, initialState) => [useSubscription, update]
 ```
 In most cases, all you really need is useReduxState, as seen in the example above.
