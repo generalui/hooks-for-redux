@@ -1,6 +1,5 @@
 // index.js
 import React from 'react';
-import ReactDOM from 'react-dom';
 import renderer from 'react-test-renderer';
 import { Provider } from 'react-redux';
 
@@ -16,7 +15,6 @@ const App = () =>
   </p>
 
 it('renders without crashing', () => {
-  // const div = document.createElement('div');
   const component = renderer.create(
     <Provider store={getStore()}>
     <App />
@@ -24,8 +22,8 @@ it('renders without crashing', () => {
   );
   let tree = component.toJSON();
   expect(tree).toMatchSnapshot();
+
   renderer.act(() => (updateName("Shane"),undefined))
   tree = component.toJSON();
   expect(tree).toMatchSnapshot();
-  // ReactDOM.unmountComponentAtNode(div);
 });
