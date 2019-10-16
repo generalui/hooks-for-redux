@@ -43,14 +43,11 @@ Configure your redux Provider:
 ```jsx
 // index.jsx
 import React from 'react';
-import { Provider } from 'react-redux';
-import { getStore } from 'hooks-for-redux'
+import { Provider } from 'hooks-for-redux'
 import App from './App'
 
 ReactDOM.render(
-  <Provider store={getStore()}>
-    <App />
-  </Provider>,
+  <Provider><App /></Provider>,
   document.getElementById('root')
 );
 ```
@@ -154,6 +151,24 @@ Create a basic redux store with injectReducer support. Use this to configure you
   - **OPTIONAL**: preloadedState & enhancer: see Redux.createStore https://redux.js.org/api/createstore
 
 * **OUT**: redux store supporting .injectReducer
+
+#### Provider Component
+
+```jsx
+import {Provider} from 'hooks-for-redux'
+<Provider>{/* render your App's root here*/}<Provider>
+```
+
+hooks-for-redux includes its own `Provider` component shortcut. It is equivalent to:
+
+```jsx
+import {Provider} from 'react-redux'
+import {getState} from 'hooks-for-redux'
+
+<Provider state={getState()}>
+  {/* render your App's root here*/}
+<Provider>
+```
 
 ### Compatibility API
 

@@ -1,9 +1,7 @@
 // index.js
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { Provider } from 'react-redux';
-
-import { getStore } from '../../index'
+import { Provider } from '../../index'
 
 import {subscribeToName, updateName} from './NameHook.js'
 
@@ -16,7 +14,7 @@ const App = () =>
 
 it('renders without crashing', () => {
   const component = renderer.create(
-    <Provider store={getStore()}>
+    <Provider>
     <App />
     </Provider>
   );
