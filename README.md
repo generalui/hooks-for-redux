@@ -83,9 +83,9 @@ export default () =>
 ```
 > Use the `index.js` file from Example-A to complete this app.
 
-## APIs
+## API
 
-#### useReduxState
+### useReduxState
 ```jsx
 import {useReduxState} from 'hooks-for-redux'
 useReduxState(storeKey, initialState) =>
@@ -99,7 +99,7 @@ In most cases, all you really need is useReduxState, as seen in the example abov
 
 * **OUT**: [useSubscription, update, addReducers, inspect]
 
-##### useSubscription - 1st element returned from useReduxState
+#### useSubscription
 ```jsx
 let [useSubscription] = useReduxState(storeKey, initialState)
 useSubscription() => current state
@@ -110,7 +110,7 @@ useSubscription() => current state
     - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useSubscription` will return the latest, updated value within that render.
     - Internally, useSubscription is simply:<br>`useSelector(state => state[storeKey])`<br>see: https://react-redux.js.org/next/api/hooks for details.
 
-##### update - 2nd element returned from useReduxState
+#### update
 ```jsx
 let [__, update] = useReduxState(storeKey, initialState)
 update(updateState) => dispatched action (Object)
@@ -123,7 +123,7 @@ update(updateState) => dispatched action (Object)
   - **OUT**: same as redux's store.dispatch: https://redux.js.org/api/store#dispatchaction
   - **EFFECT**: dispatches a redux update as defined by the updateState parameter.
 
-##### addReducers - 3rd element returned from useReduxState
+#### addReducers
 ```jsx
 let [__, __, addReducers] = useReduxState(storeKey, initialState)
 addReducers(reducers) => dispatchers
@@ -136,14 +136,14 @@ addReducers(reducers) => dispatchers
     - e.g. `{myAction: (payload) => dispatch('myAction', payload)`
   - **EFFECT**: adds reducers for your useReduxState
 
-##### inspect - 4th element returned from useReduxState
+#### inspect
 ```jsx
 let [__, __, __, inspect] = useReduxState(storeKey, initialState)
 inspect() => {reducers, state}
 ```
   - **OUT**: the current reducers and current state for your useReduxState
 
-#### getStore
+### getStore
 
 ```jsx
 import {getStore} from 'hooks-for-redux'
@@ -154,7 +154,7 @@ getStore() => store
 * **OUT** :    redux store
 * **EFFECT** : Auto-vivifies a store if setStore has not been called. Otherwise, it returns the store passed to setStore.
 
-#### setStore
+### setStore
 ```jsx
 import {setStore} from 'hooks-for-redux'
 setStore(store) => store
@@ -169,7 +169,7 @@ Call setStore to provide manually create your own store for hooks-for-redux to u
   - must be called before getStore or useReduxState
 
 
-#### createStore
+### createStore
 ```jsx
 import {createStore} from 'hooks-for-redux'
 createStore(reducersMap, [preloadedState], [enhancer]) => store
@@ -183,7 +183,7 @@ Create a basic redux store with injectReducer support. Use this to configure you
 
 * **OUT**: redux store supporting .injectReducer
 
-#### Provider Component
+### Provider Component
 
 ```jsx
 import {Provider} from 'hooks-for-redux'
@@ -201,27 +201,24 @@ import {getState} from 'hooks-for-redux'
 <Provider>
 ```
 
-### Compatibility API
+### store.injectReducer
 
-If you want to provide your own redux store, you'll need to implement injectReducer. See below.
-
-#### store.injectReducer
 ```jsx
 store.injectReducer(reducerName, reducer) => ignored
 ```
-
-Hooks-for-redux requires a store that supports the injectReducer. You only need to worry about this if you are using setState to manually set your store *and* you are note using hooks-for-redux's own createStore function.
-
-The injectReducer method is described here https://redux.js.org/recipes/code-splitting. It's signature looks like:
+If you want to provide your own redux store, you'll need to implement injectReducer.
 
 * **IN**:
   - reducerName:  String
   - reducer:      (current-reducer-named-state) => nextState
 
-* **OUT**:      ignored
 * **EFFECT**:   adds reducer to the reducersMaps passed in at creation time.
 * **REQUIRED**:
   - {[reducerName]: reducer} should be suitable for React.combineReducers https://redux.js.org/api/combinereducers
+
+Hooks-for-redux requires a store that supports the injectReducer. You only need to worry about this if you are using setState to manually set your store *and* you are note using hooks-for-redux's own createStore function.
+
+The injectReducer method is described here https://redux.js.org/recipes/code-splitting. Its signature looks like:
 
 > NOTE: Just as any other reducer passed to React.combineReducers, the reducer passed to injectReducer doesn't get passed the store's entire state. It only gets passed, and should return, its own state data which is stored in the top-level state under the provided reducerName.
 
