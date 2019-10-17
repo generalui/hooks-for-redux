@@ -1,19 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders without crashing 1`] = `
-<p
-  onClick={[Function]}
->
+exports[`subscribeToName works 1`] = `
+<p>
   Hello there, 
   Alice
   ! Click to change me.
 </p>
 `;
 
-exports[`renders without crashing 2`] = `
-<p
-  onClick={[Function]}
->
+exports[`subscribeToName works 2`] = `
+<p>
   Hello there, 
   Shane
   ! Click to change me.

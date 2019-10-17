@@ -3,23 +3,33 @@ const {useSelector} = require('react-redux')
 
 module.exports = (storeKey, initialState) => {
   const store = getStore()
-  const useSubscription = () => useSelector(storeState => storeState[storeKey])
-  const update = (updateState) => store.dispatch({type: storeKey, updateState})
+  const updateActionType = `${storeKey}Update`
+  const createDispatcher = (type) => (payload) => store.dispatch({type, payload})
 
-  store.injectReducer(storeKey, (state = initialState, {type, updateState}) => {
-    if (type === storeKey) {
-      if (typeof updateState === "function")
-        state = updateState(state);
-      else
-        state = updateState;
-
-      if (state == null) {
-        console.error({reduce:{state, action:{type, updateState}}});
-        throw new Error(`updateState for ${storeKey} should not return ${state}`)
-      }
+  let reducers = {
+    [updateActionType]: (state, payload) => {
+      if (typeof payload === "function")
+            return payload(state);
+      else  return payload;
     }
-    return state;
-  })
+  }
 
-  return [useSubscription, update]
+  store.injectReducer(storeKey, (state = initialState, {type, payload}) =>
+    reducers[type] ? reducers[type](state, payload) : state
+  )
+
+  const useSubscription = () => useSelector(storeState => storeState[storeKey])
+  const update = createDispatcher(updateActionType)
+  const addReducers = (newReducers) => {
+    reducers = {...reducers, ...newReducers}
+    let dispatchers = {}
+    for (let type in newReducers) {
+      dispatchers[type] = createDispatcher(type)
+    }
+    return dispatchers
+  }
+
+  const inspect = () => ({reducers, state: store.getState()[storeKey]})
+
+  return [useSubscription, update, addReducers, inspect]
 }
