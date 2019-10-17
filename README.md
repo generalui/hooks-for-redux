@@ -13,7 +13,7 @@ npm install hooks-for-redux
 #### Example-A
 This is a *complete* redux + react application. Hooks-for-redux dramatically reduces the redux-specific code required to build your app.
 
-> Concept: `useReduxState` initializes named redux state and returns a react-hook, an update function for that state, and a few more things.
+> Concept: `useReduxState` initializes named redux state and returns a react-hook to subscribe to that state, a function to update that state, and a few more things.
 
 Define your redux-hooks:
 ```jsx
