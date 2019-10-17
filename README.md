@@ -18,8 +18,7 @@ Define your redux-hooks:
 // NameHook.js
 import {useReduxState} from 'hooks-for-redux'
 
-const [useNameSubscription, updateName] =
-  useReduxState('name', 'Alice')
+const [useNameSubscription, updateName] = useReduxState('name', 'Alice')
 
 export {useNameSubscription, updateName}
 ```

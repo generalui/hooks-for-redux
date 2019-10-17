@@ -1,6 +1,9 @@
+const {getStore, setStore} = require('./storeRegistry');
+
 module.exports = {
-  ...require('./storeRegistry'),
-  createStore: require("./createStore"),
-  useReduxState: require("./useReduxState"),
-  Provider: require("./Provider")
+  getStore,
+  setStore,
+  createStore:    require("./createStore"),
+  useReduxState:  require("./useReduxState"),
+  Provider:       require("./Provider")
 }
