@@ -56,7 +56,7 @@ ReactDOM.render(
 #### Example-B - addReducers
 Instead of returning the raw update reducer, you can build your own reducers. Your code will be less brittle and more testable the more specific you can make your transactional redux update functions ('reducers').
 
-> `addReducers` is the third element returned from `useReduxState`. It takes a action-type-to-reducer-map and returns a dispatcher map for the same action-types.
+> Concept: `addReducers` is the third element returned from `useReduxState`. It takes a action-type-to-reducer-map and returns a dispatcher map for the same action-types.
 
 ```jsx
 // NameHook.js
