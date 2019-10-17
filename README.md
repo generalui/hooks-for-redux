@@ -13,6 +13,8 @@ npm install hooks-for-redux
 #### Example-A
 This is a *complete* redux + react application. Hooks-for-redux dramatically reduces the redux-specific code required to build your app.
 
+> Concept: `useReduxState` initializes named redux state and returns a react-hook, an update function for that state, and a few more things.
+
 Define your redux-hooks:
 ```jsx
 // NameHook.js
@@ -51,17 +53,20 @@ ReactDOM.render(
 );
 ```
 
-#### Example-B
-Instead of returning the raw update function, you can build your own. Your code will be less brittle and more testable the more specific you can make your transactional redux update functions ('reducers'). Example-A can be improved by only exporting the exact updates allowed by your redux-hook:
+#### Example-B - addReducers
+Instead of returning the raw update reducer, you can build your own reducers. Your code will be less brittle and more testable the more specific you can make your transactional redux update functions ('reducers').
+
+> `addReducers` is the third element returned from `useReduxState`. It takes a action-type-to-reducer-map and returns a dispatcher map for the same action-types.
 
 ```jsx
 // NameHook.js
 import {useReduxState} from 'hooks-for-redux'
 
-const [useNameSubscription, updateName] = useReduxState('name', 'Alice')
+const [useNameSubscription, __, addReducers] = useReduxState('name', 'Alice')
 
-const toggleName = () =>
-  updateName((name) => name == 'Alice' ? 'Bob' : 'Alice')
+const {toggleName} = addReducers({
+  toggleName: (name) => name == 'Alice' ? 'Bob' : 'Alice')
+})
 
 export {useNameSubscription, toggleName}
 ```
@@ -83,7 +88,8 @@ export default () =>
 #### useReduxState
 ```jsx
 import {useReduxState} from 'hooks-for-redux'
-useReduxState(storeKey, initialState) => [useSubscription, update]
+useReduxState(storeKey, initialState) =>
+  [useSubscription, update, addReducers, inspect]
 ```
 In most cases, all you really need is useReduxState, as seen in the example above.
 
@@ -91,18 +97,24 @@ In most cases, all you really need is useReduxState, as seen in the example abov
   - storeKey:     string
   - initialState: non-null, non-undefined
 
-* **OUT**: [useSubscription, update]
+* **OUT**: [useSubscription, update, addReducers, inspect]
 
-returned useSubscription: `() => current state
-`
-  - **IN**: nothing
+##### useSubscription - 1st element returned from useReduxState
+```jsx
+let [useSubscription] = useReduxState(storeKey, initialState)
+useSubscription() => current state
+```
   - **OUT**: current state
   - **REQUIRED**: must be called within a Component's render function
   - **EFFECT**:
     - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useSubscription` will return the latest, updated value within that render.
     - Internally, useSubscription is simply:<br>`useSelector(state => state[storeKey])`<br>see: https://react-redux.js.org/next/api/hooks for details.
 
-returned update: `(updateState) => dispatched action (Object)`
+##### update - 2nd element returned from useReduxState
+```jsx
+let [__, update] = useReduxState(storeKey, initialState)
+update(updateState) => dispatched action (Object)
+```
 
   - **IN**: reducer(function) or non-null/undefined
     - *reducer(function):* `reducer = updateState == (currentState) => nextState`
@@ -110,6 +122,26 @@ returned update: `(updateState) => dispatched action (Object)`
 
   - **OUT**: same as redux's store.dispatch: https://redux.js.org/api/store#dispatchaction
   - **EFFECT**: dispatches a redux update as defined by the updateState parameter.
+
+##### addReducers - 3rd element returned from useReduxState
+```jsx
+let [__, __, addReducers] = useReduxState(storeKey, initialState)
+addReducers(reducers) => dispatchers
+```
+
+  - **IN**: reducers: object mapping action names to reducers
+    - e.g. `{myAction: (state, payload) => newState}`
+
+  - **OUT**: dispatchers: object mapping action names to dispatchers
+    - e.g. `{myAction: (payload) => dispatch('myAction', payload)`
+  - **EFFECT**: adds reducers for your useReduxState
+
+##### inspect - 4th element returned from useReduxState
+```jsx
+let [__, __, __, inspect] = useReduxState(storeKey, initialState)
+inspect() => {reducers, state}
+```
+  - **OUT**: the current reducers and current state for your useReduxState
 
 #### getStore
 
