@@ -3,7 +3,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { Provider, useReduxState, getStore } from '../../index'
 
-const [subscribeToName, updateName, addReducers, inspectNameState] = useReduxState('name', 'Alice')
+const [subscribeToName, updateName, addReducers, myReduxStore] = useReduxState('name', 'Alice')
 const {toggleName, mrName} = addReducers({
   toggleName: (name) => name == 'Alice' ? 'Bob' : 'Alice',
   mrName: (name) => name == 'Alice' ? 'Mrs Alice' : 'Mr Bob'
@@ -47,9 +47,9 @@ it('mrName from addReducers works', () => {
   expectNameToEqual("Mrs Alice");
 });
 
-it('inspectNameState', () => {
-  expect(inspectNameState()).toHaveProperty('reducers')
-  expect(inspectNameState()).toHaveProperty('state')
+it('myReduxStore', () => {
+  expect(myReduxStore.getState().constructor).toEqual(String)
+  expect(myReduxStore.getReducers().constructor).toEqual(Object)
 })
 
 it('getStore', () => {

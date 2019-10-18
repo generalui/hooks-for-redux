@@ -29,7 +29,8 @@ module.exports = (storeKey, initialState) => {
     return dispatchers
   }
 
-  const inspect = () => ({reducers, state: store.getState()[storeKey]})
-
-  return [useSubscription, update, addReducers, inspect]
+  return [useSubscription, update, addReducers, {
+    getReducers() {return reducers;},
+    getState() {return store.getState()[storeKey];},
+  }]
 }

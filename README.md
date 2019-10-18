@@ -89,7 +89,7 @@ export default () =>
 ```jsx
 import {useReduxState} from 'hooks-for-redux'
 useReduxState(storeKey, initialState) =>
-  [useSubscription, update, addReducers, inspect]
+  [useSubscription, update, addReducers]
 ```
 In most cases, all you really need is useReduxState, as seen in the example above.
 
@@ -97,7 +97,7 @@ In most cases, all you really need is useReduxState, as seen in the example abov
   - storeKey:     string
   - initialState: non-null, non-undefined
 
-* **OUT**: [useSubscription, update, addReducers, inspect]
+* **OUT**: [useSubscription, update, addReducers]
 
 #### useSubscription
 ```jsx
@@ -136,13 +136,6 @@ addReducers(reducers) => dispatchers
     - e.g. `{myAction: (payload) => dispatch('myAction', payload)`
   - **EFFECT**: adds reducers for your useReduxState
 
-#### inspect
-```jsx
-let [__, __, __, inspect] = useReduxState(storeKey, initialState)
-inspect() => {reducers, state}
-```
-  - **OUT**: the current reducers and current state for your useReduxState
-
 ### getStore
 
 ```jsx
@@ -160,14 +153,13 @@ import {setStore} from 'hooks-for-redux'
 setStore(store) => store
 ```
 
-Call setStore to provide manually create your own store for hooks-for-redux to use. You'll need to use this if you want to use middleware.
+Call setStore to provide your own store for hooks-for-redux to use. You'll need to use this if you want to use middleware.
 
 * **IN**:   any redux store supporting .injectReducer
 * **OUT**:  the store passed in
 * **REQUIRED**:
   - can only be called once
   - must be called before getStore or useReduxState
-
 
 ### createStore
 ```jsx
