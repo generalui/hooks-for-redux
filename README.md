@@ -19,6 +19,11 @@ This library's primary goal is to reduce your redux code. This includes streamli
 
 ## Side-by-Side Comparison
 
+View the source:
+* [comparison-vanilla-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-vanilla-redux)
+* [comparison-hooks-for-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-hooks-for-redux)
+
+
 ![hooks-for-redux vs vanilla-redux comparison](./hooks-for-redux-comparison.png)
 
 ## Install
@@ -29,14 +34,14 @@ npm install hooks-for-redux
 
 ## Examples
 
-#### Example-A
+#### Simplest Example
 This is a *complete* redux + react application. Hooks-for-redux dramatically reduces the redux-specific code required to build your app.
 
 > Concept: `useReduxState` initializes named redux state and returns a react-hook to subscribe to that state, a function to update that state, and a few more things.
 
 Define your redux-hooks:
 ```jsx
-// NameHook.js
+// NameReduxState.js
 import {useReduxState} from 'hooks-for-redux'
 
 const [useNameSubscription, updateName] = useReduxState('name', 'Alice')
@@ -49,7 +54,7 @@ Use your redux-hooks:
 // App.jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {useNameSubscription, updateName} from './NameHook.js'
+import {useNameSubscription, updateName} from './NameReduxState.js'
 
 export default () =>
   <p onClick={
@@ -72,13 +77,13 @@ ReactDOM.render(
 );
 ```
 
-#### Example-B - addReducers
+#### addReducers Example
 Instead of returning the raw update reducer, you can build your own reducers. Your code will be less brittle and more testable the more specific you can make your transactional redux update functions ('reducers').
 
 > Concept: `addReducers` is the third element returned from `useReduxState`. It takes a action-type-to-reducer-map and returns a dispatcher map for the same action-types.
 
 ```jsx
-// NameHook.js
+// NameReduxState.js
 import {useReduxState} from 'hooks-for-redux'
 
 const [useNameSubscription, __, addReducers] = useReduxState('name', 'Alice')
@@ -93,7 +98,7 @@ export {useNameSubscription, toggleName}
 ```jsx
 // App.jsx
 import React from 'react';
-import {useNameSubscription, toggleName} from './NameHook.js'
+import {useNameSubscription, toggleName} from './NameReduxState.js'
 
 export default () =>
   <p onClick={toggleName}>
@@ -101,6 +106,40 @@ export default () =>
   </p>
 ```
 > Use the `index.js` file from Example-A to complete this app.
+
+#### Custom Middleware Example
+
+By default, hooks-for-react auto-vivifies a redux store for you, but if you want to control how the store gets created, use the steps below.
+
+```jsx
+// store.js
+import { setStore, createStore } from 'hooks-for-redux'
+import { applyMiddleware } from 'redux'
+
+const logDispatch = store => next => action => {
+  console.log('dispatching', action)
+  return next(action)
+}
+
+export default setStore(createStore(
+  {},
+  applyMiddleware(logDispatch)
+))
+```
+```jsx
+// index.jsx
+import React from 'react';
+import { Provider } from 'hooks-for-redux'
+import './store'  // <<< import before using useReduxState
+import App from './App'
+
+ReactDOM.render(
+  <Provider><App /></Provider>,
+  document.getElementById('root')
+);
+```
+
+> NOTE: You don't have to use hooks-for-redux's createStore, but setStore must be passed a store that supports the injectReducer method as described here: https://redux.js.org/api/combinereducers
 
 ## API
 
