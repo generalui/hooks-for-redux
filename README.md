@@ -1,14 +1,27 @@
 # hooks-for-redux
 
-> same redux logic, 1/3 the code
+> same redux, less than 1/2 the code
 
 Redux has many wonderful traits, but brevity isn't one of them. React added "hooks" and dramatically cleaned up how you managed Component state. Hooks-for-redux strives to similarly clean up how you manage redux state using a hooks-style API.
 
-> NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. react-redux already does this elegantly. Instead, hooks-for-redux use's react-redux's useSelector internally.
+> NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. react-redux already does this elegantly.
 
-This library's primary goal is to reduce your redux code. Mostly this means streamlining your reducer, action and store definitions, but it also includes a slightly streamlined version of react-redux's useSelector called useSubscription for use with react components.
+This library's primary goal is to reduce your redux code. This includes streamlined reducers, actions, dispatchers, store-creation and, yes, how you hook into react as well.
 
-## INSTALL
+## Contents
+
+1. [ Side-by-Side Comparison](#side-by-side-comparison)
+2. [ Install ](#install)
+2. [ Examples ](#examples)
+2. [ API ](#api)
+2. [ License ](#license)
+2. [ Produced at GenUI ](#produced-at-genui)
+
+## Side-by-Side Comparison
+
+![hooks-for-redux vs vanilla-redux comparison](./hooks-for-redux-comparison.png)
+
+## Install
 
 ```
 npm install hooks-for-redux
@@ -224,6 +237,6 @@ The injectReducer method is described here https://redux.js.org/recipes/code-spl
 
 hooks-for-redux is [MIT licensed](./LICENSE).
 
-## Produced By
+## Produced at GenUI
 
 hooks-for-redux was [developed in JavaScript for React and Redux at GenUI.co](https://www.genui.co).
