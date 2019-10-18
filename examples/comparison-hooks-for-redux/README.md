@@ -17,15 +17,13 @@ import { useReduxState } from 'hooks-for-redux'
 
 const DEFAULT_GREETING = "hello, hooks-for-redux!";
 
-const [useGreetingSubscription, /*updateGreeting*/, addReducers] =
+export const [useGreetingSubscription, /*updateGreeting*/, addReducers] =
   useReduxState('greeting', DEFAULT_GREETING);
 
-const {resetGreeting, setGreeting} = addReducers({
+export const {resetGreeting, setGreeting} = addReducers({
   resetGreeting: () => DEFAULT_GREETING,
   setGreeting: (store, greeting) => greeting
 })
-
-export {useGreetingSubscription, resetGreeting, setGreeting}
 
 // App.js
 import React from 'react'
@@ -50,5 +48,4 @@ import './index.css'
 import App from './App'
 
 ReactDOM.render(<Provider><App/></Provider>, document.getElementById('root'));
-
 ```
