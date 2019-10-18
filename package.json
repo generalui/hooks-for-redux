@@ -11,7 +11,8 @@
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-scripts": "^3.2.0",
-    "react-test-renderer": "^16.10.2"
+    "react-test-renderer": "^16.10.2",
+    "hooks-for-redux": "file:."
   },
   "author": "Shane Brinkman-Davis Delamore, GenUI",
   "bugs": "https://github.com/generalui/hooks-for-redux/issues",
