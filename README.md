@@ -1,6 +1,12 @@
 # hooks-for-redux
 
-Wouldn't it be nice if you could use the elegant syntax of React-hooks when dealing with Redux?
+> same redux logic, 1/3 the code
+
+Redux has many wonderful traits, but brevity isn't one of them. React added "hooks" and dramatically cleaned up how you managed Component state. Hooks-for-redux strives to similarly clean up how you manage redux state using a hooks-style API.
+
+> NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. react-redux already does this elegantly. Instead, hooks-for-redux use's react-redux's useSelector internally.
+
+This library's primary goal is to reduce your redux code. Mostly this means streamlining your reducer, action and store definitions, but it also includes a slightly streamlined version of react-redux's useSelector called useSubscription for use with react components.
 
 ## INSTALL
 
