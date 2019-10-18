@@ -1,11 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {useSelector, Provider} from 'react-redux';
 import './index.css';
-import { createStore, combineReducers } from 'redux';
 
+import {useSelector, Provider} from 'react-redux';
+import {createStore, combineReducers } from 'redux';
+
+// actions.js
 const SET_GREETING = 'SET_GREETING';
 const RESET_GREETING = 'RESET_GREETING';
+
+// reducers/greeting.js
 const DEFAULT_GREETING = "hello";
 
 const greeting = (state = DEFAULT_GREETING, action) => {
@@ -19,16 +23,18 @@ const greeting = (state = DEFAULT_GREETING, action) => {
   }
 }
 
+// store.js
 const store = createStore(combineReducers({
   greeting
 }));
 
-const resetGreeting = (greeting) => store.dispatch({
-  type: 'RESET_GREETING'
+// Components/App.js
+const resetGreeting = () => store.dispatch({
+  type: RESET_GREETING
 })
 
 const setGreeting = (greeting) => store.dispatch({
-  type: 'SET_GREETING',
+  type: SET_GREETING,
   payload: greeting
 })
 
@@ -40,4 +46,8 @@ const App = () =>
     <a href="#" onClick={() => resetGreeting()}>reset</a>
   </div>
 
-ReactDOM.render(<Provider {...{store}}><App/></Provider>, document.getElementById('root'));
+// index.js
+ReactDOM.render(
+  <Provider {...{store}}><App/></Provider>,
+  document.getElementById('root')
+);
