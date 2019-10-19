@@ -2,7 +2,7 @@
 
 > same redux, less than 1/2 the code
 
-Redux has many wonderful traits, but brevity isn't one of them. React added "hooks" and dramatically cleaned up how you managed Component state. Hooks-for-redux strives to similarly clean up how you manage redux state using a hooks-style API.
+Redux has many wonderful traits, but brevity isn't one of them. Like how react added "hooks" to dramatically clean up state management for Components, hooks-for-redux strives to clean up how you manage redux state using a similar, hooks-style API.
 
 > NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. react-redux already does this elegantly.
 
