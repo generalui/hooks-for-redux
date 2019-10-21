@@ -24,7 +24,7 @@ View the source:
 * [comparison-hooks-for-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-hooks-for-redux)
 
 
-![hooks-for-redux vs vanilla-redux comparison](./hooks-for-redux-comparison.png)
+![hooks-for-redux vs vanilla-redux comparison](https://github.com/generalui/hooks-for-redux/blob/master/examples/hooks-for-redux-comparison.png)
 
 ## Install
 
