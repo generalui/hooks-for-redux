@@ -1,10 +1,10 @@
 import React from 'react'
-import {useGreetingSubscription, setGreeting, resetGreeting}
+import {useGreeting, setGreeting, resetGreeting}
   from './greetingReduxState'
 
 const App = () =>
   <div>
-    <h1>{ useGreetingSubscription() }</h1>
+    <h1>{ useGreeting() }</h1>
     <a href="#" onClick={() => setGreeting("こんにちは, hooks-for-redux")}>
       japanese
     </a> <a href="#" onClick={() => resetGreeting()}>reset</a>
