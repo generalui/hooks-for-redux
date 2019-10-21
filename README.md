@@ -86,9 +86,10 @@ Instead of returning the raw update reducer, you can build your own reducers. Yo
 // NameReduxState.js
 import {useReduxState} from 'hooks-for-redux'
 
-export const [useName, /* updateName */, addReducers] = useReduxState('name', 'Alice')
+export const [useName, /* updateName */, addNameReducers] =
+  useReduxState('name', 'Alice')
 
-export const {toggleName} = addReducers({
+export const {toggleName} = addNameReducers({
   toggleName: (name) => name == 'Alice' ? 'Bob' : 'Alice')
 })
 ```
