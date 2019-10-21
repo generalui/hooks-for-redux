@@ -46,9 +46,9 @@ Define your redux-hooks:
 // NameReduxState.js
 import {useReduxState} from 'hooks-for-redux'
 
-const [useNameStoreName, updateName] = useReduxState('name', 'Alice')
+const [useName, updateName] = useReduxState('name', 'Alice')
 
-export {useNameStoreName, updateName}
+export {useName, updateName}
 ```
 
 Use your redux-hooks:
@@ -56,13 +56,13 @@ Use your redux-hooks:
 // App.jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {useNameStoreName, updateName} from './NameReduxState.js'
+import {useName, updateName} from './NameReduxState.js'
 
 export default () =>
   <p onClick={
     () => updateName((name) => name == 'Alice' ? 'Bob' : 'Alice')
   }>
-    Hello there, {useNameStoreName()}! Click to change me.
+    Hello there, {useName()}! Click to change me.
   </p>
 ```
 
@@ -88,23 +88,23 @@ Instead of returning the raw update reducer, you can build your own reducers. Yo
 // NameReduxState.js
 import {useReduxState} from 'hooks-for-redux'
 
-const [useNameStoreName, __, addReducers] = useReduxState('name', 'Alice')
+const [useName, __, addReducers] = useReduxState('name', 'Alice')
 
 const {toggleName} = addReducers({
   toggleName: (name) => name == 'Alice' ? 'Bob' : 'Alice')
 })
 
-export {useNameStoreName, toggleName}
+export {useName, toggleName}
 ```
 
 ```jsx
 // App.jsx
 import React from 'react';
-import {useNameStoreName, toggleName} from './NameReduxState.js'
+import {useName, toggleName} from './NameReduxState.js'
 
 export default () =>
   <p onClick={toggleName}>
-    Hello there, {useNameStoreName()}! Click to change me.
+    Hello there, {useName()}! Click to change me.
   </p>
 ```
 > Use the `index.js` file from Example-A to complete this app.
