@@ -46,9 +46,7 @@ Define your redux-hooks:
 // NameReduxState.js
 import {useReduxState} from 'hooks-for-redux'
 
-const [useName, updateName] = useReduxState('name', 'Alice')
-
-export {useName, updateName}
+export const [useName, updateName] = useReduxState('name', 'Alice')
 ```
 
 Use your redux-hooks:
