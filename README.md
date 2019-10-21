@@ -1,10 +1,10 @@
-# hooks-for-redux
+# hooks-for-redux - DRY up redux
 
 > same redux, less than 1/2 the code
 
 Redux has many wonderful traits, but brevity isn't one of them. Hooks-for-redux strives to reduce the amount of code required to define and manage Redux state. Like how React added "hooks" to clean up Component state management, hooks-for-redux uses a similar, hooks-style API to clean up Redux state management.
 
-This library's primary goal is to reduce Redux code while maintaining maximum compatibility with the Redux platform. This includes streamlined reducers, actions, dispatchers, store-creation and hooks for using redux in react as well.
+This library's primary goal is to reduce Redux code while maintaining maximum compatibility with the Redux platform. The primary strategy is to DRY up the API and use reasonable defaults, with overrides, wherever possible. H4R streamlines reducers, actions, dispatchers, store-creation and hooks for using redux in react as well.
 
 > NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. react-redux already does this elegantly. Instead, this library wraps react-redux's useSelector, as well as many other standard Redux tools, to provide a more streamlined API.
 
