@@ -2,11 +2,11 @@
 
 > same redux, less than 1/2 the code
 
-Redux has many wonderful traits, but brevity isn't one of them. Like how react added "hooks" to dramatically clean up state management for Components, hooks-for-redux strives to clean up how you manage redux state using a similar, hooks-style API.
+Redux has many wonderful traits, but brevity isn't one of them. Hooks-for-redux strives to reduce the amount of code required to define and manage Redux state. Like how React added "hooks" to clean up Component state management, hooks-for-redux uses a similar, hooks-style API to clean up Redux state management.
 
-> NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. react-redux already does this elegantly.
+This library's primary goal is to reduce Redux code while maintaining maximum compatibility with the Redux platform. This includes streamlined reducers, actions, dispatchers, store-creation and hooks for using redux in react as well.
 
-This library's primary goal is to reduce your redux code. This includes streamlined reducers, actions, dispatchers, store-creation and, yes, how you hook into react as well.
+> NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. react-redux already does this elegantly. Instead, this library wraps react-redux's useSelector, as well as many other standard Redux tools, to provide a more streamlined API.
 
 ## Contents
 
@@ -18,6 +18,8 @@ This library's primary goal is to reduce your redux code. This includes streamli
 2. [ Produced at GenUI ](#produced-at-genui)
 
 ## Side-by-Side Comparison
+
+A quick comparison of the simplest app written with both vanilla Redux and hooks-for-redux shows how you can reduce your source by over 60%.
 
 View the source:
 * [comparison-vanilla-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-vanilla-redux)

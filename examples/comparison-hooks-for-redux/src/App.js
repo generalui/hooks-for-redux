@@ -1,6 +1,6 @@
 import React from 'react'
 import {useGreeting, setGreeting, resetGreeting}
-  from './greetingReduxState'
+  from './ReduxState/greeting'
 
 const App = () =>
   <div>
