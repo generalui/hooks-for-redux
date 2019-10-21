@@ -44,9 +44,9 @@ Define your redux-hooks:
 // NameReduxState.js
 import {useReduxState} from 'hooks-for-redux'
 
-const [useNameSubscription, updateName] = useReduxState('name', 'Alice')
+const [useNameStoreName, updateName] = useReduxState('name', 'Alice')
 
-export {useNameSubscription, updateName}
+export {useNameStoreName, updateName}
 ```
 
 Use your redux-hooks:
@@ -54,13 +54,13 @@ Use your redux-hooks:
 // App.jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {useNameSubscription, updateName} from './NameReduxState.js'
+import {useNameStoreName, updateName} from './NameReduxState.js'
 
 export default () =>
   <p onClick={
     () => updateName((name) => name == 'Alice' ? 'Bob' : 'Alice')
   }>
-    Hello there, {useNameSubscription()}! Click to change me.
+    Hello there, {useNameStoreName()}! Click to change me.
   </p>
 ```
 
@@ -86,23 +86,23 @@ Instead of returning the raw update reducer, you can build your own reducers. Yo
 // NameReduxState.js
 import {useReduxState} from 'hooks-for-redux'
 
-const [useNameSubscription, __, addReducers] = useReduxState('name', 'Alice')
+const [useNameStoreName, __, addReducers] = useReduxState('name', 'Alice')
 
 const {toggleName} = addReducers({
   toggleName: (name) => name == 'Alice' ? 'Bob' : 'Alice')
 })
 
-export {useNameSubscription, toggleName}
+export {useNameStoreName, toggleName}
 ```
 
 ```jsx
 // App.jsx
 import React from 'react';
-import {useNameSubscription, toggleName} from './NameReduxState.js'
+import {useNameStoreName, toggleName} from './NameReduxState.js'
 
 export default () =>
   <p onClick={toggleName}>
-    Hello there, {useNameSubscription()}! Click to change me.
+    Hello there, {useNameStoreName()}! Click to change me.
   </p>
 ```
 > Use the `index.js` file from Example-A to complete this app.
@@ -146,31 +146,31 @@ ReactDOM.render(
 ### useReduxState
 ```jsx
 import {useReduxState} from 'hooks-for-redux'
-useReduxState(storeKey, initialState) =>
-  [useSubscription, update, addReducers]
+useReduxState(storeName, initialState) =>
+  [useStoreName, update, addReducers]
 ```
 In most cases, all you really need is useReduxState, as seen in the example above.
 
-* **IN**: (storeKey, initialState)
-  - storeKey:     string
+* **IN**: (storeName, initialState)
+  - storeName:     string
   - initialState: non-null, non-undefined
 
-* **OUT**: [useSubscription, update, addReducers]
+* **OUT**: [useStoreName, update, addReducers]
 
-#### useSubscription
+#### useStoreName
 ```jsx
-let [useSubscription] = useReduxState(storeKey, initialState)
-useSubscription() => current state
+let [useStoreName] = useReduxState(storeName, initialState)
+useStoreName() => current state
 ```
   - **OUT**: current state
   - **REQUIRED**: must be called within a Component's render function
   - **EFFECT**:
-    - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useSubscription` will return the latest, updated value within that render.
-    - Internally, useSubscription is simply:<br>`useSelector(state => state[storeKey])`<br>see: https://react-redux.js.org/next/api/hooks for details.
+    - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useStoreName` will return the latest, updated value within that render.
+    - Internally, useStoreName is simply:<br>`useSelector(state => state[storeName])`<br>see: https://react-redux.js.org/next/api/hooks for details.
 
 #### update
 ```jsx
-let [__, update] = useReduxState(storeKey, initialState)
+let [__, update] = useReduxState(storeName, initialState)
 update(updateState) => dispatched action (Object)
 ```
 
@@ -183,7 +183,7 @@ update(updateState) => dispatched action (Object)
 
 #### addReducers
 ```jsx
-let [__, __, addReducers] = useReduxState(storeKey, initialState)
+let [__, __, addReducers] = useReduxState(storeName, initialState)
 addReducers(reducers) => dispatchers
 ```
 
