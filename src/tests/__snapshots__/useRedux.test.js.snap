@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`subscribeToName works 1`] = `
+<p>
+  Hello there, 
+  Alice
+  ! Click to change me.
+</p>
+`;
+
+exports[`subscribeToName works 2`] = `
+<p>
+  Hello there, 
+  Shane
+  ! Click to change me.
+</p>
+`;
