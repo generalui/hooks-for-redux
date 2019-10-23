@@ -12,12 +12,13 @@ This example is one of two comparing hooks-for-redux with vanilla redux in a ver
 With hooks-for-redux, you have to write dramatically less code. Here's all the JavaScript source in one place:
 
 ```jsx
+
 // greetingReduxState.js
 import { useReduxState } from 'hooks-for-redux'
 
 const DEFAULT_GREETING = "hello, hooks-for-redux!";
 
-export const [useGreetingSubscription, /*updateGreeting*/, addReducers] =
+export const [useGreeting, /*updateGreeting*/, addReducers] =
   useReduxState('greeting', DEFAULT_GREETING);
 
 export const {resetGreeting, setGreeting} = addReducers({
@@ -27,12 +28,12 @@ export const {resetGreeting, setGreeting} = addReducers({
 
 // App.js
 import React from 'react'
-import {useGreetingSubscription, setGreeting, resetGreeting}
+import {useGreeting, setGreeting, resetGreeting}
   from './greetingReduxState'
 
 const App = () =>
   <div>
-    <h1>{ useGreetingSubscription() }</h1>
+    <h1>{ useGreeting() }</h1>
     <a href="#" onClick={() => setGreeting("こんにちは, hooks-for-redux")}>
       japanese
     </a> <a href="#" onClick={() => resetGreeting()}>reset</a>
@@ -48,4 +49,5 @@ import './index.css'
 import App from './App'
 
 ReactDOM.render(<Provider><App/></Provider>, document.getElementById('root'));
+
 ```
