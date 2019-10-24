@@ -55,7 +55,9 @@ View the source:
 
 This example is primarilly intended to give a visual feel for how much code can be saved. Scroll down to learn more about what's going on.
 
-![hooks-for-redux vs vanilla-redux comparison](https://github.com/generalui/hooks-for-redux/blob/master/examples/hooks-for-redux-comparison.png)
+![hooks-for-redux vs vanilla-redux comparison](https://raw.githubusercontent.com/wiki/generalui/hooks-for-redux/hooks-for-redux-comparison.png)
+
+
 
 ## Install
 
