@@ -20,7 +20,7 @@ This library's primary goal is to reduce Redux code while maintaining maximum co
 
 ## Usage
 
-Tiny example, with all the key parts and no explanation, to wet your appetite:
+Tiny, complete example with no explanation to wet your appetite:
 
 ```jsx
 import React from 'react';
