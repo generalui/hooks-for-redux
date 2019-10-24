@@ -1,4 +1,4 @@
-import { useReduxState } from 'hooks-for-redux'
+import { useRedux } from 'hooks-for-redux'
 
 const DEFAULT_GREETING = "hello, hooks-for-redux!";
 

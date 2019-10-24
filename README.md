@@ -25,6 +25,7 @@ View the source:
 * [comparison-vanilla-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-vanilla-redux)
 * [comparison-hooks-for-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-hooks-for-redux)
 
+This example is primarilly intended to give a visual feel for how much code can be saved. Scroll down to learn more about what's going on.
 
 ![hooks-for-redux vs vanilla-redux comparison](https://github.com/generalui/hooks-for-redux/blob/master/examples/hooks-for-redux-comparison.png)
 
@@ -36,17 +37,17 @@ npm install hooks-for-redux
 
 ## Examples
 
-#### Simplest Example
+#### Example A: use and set
 This is a *complete* redux + react application. Hooks-for-redux dramatically reduces the redux-specific code required to build your app.
 
-> Concept: `useReduxState` initializes named redux state and returns a react-hook to subscribe to that state, a function to update that state, and a few more things.
+> Concept: `useRedux` initializes named redux state and returns a react-hook to subscribe to that state, a function to update that state, and a few more things.
 
 Define your redux-hooks:
 ```jsx
 // NameReduxState.js
-import {useReduxState} from 'hooks-for-redux'
+import {useRedux} from 'hooks-for-redux'
 
-export const [useName, updateName] = useReduxState('name', 'Alice')
+export const [useName, setName] = useRedux('name', 'Alice')
 ```
 
 Use your redux-hooks:
@@ -54,11 +55,11 @@ Use your redux-hooks:
 // App.jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {useName, updateName} from './NameReduxState.js'
+import {useName, setName} from './NameReduxState.js'
 
 export default () =>
   <p onClick={
-    () => updateName((name) => name == 'Alice' ? 'Bob' : 'Alice')
+    () => setName((name) => name == 'Alice' ? 'Bob' : 'Alice')
   }>
     Hello there, {useName()}! Click to change me.
   </p>
@@ -77,20 +78,19 @@ ReactDOM.render(
 );
 ```
 
-#### addReducers Example
+#### Example B: Custom Reducers Example
 Instead of returning the raw update reducer, you can build your own reducers. Your code will be less brittle and more testable the more specific you can make your transactional redux update functions ('reducers').
 
-> Concept: `addReducers` is the third element returned from `useReduxState`. It takes a action-type-to-reducer-map and returns a dispatcher map for the same action-types.
+> Concept: When you pass in a reducer-map, useRedux returns set of matching dispatchers, one for each of your reducers.
+
+Here's how to re-write Example-A with custom reducers:
 
 ```jsx
 // NameReduxState.js
-import {useReduxState} from 'hooks-for-redux'
+import {useRedux} from 'hooks-for-redux'
 
-export const [useName, /* updateName */, addNameReducers] =
-  useReduxState('name', 'Alice')
-
-export const {toggleName} = addNameReducers({
-  toggleName: (name) => name == 'Alice' ? 'Bob' : 'Alice')
+export const [useName, {toggleName}] = useRedux('name', 'Alice', {
+  toggleName: (state, name) => name == 'Alice' ? 'Bob' : 'Alice')
 })
 ```
 
@@ -104,7 +104,7 @@ export default () =>
     Hello there, {useName()}! Click to change me.
   </p>
 ```
-> Use the `index.js` file from Example-A to complete this app.
+> Use `index.js` file from Example-A to complete this app.
 
 #### Custom Middleware Example
 
@@ -130,7 +130,7 @@ export default setStore(createStore(
 // index.jsx
 import React from 'react';
 import { Provider } from 'hooks-for-redux'
-import './store'  // <<< import before using useReduxState
+import './store'  // <<< import before using useRedux
 import App from './App'
 
 ReactDOM.render(
@@ -143,34 +143,34 @@ ReactDOM.render(
 
 ## API
 
-### useReduxState
+### useRedux
 ```jsx
-import {useReduxState} from 'hooks-for-redux'
-useReduxState(storeName, initialState) =>
-  [useStoreName, update, addReducers]
+import {useRedux} from 'hooks-for-redux'
+useRedux(storeKey, initialState) => [useStoreKey, setStoreKey]
+useRedux(storeKey, initialState, reducers) => [useStoreKey, dispatchers]
 ```
-In most cases, all you really need is useReduxState, as seen in the example above.
+In most cases, all you really need is useRedux, as seen in the example above.
 
-* **IN**: (storeName, initialState)
-  - storeName:     string
+* **IN**: (storeKey, initialState)
+  - storeKey:     string
   - initialState: non-null, non-undefined
 
 * **OUT**: [useStoreName, update, addReducers]
 
 #### useStoreName
 ```jsx
-let [useStoreName] = useReduxState(storeName, initialState)
+let [useStoreName] = useRedux(storeKey, initialState)
 useStoreName() => current state
 ```
   - **OUT**: current state
   - **REQUIRED**: must be called within a Component's render function
   - **EFFECT**:
     - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useStoreName` will return the latest, updated value within that render.
-    - Internally, useStoreName is simply:<br>`useSelector(state => state[storeName])`<br>see: https://react-redux.js.org/next/api/hooks for details.
+    - Internally, useStoreName is simply:<br>`useSelector(state => state[storeKey])`<br>see: https://react-redux.js.org/next/api/hooks for details.
 
 #### update
 ```jsx
-let [__, update] = useReduxState(storeName, initialState)
+let [__, update] = useRedux(storeKey, initialState)
 update(updateState) => dispatched action (Object)
 ```
 
@@ -183,7 +183,7 @@ update(updateState) => dispatched action (Object)
 
 #### addReducers
 ```jsx
-let [__, __, addReducers] = useReduxState(storeName, initialState)
+let [__, __, addReducers] = useRedux(storeKey, initialState)
 addReducers(reducers) => dispatchers
 ```
 
@@ -192,7 +192,7 @@ addReducers(reducers) => dispatchers
 
   - **OUT**: dispatchers: object mapping action names to dispatchers
     - e.g. `{myAction: (payload) => dispatch('myAction', payload)`
-  - **EFFECT**: adds reducers for your useReduxState
+  - **EFFECT**: adds reducers for your useRedux
 
 ### getStore
 
@@ -217,7 +217,7 @@ Call setStore to provide your own store for hooks-for-redux to use. You'll need 
 * **OUT**:  the store passed in
 * **REQUIRED**:
   - can only be called once
-  - must be called before getStore or useReduxState
+  - must be called before getStore or useRedux
 
 ### createStore
 ```jsx

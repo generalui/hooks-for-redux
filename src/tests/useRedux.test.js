@@ -3,52 +3,86 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { Provider, useRedux, getStore } from '../../index'
 
-const [subscribeToName, {toggleName, mrName, updateName, getState, getReducers}] = useRedux('name', 'Alice', {
-  toggleName: (name) => name == 'Alice' ? 'Bob' : 'Alice',
-  mrName: (name) => name == 'Alice' ? 'Mrs Alice' : 'Mr Bob',
-  updateName: (name, newName) => newName
+describe("basic mode",() => {
+  const STORE_KEY = 'basicModeName';
+  const [subscribeToName, updateName, {getState}] = useRedux(STORE_KEY, 'Alice')
+
+  const expectNameToEqual = (expected) => expect(getState()).toEqual(expected);
+
+  it('updateName(newState) works', () => {
+    updateName("Al");
+    expectNameToEqual("Al");
+  });
+
+  const App = () =>
+    <p>Hello there, {subscribeToName()}! Click to change me.</p>
+
+  it('subscribeToName works', () => {
+    updateName("Alice")
+    const component = renderer.create(<Provider><App/></Provider>);
+    expect(component.toJSON()).toMatchSnapshot();
+
+    renderer.act(() => {updateName("Shane");})
+    expect(component.toJSON()).toMatchSnapshot();
+    component.unmount()
+  });
+
+  it('getState', () => {
+    expect(typeof getState()).toEqual("string")
+    expect(getState()).toEqual(getStore().getState()[STORE_KEY])
+  })
 })
 
-const getName = () => getStore().getState().name
-const expectNameToEqual = (expected) => expect(getName()).toEqual(expected);
+describe("reducers mode",() => {
+  const STORE_KEY = 'reducerModeName';
+  const [subscribeToName, {toggleName, mrName, updateName, getState, getReducers}] = useRedux(STORE_KEY, 'Alice', {
+    toggleName: (name) => name == 'Alice' ? 'Bob' : 'Alice',
+    mrName: (name) => name == 'Alice' ? 'Mrs Alice' : 'Mr Bob',
+    updateName: (name, newName) => newName
+  })
 
-const App = () =>
-  <p>Hello there, {subscribeToName()}! Click to change me.</p>
+  const expectNameToEqual = (expected) => expect(getState()).toEqual(expected);
 
-it('subscribeToName works', () => {
-  updateName("Alice")
-  const component = renderer.create(<Provider><App/></Provider>);
-  expect(component.toJSON()).toMatchSnapshot();
+  const App = () =>
+    <p>Hello there, {subscribeToName()}! Click to change me.</p>
 
-  renderer.act(() => {updateName("Shane");})
-  expect(component.toJSON()).toMatchSnapshot();
-  component.unmount()
-});
+  it('subscribeToName works', () => {
+    updateName("Alice")
+    const component = renderer.create(<Provider><App/></Provider>);
+    expect(component.toJSON()).toMatchSnapshot();
 
-it('updateName(newState) works', () => {
-  updateName("Al");
-  expectNameToEqual("Al");
-});
+    renderer.act(() => {updateName("Shane");})
+    expect(component.toJSON()).toMatchSnapshot();
+    component.unmount()
+  });
 
-it('toggleName from addReducers works', () => {
-  updateName("Alice")
-  toggleName();
-  expectNameToEqual("Bob");
-});
+  it('updateName(newState) works', () => {
+    updateName("Al");
+    expectNameToEqual("Al");
+  });
 
-it('mrName from addReducers works', () => {
-  updateName("Alice")
-  mrName();
-  expectNameToEqual("Mrs Alice");
-});
+  it('toggleName from addReducers works', () => {
+    updateName("Alice")
+    toggleName();
+    expectNameToEqual("Bob");
+  });
 
-it('store methods', () => {
-  expect(getState().constructor).toEqual(String)
-  expect(getReducers().constructor).toEqual(Object)
-})
+  it('mrName from addReducers works', () => {
+    updateName("Alice")
+    mrName();
+    expectNameToEqual("Mrs Alice");
+  });
 
-it('getStore', () => {
-  expect(getStore().getState().constructor).toEqual(Object)
-  expect(typeof getStore().getState().name).toEqual("string")
-  expect(typeof getStore().injectReducer).toEqual("function")
+  it('getReducers', () => {
+    expect(getReducers().constructor).toEqual(Object)
+  })
+
+  it('getState', () => {
+    expect(typeof getState()).toEqual("string")
+    expect(getState()).toEqual(getStore().getState()[STORE_KEY])
+  })
+
+  it('getStore', () => {
+    expect(typeof getStore().injectReducer).toEqual("function")
+  })
 })

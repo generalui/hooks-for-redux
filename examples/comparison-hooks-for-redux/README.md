@@ -14,11 +14,11 @@ With hooks-for-redux, you have to write dramatically less code. Here's all the J
 ```jsx
 
 // greetingReduxState.js
-import { useReduxState } from 'hooks-for-redux'
+import { useRedux } from 'hooks-for-redux'
 
 const DEFAULT_GREETING = "hello, hooks-for-redux!";
 
-export const [useGreeting, { resetGreeting, setGreeting }] =
+export const [useGreeting, {resetGreeting, setGreeting}] =
   useRedux('greeting', DEFAULT_GREETING, {
     resetGreeting: () => DEFAULT_GREETING,
     setGreeting: (store, greeting) => greeting

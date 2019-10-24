@@ -10,6 +10,7 @@ module.exports = (initialReducers = {}, ...args) => {
   const store = reduxCreateStore(combineReducers(reducers), ...args)
 
   store.injectReducer = (key, reducer) => {
+    if (reducers[key]) throw new Error(`injectReducer: reducer already added for key '${key}'`);
     reducers[key] = reducer
     store.replaceReducer(combineReducers(reducers))
   }
