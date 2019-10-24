@@ -10,12 +10,38 @@ This library's primary goal is to reduce Redux code while maintaining maximum co
 
 ## Contents
 
+1. [ Usage ](#usage)
 1. [ Side-by-Side Comparison](#side-by-side-comparison)
 2. [ Install ](#install)
 2. [ Examples ](#examples)
 2. [ API ](#api)
 2. [ License ](#license)
 2. [ Produced at GenUI ](#produced-at-genui)
+
+## Usage
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {useRedux, Provider} from 'hooks-for-redux'
+
+const [useCount, {incCount, decCount}] = useRedux('count', 0, {
+  incCount: (state) => state + 1,
+  decCount: (state) => state - 1,
+})
+
+const App = () =>
+  <p>
+    Count: {useCount()}
+    {' '}<input type="button" onClick={incCount} value="+"/>
+    {' '}<input type="button" onClick={decCount} value="-"/>
+  </p>
+
+ReactDOM.render(
+  <Provider><App /></Provider>,
+  document.getElementById('root')
+);
+```
 
 ## Side-by-Side Comparison
 
@@ -37,7 +63,7 @@ npm install hooks-for-redux
 
 ## Examples
 
-#### Example A: use and set
+#### Example A: Use and Set
 This is a *complete* redux + react application. Hooks-for-redux dramatically reduces the redux-specific code required to build your app.
 
 > Concept: `useRedux` initializes named redux state and returns a react-hook to subscribe to that state, a function to update that state, and a few more things.
@@ -78,7 +104,7 @@ ReactDOM.render(
 );
 ```
 
-#### Example B: Custom Reducers Example
+#### Example B: Custom Reducers
 Instead of returning the raw update reducer, you can build your own reducers. Your code will be less brittle and more testable the more specific you can make your transactional redux update functions ('reducers').
 
 > Concept: When you pass in a reducer-map, useRedux returns set of matching dispatchers, one for each of your reducers.
@@ -106,7 +132,7 @@ export default () =>
 ```
 > Use `index.js` file from Example-A to complete this app.
 
-#### Custom Middleware Example
+#### Example: Custom Middleware
 
 By default, hooks-for-react auto-vivifies a redux store for you, but if you want to control how the store gets created, use the steps below.
 
@@ -154,45 +180,42 @@ In most cases, all you really need is useRedux, as seen in the example above.
 * **IN**: (storeKey, initialState)
   - storeKey:     string
   - initialState: non-null, non-undefined
+  - reducers: object mapping action names to reducers
+    - e.g. `{myAction: (state, payload) => newState}`
 
-* **OUT**: [useStoreName, update, addReducers]
+* **OUT**: [useStoreKey, setStoreKey -or- dispatchers]
+  - useStoreKey: (see below) `() => state`
+  - dispatchers: object mapping action names to dispatchers
+    - e.g. `{myAction: (payload) => dispatch('myAction', payload)}`
 
-#### useStoreName
+#### useStoreKey
 ```jsx
-let [useStoreName] = useRedux(storeKey, initialState)
-useStoreName() => current state
+const [useStoreKey] = useRedux(storeKey, initialState)
+const MyComponent = () => { // must be used in render function
+  useStoreKey() => current state
+  // ...
+}
 ```
   - **OUT**: current state
   - **REQUIRED**: must be called within a Component's render function
   - **EFFECT**:
-    - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useStoreName` will return the latest, updated value within that render.
-    - Internally, useStoreName is simply:<br>`useSelector(state => state[storeKey])`<br>see: https://react-redux.js.org/next/api/hooks for details.
+    - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useStoreKey` will return the latest, updated value within that render.
+    - Internally, useStoreKey is simply:<br>`useSelector(state => state[storeKey])`<br>see: https://react-redux.js.org/next/api/hooks for details.
 
-#### update
+#### dispatchers
 ```jsx
-let [__, update] = useRedux(storeKey, initialState)
-update(updateState) => dispatched action (Object)
+const [__, {myAction}] = useRedux(storeKey, initialState, {
+  myAction: (state, payload) => state
+})
+myAction(payload) => {type: MyAction, payload}
 ```
 
-  - **IN**: reducer(function) or non-null/undefined
-    - *reducer(function):* `reducer = updateState == (currentState) => nextState`
-    - *non-null/undefined:* `reducer = () => updateState`
+  - **IN**: payload - after dispatching, will arrive as the payload for the matching reducer
+  - **OUT**: {type, payload}
+    - type: the key string for the matching reducer
+    - payload: the payload that was passed in
+    - i.e. same as vanilla redux's store.dispatch()
 
-  - **OUT**: same as redux's store.dispatch: https://redux.js.org/api/store#dispatchaction
-  - **EFFECT**: dispatches a redux update as defined by the updateState parameter.
-
-#### addReducers
-```jsx
-let [__, __, addReducers] = useRedux(storeKey, initialState)
-addReducers(reducers) => dispatchers
-```
-
-  - **IN**: reducers: object mapping action names to reducers
-    - e.g. `{myAction: (state, payload) => newState}`
-
-  - **OUT**: dispatchers: object mapping action names to dispatchers
-    - e.g. `{myAction: (payload) => dispatch('myAction', payload)`
-  - **EFFECT**: adds reducers for your useRedux
 
 ### getStore
 
@@ -256,7 +279,7 @@ import {getState} from 'hooks-for-redux'
 ```jsx
 store.injectReducer(reducerName, reducer) => ignored
 ```
-If you want to provide your own redux store, you'll need to implement injectReducer.
+If you just want to use Redux's createStore with custom parameters, see the [Custom Middleware Example](#example-custom-middleware). However, if you want to go further and provide your own redux store, you'll need to implement `injectReducer`.
 
 * **IN**:
   - reducerName:  String
