@@ -20,6 +20,8 @@ This library's primary goal is to reduce Redux code while maintaining maximum co
 
 ## Usage
 
+Tiny example, with all the key parts and no explanation, to wet your appetite:
+
 ```jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -130,7 +132,7 @@ export default () =>
     Hello there, {useName()}! Click to change me.
   </p>
 ```
-> Use `index.js` file from Example-A to complete this app.
+> Use `index.js` from Example-A to complete this app.
 
 #### Example: Custom Middleware
 
