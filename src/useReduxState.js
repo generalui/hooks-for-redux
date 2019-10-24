@@ -5,8 +5,8 @@ let warnedAlready = false;
 
 module.exports = (storeKey, initialState) => {
   if (!warnedAlready) {
-    console.warn("DEPRICATED: `useReduxState` USE: `useRedux`");
-    warnedAlready - true;
+    console.warn("DEPRECATED: `useReduxState` USE: `useRedux`");
+    warnedAlready = true;
   }
   const store = getStore()
   const updateActionType = `${storeKey}Update`
