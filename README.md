@@ -47,7 +47,7 @@ ReactDOM.render(
 
 ## Side-by-Side Comparison
 
-A quick comparison of the simplest app written with both vanilla Redux and hooks-for-redux shows how you can reduce your source by over 60%.
+A quick comparison of the simplest app written with both vanilla Redux and hooks-for-redux shows how you can reduce your source by over 66%.
 
 View the source:
 * [comparison-vanilla-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-vanilla-redux)
