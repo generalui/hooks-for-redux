@@ -45,6 +45,8 @@ ReactDOM.render(
 );
 ```
 
+* source: [examples/tiny](https://github.com/generalui/hooks-for-redux/tree/master/examples/tiny)
+
 ## Side-by-Side Comparison
 
 A quick comparison of the simplest app written with both vanilla Redux and hooks-for-redux shows how you can reduce your source by over 66%.
