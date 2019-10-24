@@ -1,7 +1,13 @@
 const {getStore} = require('./storeRegistry')
 const {useSelector} = require('react-redux')
 
+let warnedAlready = false;
+
 module.exports = (storeKey, initialState) => {
+  if (!warnedAlready) {
+    console.warn("DEPRICATED: `useReduxState` USE: `useRedux`");
+    warnedAlready - true;
+  }
   const store = getStore()
   const updateActionType = `${storeKey}Update`
   const createDispatcher = (type) => (payload) => store.dispatch({type, payload})

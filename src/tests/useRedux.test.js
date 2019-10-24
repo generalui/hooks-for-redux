@@ -35,7 +35,7 @@ describe("basic mode",() => {
 
 describe("reducers mode",() => {
   const STORE_KEY = 'reducerModeName';
-  const [subscribeToName, {toggleName, mrName, updateName, getState, getReducers}] = useRedux(STORE_KEY, 'Alice', {
+  const [subscribeToName, {toggleName, mrName, updateName}, {getState, getReducers}] = useRedux(STORE_KEY, 'Alice', {
     toggleName: (name) => name == 'Alice' ? 'Bob' : 'Alice',
     mrName: (name) => name == 'Alice' ? 'Mrs Alice' : 'Mr Bob',
     updateName: (name, newName) => newName

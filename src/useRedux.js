@@ -33,10 +33,10 @@ module.exports = (storeKey, initialState, reducers, store = getStore()) => {
 
   return [
     () => useSelector(storeState => storeState[storeKey]),
+    mapKeys(reducers, type => payload => store.dispatch({ type, payload })),
     {
       getReducers: () => reducers,
       getState: () => store.getState()[storeKey],
-      ...mapKeys(reducers, type => payload => store.dispatch({ type, payload }))
     }
   ];
 };
