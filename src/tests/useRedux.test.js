@@ -86,3 +86,28 @@ describe("reducers mode",() => {
     expect(typeof getStore().injectReducer).toEqual("function")
   })
 })
+
+describe("subcriptions outside react", () => {
+  const STORE_KEY = "useRedux testCounter";
+  const [
+    useName,
+    { increment },
+    { getState, getReducers, subscribe }
+  ] = useRedux(STORE_KEY, 0, {
+    increment: v => v + 1
+  });
+
+  it("subscribe", () => {
+    let lastValueSeen = getState();
+    let firstValueSeen = lastValueSeen;
+    const unsubscribe = subscribe(newValue => {
+      expect(newValue).toEqual(lastValueSeen + 1);
+      lastValueSeen = newValue;
+    });
+    increment();
+    expect(lastValueSeen).toEqual(firstValueSeen + 1);
+    unsubscribe();
+    increment();
+    expect(lastValueSeen).toEqual(firstValueSeen + 1);
+  });
+});

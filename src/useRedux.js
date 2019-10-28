@@ -19,24 +19,32 @@ const _useSingleActonRedux = (storeKey, initialState, store) => {
 
   return [
     () => useSelector(storeState => storeState[storeKey]),
-    payload => store.dispatch({ type: SINGLE_ACTION, payload}),
-    {getState: () => store.getState()[storeKey]}
+    payload => store.dispatch({ type: SINGLE_ACTION, payload }),
+    { getState: () => store.getState()[storeKey] }
   ];
 };
 
 module.exports = (storeKey, initialState, reducers, store = getStore()) => {
-  if (!reducers) return _useSingleActonRedux(storeKey, initialState, store)
+  if (!reducers) return _useSingleActonRedux(storeKey, initialState, store);
 
   store.injectReducer(storeKey, (state = initialState, { type, payload }) =>
     reducers[type] ? reducers[type](state, payload) : state
   );
 
+  const getState = () => store.getState()[storeKey];
+
   return [
     () => useSelector(storeState => storeState[storeKey]),
     mapKeys(reducers, type => payload => store.dispatch({ type, payload })),
     {
+      getState,
       getReducers: () => reducers,
-      getState: () => store.getState()[storeKey],
+      subscribe: f => {
+        let lastState = getState();
+        return store.subscribe(
+          () => lastState != getState() && f((lastState = getState()))
+        );
+      }
     }
   ];
 };

@@ -16,6 +16,22 @@ exports[`basic mode subscribeToName works 2`] = `
 </p>
 `;
 
+exports[`basic mode useName works 1`] = `
+<p>
+  Hello there, 
+  Alice
+  ! Click to change me.
+</p>
+`;
+
+exports[`basic mode useName works 2`] = `
+<p>
+  Hello there, 
+  Shane
+  ! Click to change me.
+</p>
+`;
+
 exports[`reducers mode subscribeToName works 1`] = `
 <p>
   Hello there, 
@@ -25,6 +41,22 @@ exports[`reducers mode subscribeToName works 1`] = `
 `;
 
 exports[`reducers mode subscribeToName works 2`] = `
+<p>
+  Hello there, 
+  Shane
+  ! Click to change me.
+</p>
+`;
+
+exports[`reducers mode useName works 1`] = `
+<p>
+  Hello there, 
+  Alice
+  ! Click to change me.
+</p>
+`;
+
+exports[`reducers mode useName works 2`] = `
 <p>
   Hello there, 
   Shane
