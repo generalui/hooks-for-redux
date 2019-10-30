@@ -49,7 +49,7 @@ ReactDOM.render(
 
 ## Side-by-Side Comparison
 
-A quick comparison of the simplest app written with both vanilla Redux and hooks-for-redux shows how you can reduce your source by over 66%.
+This is a quick comparison of a simple app implemented with both vanilla Redux and hooks-for-redux. In this example, 66% of redux-specific code was elliminated.
 
 View the source:
 * [comparison-vanilla-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-vanilla-redux)
@@ -70,15 +70,16 @@ npm install hooks-for-redux
 ## Examples
 
 #### Example A: Use and Set
-This is a *complete* redux + react application. Hooks-for-redux dramatically reduces the redux-specific code required to build your app.
+The core of hooks-for-redux is the `useRedux` method. There are two ways to call useRedux - with and without custom reducers. This first example shows the easiest mode, no custom reducers.
 
-> Concept: `useRedux` initializes named redux state and returns a react-hook to subscribe to that state, a function to update that state, and a few more things.
+> Concept: `useRedux` initializes redux state under the property-name you provide and returns an array, a tupple, containing a react-hook to subscribe to your named-state, a dispatcher-function to update that state, and a few more things.
 
 Define your redux-hooks:
 ```jsx
 // NameReduxState.js
 import {useRedux} from 'hooks-for-redux'
 
+// For the simplest state, one line is all you need:
 export const [useName, setName] = useRedux('name', 'Alice')
 ```
 
@@ -90,9 +91,7 @@ import ReactDOM from 'react-dom';
 import {useName, setName} from './NameReduxState.js'
 
 export default () =>
-  <p onClick={
-    () => setName((name) => name == 'Alice' ? 'Bob' : 'Alice')
-  }>
+  <p onClick={() => setName('Bob')}>
     Hello there, {useName()}! Click to change me.
   </p>
 ```
@@ -104,6 +103,7 @@ import React from 'react';
 import { Provider } from 'hooks-for-redux'
 import App from './App'
 
+// H4R's Provider wraps react-redux's Provider for convenience
 ReactDOM.render(
   <Provider><App /></Provider>,
   document.getElementById('root')
@@ -115,14 +115,13 @@ Instead of returning the raw update reducer, you can build your own reducers. Yo
 
 > Concept: When you pass in a reducer-map, useRedux returns set of matching dispatchers, one for each of your reducers.
 
-Here's how to re-write Example-A with custom reducers:
-
+This example adds a reducer/dispatcher pair called "toggleName".
 ```jsx
 // NameReduxState.js
 import {useRedux} from 'hooks-for-redux'
 
 export const [useName, {toggleName}] = useRedux('name', 'Alice', {
-  toggleName: (state, name) => name == 'Alice' ? 'Bob' : 'Alice')
+  toggleName: (state) => state == 'Alice' ? 'Bob' : 'Alice')
 })
 ```
 
@@ -162,7 +161,7 @@ export default setStore(createStore(
 // index.jsx
 import React from 'react';
 import { Provider } from 'hooks-for-redux'
-import './store'  // <<< import before using useRedux
+import './store'  // <<< import before calling useRedux
 import App from './App'
 
 ReactDOM.render(
