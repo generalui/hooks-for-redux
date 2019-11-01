@@ -48,6 +48,7 @@ declare function useRedux<TState, TReducers extends Reducers<TState, TReducers>>
     VirtualStoreWithReducers<TState, TReducers>,
 ]
 
+
 // const [getBar2, setBar2] = useRedux('bar', 0)
 // getBar2()
 // setBar2(1)
