@@ -73,10 +73,6 @@ describe("reducers mode",() => {
     expectNameToEqual("Mrs Alice");
   });
 
-  it('getReducers', () => {
-    expect(getReducers().constructor).toEqual(Object)
-  })
-
   it('getState', () => {
     expect(typeof getState()).toEqual("string")
     expect(getState()).toEqual(getStore().getState()[STORE_KEY])
