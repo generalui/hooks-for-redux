@@ -16,9 +16,7 @@ type ReactReduxHook<TState> = () => TState;
 ****************************/
 type Reducer<TState> = (state: TState, payload: any) => TState;
 
-// type Reducers<T, U> = Record<keyof U, Reducer<T>>
-// declare function useRedux<TState, TReducers extends Reducers<TState, TReducers>>(
-
+// type Reducers<TState, TReducers> = Record<keyof TReducers, Reducer<TState>>
 interface Reducers<TState> {
   [reducerName: string]: Reducer<TState>;
 }
@@ -62,6 +60,7 @@ declare function useRedux<TState>(
   id: string,
   initialState: TState
 ): [ReactReduxHook<TState>, SetterDispatcher<TState>, VirtualStore<TState>];
+// declare function useRedux<TState, TReducers extends Reducers<TState, TReducers>>(
 declare function useRedux<TState, TReducers extends Reducers<TState>>(
   id: string,
   initialState: TState,
