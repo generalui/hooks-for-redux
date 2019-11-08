@@ -16,6 +16,7 @@ This library's primary goal is to reduce Redux code while maintaining maximum co
 2. [ Tutorial ](#tutorial)
 2. [ API ](#api)
 2. [ TypeScript ](#typescript)
+2. [ Prior Work ](#prior-work)
 2. [ License ](#license)
 2. [ Produced at GenUI ](#produced-at-genui)
 
@@ -372,6 +373,14 @@ The injectReducer method is described here https://redux.js.org/recipes/code-spl
 TypeScript support is provided in the library. Configuring the generics for H4R was tricky, particularly for the useRedux method. We'd welcome feedback on how we can improve our typing.
 
 - [hooks-for-redux type definition](https://github.com/generalui/hooks-for-redux/blob/master/index.d.ts)
+
+## Prior Work
+
+Several people have attempted to simplify Redux and/or make it act more like React hooks. We hope you'll find hooks-for-redux to be an excellent solution to the problem. If you have suggestions for improvement, please feel free to [start an issue on github](https://github.com/generalui/hooks-for-redux/issues).
+
+* https://www.npmjs.com/package/edux
+* https://www.npmjs.com/package/reduxless
+* https://www.npmjs.com/package/@mollycule/redux-hook
 
 ## License
 
