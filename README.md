@@ -1,6 +1,6 @@
 # hooks-for-redux (H4R) - DRY up redux
 
-> same redux, less than 1/2 the code
+> same redux, half the code
 
 Redux has many wonderful traits, but brevity isn't one of them. Hooks-for-redux strives to reduce the amount of code required to define and manage Redux state. Like how React added "hooks" to clean up Component state management, hooks-for-redux uses a similar, hooks-style API to clean up Redux state management.
 
@@ -307,7 +307,11 @@ import {getState} from 'hooks-for-redux'
 ```
 
 
-### getStore
+### Store Registry API
+
+Getting started, you can ignore the store registry. It's goal is to automatically manage creating your store and making sure all your code has access. However, if you want to customize your redux store, it's easy to do (see the [custom middleware example](#example-custom-middleware) above).
+
+#### getStore
 
 ```jsx
 import {getStore} from 'hooks-for-redux'
@@ -319,7 +323,7 @@ Auto-vivifies a store if setStore has not been called. Otherwise, it returns the
 * **IN**:     nothing
 * **OUT** :    redux store
 
-### setStore
+#### setStore
 ```jsx
 import {setStore} from 'hooks-for-redux'
 setStore(store) => store
@@ -333,7 +337,7 @@ Call setStore to provide your own store for hooks-for-redux to use. You'll need 
   - can only be called once
   - must be called before getStore or useRedux
 
-### createStore
+#### createStore
 ```jsx
 import {createStore} from 'hooks-for-redux'
 createStore(reducersMap, [preloadedState], [enhancer]) => store
@@ -347,7 +351,7 @@ Create a basic redux store with injectReducer support. Use this to configure you
 
 * **OUT**: redux store supporting .injectReducer
 
-### store.injectReducer
+#### store.injectReducer
 
 ```jsx
 store.injectReducer(reducerName, reducer) => ignored
