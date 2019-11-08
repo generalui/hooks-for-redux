@@ -20,7 +20,6 @@ type ReactReduxHook<TState> = () => TState;
 ****************************/
 type Reducer<TState> = (state: TState, payload: any) => TState;
 
-// type Reducers<TState, TReducers> = Record<keyof TReducers, Reducer<TState>>
 interface Reducers<TState> {
   [reducerName: string]: Reducer<TState>;
 }
@@ -71,12 +70,11 @@ type Dispatchers<TReducers> = {
  *
  * @returns a 3-element array: [reactHook, updateDispatcher or dispatcherMap, virtualStore]
  */
-declare function useRedux<TState>(
+export function useRedux<TState>(
   reduxStorePropertyName: string,
   initialState: TState
 ): [ReactReduxHook<TState>, SetterDispatcher<TState>, VirtualStore<TState>];
-// declare function useRedux<TState, TReducers extends Reducers<TState, TReducers>>(
-declare function useRedux<TState, TReducers extends Reducers<TState>>(
+export function useRedux<TState, TReducers extends Reducers<TState>>(
   reduxStorePropertyName: string,
   initialState: TState,
   reducers: TReducers
@@ -89,7 +87,7 @@ declare function useRedux<TState, TReducers extends Reducers<TState>>(
 /****************************
   other hooks-for-redux functions
 ****************************/
-export class ReduxStoreWithInjectReducers extends Store {
+export interface ReduxStoreWithInjectReducers extends Store {
   injectReducer(key:string, reducer:Reducer<object>) : void
 }
 
@@ -98,7 +96,7 @@ export class ReduxStoreWithInjectReducers extends Store {
  *
  * @returns current or newly crated store
  */
-declare function getStore() : ReduxStoreWithInjectReducers
+export function getStore() : ReduxStoreWithInjectReducers
 
 /**
  * Call setStore to provide your own store for hooks-for-redux to use. You'll need to use this if you want to use middleware.
@@ -107,7 +105,7 @@ declare function getStore() : ReduxStoreWithInjectReducers
  *
  * @returns store
  */
-declare function setStore(store : ReduxStoreWithInjectReducers) : ReduxStoreWithInjectReducers
+export function setStore(store : ReduxStoreWithInjectReducers) : ReduxStoreWithInjectReducers
 
 /**
  * Creates a Redux store that holds the state tree.
@@ -133,7 +131,7 @@ declare function setStore(store : ReduxStoreWithInjectReducers) : ReduxStoreWith
  * @returns A Redux store that lets you read the state, dispatch actions and
  *   subscribe to changes.
  */
-declare function createStore<TState>(reducers: Reducers<object>, initialState: TState?, enhancer: any) : ReduxStoreWithInjectReducers
+export function createStore<TState>(reducers: Reducers<object>, initialState?: TState, enhancer?: any) : ReduxStoreWithInjectReducers
 
 /**
  * Makes the Redux store available to the connect() calls in the component hierarchy below.
