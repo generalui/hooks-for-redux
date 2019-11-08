@@ -202,16 +202,17 @@ ReactDOM.render(
 ### useRedux
 ```jsx
 import {useRedux} from 'hooks-for-redux'
-useRedux(storeKey, initialState) =>
+useRedux(reduxStorePropertyName, initialState) =>
   [useMyStore, setMyStore, virtualStore]
 
-useRedux(storeKey, initialState, reducers) =>
+useRedux(reduxStorePropertyName, initialState, reducers) =>
   [useMyStore, myDispatchers, virtualStore]
 ```
-In most cases, all you really need is useRedux, as seen in the examples above.
 
-* **IN**: (storeKey, initialState)
-  - storeKey:     string
+Define a top-level property of the redux state including its inital value, all related reducers, and returns a react-hook, dispatchers and virtualStore.
+
+* **IN**: (reduxStorePropertyName, initialState)
+  - reduxStorePropertyName:     string
   - initialState: non-null, non-undefined
   - reducers: object mapping action names to reducers
     - e.g. `{myAction: (state, payload) => newState}`
@@ -226,7 +227,7 @@ In most cases, all you really need is useRedux, as seen in the examples above.
 
 #### useMyStore
 ```jsx
-const [useMyStore] = useRedux(storeKey, initialState)
+const [useMyStore] = useRedux(reduxStorePropertyName, initialState)
 const MyComponent = () => { // must be used in render function
   useMyStore() => current state
   // ...
@@ -236,11 +237,11 @@ const MyComponent = () => { // must be used in render function
   - **REQUIRED**: must be called within a Component's render function
   - **EFFECT**:
     - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useMyStore` will return the latest, updated value within that render.
-    - Internally, useMyStore is simply:<br>`useSelector(state => state[storeKey])`<br>see: https://react-redux.js.org/next/api/hooks for details.
+    - Internally, useMyStore is simply:<br>`useSelector(state => state[reduxStorePropertyName])`<br>see: https://react-redux.js.org/next/api/hooks for details.
 
 #### myDispatchers
 ```jsx
-const [__, {myAction}] = useRedux(storeKey, initialState, {
+const [__, {myAction}] = useRedux(reduxStorePropertyName, initialState, {
   myAction: (state, payload) => state
 })
 myAction(payload) => {type: MyAction, payload}
@@ -311,9 +312,10 @@ import {getStore} from 'hooks-for-redux'
 getStore() => store
 ```
 
+Auto-vivifies a store if setStore has not been called. Otherwise, it returns the store passed to setStore.
+
 * **IN**:     nothing
 * **OUT** :    redux store
-* **EFFECT** : Auto-vivifies a store if setStore has not been called. Otherwise, it returns the store passed to setStore.
 
 ### setStore
 ```jsx

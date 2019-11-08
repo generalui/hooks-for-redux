@@ -1,5 +1,9 @@
 /// <reference types="redux" />
-import { Action, Unsubscribe } from "redux";
+/// <reference types="react" />
+/// <reference types="react-redux" />
+import { Action, Unsubscribe, AnyAction, Store } from "redux";
+import { Component } from "react"
+import { ProviderProps } from "react-redux"
 
 /****************************
   util
@@ -53,16 +57,27 @@ type Dispatchers<TReducers> = {
 };
 
 /****************************
-  hooks-for-redux functions
+  useRedux function
 ****************************/
 
+/**
+ * Defines a top-level property of the redux state including its inital value, all related reducers, and returns a react-hook, dispatchers and virtualStore.
+ *
+ * @param reduxStorePropertyName is the name of the property off the root redux store you are declaring and initializing
+ *
+ * @param initialState is the initial value for your redux state
+ *
+ * @param [reducers] is a map from reducer-name to reducer functions which take the currentState plus optional payload and return a new state.
+ *
+ * @returns a 3-element array: [reactHook, updateDispatcher or dispatcherMap, virtualStore]
+ */
 declare function useRedux<TState>(
-  id: string,
+  reduxStorePropertyName: string,
   initialState: TState
 ): [ReactReduxHook<TState>, SetterDispatcher<TState>, VirtualStore<TState>];
 // declare function useRedux<TState, TReducers extends Reducers<TState, TReducers>>(
 declare function useRedux<TState, TReducers extends Reducers<TState>>(
-  id: string,
+  reduxStorePropertyName: string,
   initialState: TState,
   reducers: TReducers
 ): [
@@ -70,6 +85,60 @@ declare function useRedux<TState, TReducers extends Reducers<TState>>(
   Readonly<Dispatchers<TReducers>>,
   VirtualStoreWithReducers<TState, TReducers>
 ];
+
+/****************************
+  other hooks-for-redux functions
+****************************/
+export class ReduxStoreWithInjectReducers extends Store {
+  injectReducer(key:string, reducer:Reducer<object>) : void
+}
+
+/**
+ * Auto-vivifies a store if setStore has not been called. Otherwise, it returns the store passed to setStore.
+ *
+ * @returns current or newly crated store
+ */
+declare function getStore() : ReduxStoreWithInjectReducers
+
+/**
+ * Call setStore to provide your own store for hooks-for-redux to use. You'll need to use this if you want to use middleware.
+ *
+ * @param [store] store to set in the store-registry
+ *
+ * @returns store
+ */
+declare function setStore(store : ReduxStoreWithInjectReducers) : ReduxStoreWithInjectReducers
+
+/**
+ * Creates a Redux store that holds the state tree.
+ * The only way to change the data in the store is to call `dispatch()` on it.
+ *
+ * There should only be a single store in your app. To specify how different
+ * parts of the state tree respond to actions, you may combine several
+ * reducers
+ * into a single reducer function by using `combineReducers`.
+ *
+ * @template TState State object type.
+ *
+ * @param reducers An object whose values correspond to different reducer
+ *   functions that need to be combined into one.
+ *
+ * @param [initialState] The initial state.
+ *
+ * @param [enhancer] The store enhancer. You may optionally specify it to
+ *   enhance the store with third-party capabilities such as middleware, time
+ *   travel, persistence, etc. The only store enhancer that ships with Redux
+ *   is `applyMiddleware()`.
+ *
+ * @returns A Redux store that lets you read the state, dispatch actions and
+ *   subscribe to changes.
+ */
+declare function createStore<TState>(reducers: Reducers<object>, initialState: TState?, enhancer: any) : ReduxStoreWithInjectReducers
+
+/**
+ * Makes the Redux store available to the connect() calls in the component hierarchy below.
+ */
+export class Provider<A extends Action = AnyAction> extends Component<ProviderProps<A>> { }
 
 /****************************
   type testing
