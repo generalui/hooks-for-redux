@@ -60,7 +60,7 @@ ReactDOM.render(
 
 ## Comparison
 
-This is a quick comparison of a simple app implemented with both vanilla Redux and hooks-for-redux. In this example, 66% of redux-specific code was elliminated.
+This is a quick comparison of a simple app implemented with both vanilla Redux and hooks-for-redux. In this example, 66% of redux-specific code was eliminated.
 
 View the source:
 * [comparison-vanilla-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-vanilla-redux)
@@ -96,7 +96,7 @@ Use your redux state:
 - add a "+" button that adds 1 to count
 - useCount()
   - returns the current count
-  - rerenders when count changes
+  - re-renders when count changes
 
 ```jsx
 // App.jsx
@@ -165,7 +165,7 @@ export default () =>
 
 #### Example: Custom Middleware
 
-You may have noticed none of the code above actually calls Redux.createStore(). H4R introduces the concept of a default store accessable via the included `getStore()` and `setStore()` functions. The first time `getStore()` is called, a new redux store is automatically created for you. However, if you want to control how the store is created, call `setStore()` and pass in your custom store before calling `getStore` or any other function which calls it indirectly including `useRedux` and `Provider`.
+You may have noticed none of the code above actually calls Redux.createStore(). H4R introduces the concept of a default store accessible via the included `getStore()` and `setStore()` functions. The first time `getStore()` is called, a new redux store is automatically created for you. However, if you want to control how the store is created, call `setStore()` and pass in your custom store before calling `getStore` or any other function which calls it indirectly including `useRedux` and `Provider`.
 
 Below is an example of creating your own store with some custom middleware. It uses H4R's own createStore method which extends Redux's create store as required for H4R. More on that below.
 ```jsx
@@ -211,7 +211,7 @@ useRedux(reduxStorePropertyName, initialState, reducers) =>
   [useMyStore, myDispatchers, virtualStore]
 ```
 
-Define a top-level property of the redux state including its inital value, all related reducers, and returns a react-hook, dispatchers and virtualStore.
+Define a top-level property of the redux state including its initial value, all related reducers, and returns a react-hook, dispatchers and virtualStore.
 
 * **IN**: (reduxStorePropertyName, initialState)
   - reduxStorePropertyName:     string
@@ -284,7 +284,7 @@ myVirtualStore.subscribe(callback) => unsubscribe
 
 The subscribe method works a little differently from a redux store. Like reduxStore.subscribe, it too returns a function you can use to unsubscribe. Unlike reduxStore.subscribe, the callback passed to virtualStore.subscribe has two differences:
 
-1. callback is passed the current value of the virtualStore directly (same value returned by virutalStore.getState())
+1. callback is passed the current value of the virtualStore directly (same value returned by virtualStore.getState())
 2. callback is *only* called when virtualStore's currentState !== its previous value.
 
 
