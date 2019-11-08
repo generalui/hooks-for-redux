@@ -1,4 +1,4 @@
-# hooks-for-redux - DRY up redux
+# hooks-for-redux (H4R) - DRY up redux
 
 > same redux, less than 1/2 the code
 
@@ -10,33 +10,42 @@ This library's primary goal is to reduce Redux code while maintaining maximum co
 
 ## Contents
 
+1. [ Install ](#install)
 1. [ Usage ](#usage)
-1. [ Side-by-Side Comparison](#side-by-side-comparison)
-2. [ Install ](#install)
-2. [ Examples ](#examples)
+1. [ Comparison](#comparison)
+2. [ Tutorial ](#tutorial)
 2. [ API ](#api)
 2. [ License ](#license)
 2. [ Produced at GenUI ](#produced-at-genui)
 
+
+## Install
+
+```
+npm install hooks-for-redux
+```
+
 ## Usage
 
-Tiny, complete example with no explanation to wet your appetite:
+Tiny, complete example. See below for explanations.
 
 ```jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {useRedux, Provider} from 'hooks-for-redux'
 
-const [useCount, {incCount, decCount}] = useRedux('count', 0, {
-  incCount: (state) => state + 1,
-  decCount: (state) => state - 1,
+const [useCount, {inc, add, reset}] = useRedux('count', 0, {
+  inc: (state) => state + 1,
+  add: (state, amount) => state + amount,
+  reset: () => 0
 })
 
 const App = () =>
   <p>
     Count: {useCount()}
-    {' '}<input type="button" onClick={incCount} value="+"/>
-    {' '}<input type="button" onClick={decCount} value="-"/>
+    {' '}<input type="button" onClick={inc} value="+1"/>
+    {' '}<input type="button" onClick={() => add(10)} value="+10"/>
+    {' '}<input type="button" onClick={reset} value="reset"/>
   </p>
 
 ReactDOM.render(
@@ -47,7 +56,7 @@ ReactDOM.render(
 
 * source: [examples/tiny](https://github.com/generalui/hooks-for-redux/tree/master/examples/tiny)
 
-## Side-by-Side Comparison
+## Comparison
 
 This is a quick comparison of a simple app implemented with both vanilla Redux and hooks-for-redux. In this example, 66% of redux-specific code was elliminated.
 
@@ -59,88 +68,104 @@ This example is primarilly intended to give a visual feel for how much code can 
 
 ![hooks-for-redux vs vanilla-redux comparison](https://raw.githubusercontent.com/wiki/generalui/hooks-for-redux/hooks-for-redux-comparison.png)
 
-
-
-## Install
-
-```
-npm install hooks-for-redux
-```
-
-## Examples
+## Tutorial
 
 #### Example A: Use and Set
-The core of hooks-for-redux is the `useRedux` method. There are two ways to call useRedux - with and without custom reducers. This first example shows the easiest mode, no custom reducers.
+The core of hooks-for-redux is the `useRedux` method. There are two ways to call useRedux - with and without custom reducers. This first example shows the first, easiest way to use hooks-for-redux.
 
-> Concept: `useRedux` initializes redux state under the property-name you provide and returns an array, a tupple, containing a react-hook to subscribe to your named-state, a dispatcher-function to update that state, and a few more things.
+> Concept: `useRedux` initializes redux state under the property-name you provide and returns an array, containing three things:
+> 1. react-hook to access named-state
+> 2. dispatcher-function to update that state
+> 3. virtual store
 
-Define your redux-hooks:
+First, you'll need to define your redux state.
+
 ```jsx
 // NameReduxState.js
 import {useRedux} from 'hooks-for-redux'
 
-// For the simplest state, one line is all you need:
-export const [useName, setName] = useRedux('name', 'Alice')
+//  - initialize redux state.name = 'Alice'
+//  - export useCount hook for use in components
+//  - export setCount to update state.name
+export const [useCount, setCount] = useRedux('count', 0)
 ```
 
-Use your redux-hooks:
+Use your redux state:
+- add a "+" button that adds 1 to count
+- useCount()
+  - returns the current count
+  - rerenders when count changes
+
 ```jsx
 // App.jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {useName, setName} from './NameReduxState.js'
+import {useCount, setCount} from './NameReduxState.js'
 
-export default () =>
-  <p onClick={() => setName('Bob')}>
-    Hello there, {useName()}! Click to change me.
+export default () => {
+  const count = useCount()
+  const inc = () => setCount(count + 1)
+  <p>
+    Count: {count}
+    {' '}<input type="button" onClick={inc} value="+"/>
   </p>
+}
 ```
 
-Configure your redux Provider:
+The last step is to wrap your root component with a Provider. H4R provides a streamlined version of the Provider component from [react-redux](https://react-redux.js.org/) to make your redux store available to the rest of your app. H4R's Provider automatically connects to the default store:
 ```jsx
 // index.jsx
 import React from 'react';
 import { Provider } from 'hooks-for-redux'
 import App from './App'
 
-// H4R's Provider wraps react-redux's Provider for convenience
 ReactDOM.render(
   <Provider><App /></Provider>,
   document.getElementById('root')
 );
 ```
 
+And that's all you need to do! Now, let's look at a fuller example with custom reducers.
+
 #### Example B: Custom Reducers
 Instead of returning the raw update reducer, you can build your own reducers. Your code will be less brittle and more testable the more specific you can make your transactional redux update functions ('reducers').
 
-> Concept: When you pass in a reducer-map, useRedux returns set of matching dispatchers, one for each of your reducers.
+> Concept: When you pass a reducer-map as the 3rd argument, useRedux returns set of matching map of dispatchers, one for each of your reducers.
 
-This example adds a reducer/dispatcher pair called "toggleName".
+This example adds three reducer/dispatcher pairs: `inc`, `dec` and `reset`.
 ```jsx
 // NameReduxState.js
 import {useRedux} from 'hooks-for-redux'
 
-export const [useName, {toggleName}] = useRedux('name', 'Alice', {
-  toggleName: (state) => state == 'Alice' ? 'Bob' : 'Alice')
+export const [useName, {inc, add, reset}] = useRedux('count', 0, {
+  inc: (state) => state + 1,
+  add: (state, amount) => state + amount,
+  reset: () => 0
 })
 ```
+
+Now the interface supports adding 1, adding 10 and resetting the count.
 
 ```jsx
 // App.jsx
 import React from 'react';
-import {useName, toggleName} from './NameReduxState.js'
+import {useName, inc, add, reset} from './NameReduxState.js'
 
 export default () =>
-  <p onClick={toggleName}>
-    Hello there, {useName()}! Click to change me.
+  <p>
+    Count: {useCount()}
+    {' '}<input type="button" onClick={inc} value="+1"/>
+    {' '}<input type="button" onClick={() => add(10)} value="+10"/>
+    {' '}<input type="button" onClick={reset} value="reset"/>
   </p>
 ```
 > Use `index.js` from Example-A to complete this app.
 
 #### Example: Custom Middleware
 
-By default, hooks-for-react auto-vivifies a redux store for you, but if you want to control how the store gets created, use the steps below.
+You may have noticed none of the code above actually calls Redux.createStore(). H4R introduces the concept of a default store accessable via the included `getStore()` and `setStore()` functions. The first time `getStore()` is called, a new redux store is automatically created for you. However, if you want to control how the store is created, call `setStore()` and pass in your custom store before calling `getStore` or any other function which calls it indirectly including `useRedux` and `Provider`.
 
+Below is an example of creating your own store with some custom middleware. It uses H4R's own createStore method which extends Redux's create store as required for H4R. More on that below.
 ```jsx
 // store.js
 import { setStore, createStore } from 'hooks-for-redux'
@@ -160,8 +185,8 @@ export default setStore(createStore(
 ```jsx
 // index.jsx
 import React from 'react';
+import './store'  // <<< import before calling useRedux or Provider
 import { Provider } from 'hooks-for-redux'
-import './store'  // <<< import before calling useRedux
 import App from './App'
 
 ReactDOM.render(
@@ -177,10 +202,13 @@ ReactDOM.render(
 ### useRedux
 ```jsx
 import {useRedux} from 'hooks-for-redux'
-useRedux(storeKey, initialState) => [useStoreKey, setStoreKey]
-useRedux(storeKey, initialState, reducers) => [useStoreKey, dispatchers]
+useRedux(storeKey, initialState) =>
+  [useMyStore, setMyStore, virtualStore]
+
+useRedux(storeKey, initialState, reducers) =>
+  [useMyStore, myDispatchers, virtualStore]
 ```
-In most cases, all you really need is useRedux, as seen in the example above.
+In most cases, all you really need is useRedux, as seen in the examples above.
 
 * **IN**: (storeKey, initialState)
   - storeKey:     string
@@ -188,26 +216,29 @@ In most cases, all you really need is useRedux, as seen in the example above.
   - reducers: object mapping action names to reducers
     - e.g. `{myAction: (state, payload) => newState}`
 
-* **OUT**: [useStoreKey, setStoreKey -or- dispatchers]
-  - useStoreKey: (see below) `() => state`
-  - dispatchers: object mapping action names to dispatchers
-    - e.g. `{myAction: (payload) => dispatch('myAction', payload)}`
+* **OUT**: [useMyStore, setMyStore -or- myDispatchers, virtualStore]
+  - useMyStore: react hook returning current state
+  - One of the following:
+    - setMyStore: (newState) => dispatch structure
+    - myDispatchers: object mapping action names to matching myDispatchers
+  - virtualStore: object with API similar to a redux store, but just for the state defined in this useRedux call
 
-#### useStoreKey
+
+#### useMyStore
 ```jsx
-const [useStoreKey] = useRedux(storeKey, initialState)
+const [useMyStore] = useRedux(storeKey, initialState)
 const MyComponent = () => { // must be used in render function
-  useStoreKey() => current state
+  useMyStore() => current state
   // ...
 }
 ```
   - **OUT**: current state
   - **REQUIRED**: must be called within a Component's render function
   - **EFFECT**:
-    - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useStoreKey` will return the latest, updated value within that render.
-    - Internally, useStoreKey is simply:<br>`useSelector(state => state[storeKey])`<br>see: https://react-redux.js.org/next/api/hooks for details.
+    - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useMyStore` will return the latest, updated value within that render.
+    - Internally, useMyStore is simply:<br>`useSelector(state => state[storeKey])`<br>see: https://react-redux.js.org/next/api/hooks for details.
 
-#### dispatchers
+#### myDispatchers
 ```jsx
 const [__, {myAction}] = useRedux(storeKey, initialState, {
   myAction: (state, payload) => state
@@ -221,6 +252,45 @@ myAction(payload) => {type: MyAction, payload}
     - payload: the payload that was passed in
     - i.e. same as vanilla redux's store.dispatch()
 
+### virtualStore API
+
+The virtual store is an object similar to the redux store, except it is only for the redux-state you created with useRedux. It supports a similar, but importantly different API from the redux store:
+
+#### virtualStore.getState
+```jsx
+import {useRedux, getStore} from 'hooks-for-redux'
+const [,, myVirtualStore] = useRedux("myStateName", myInitialState)
+myVirtualStore.getState() =>
+  getStore().getState()["myStateName"]
+```
+
+The getState method works exactly like a redux store except instead of returning the state of the entire redux store, it returns only the sub portion of that redux state defined by the useRedux call.
+
+  - **IN**: (nothing)
+  - **OUT**: your current state
+
+#### virtualStore.subscribe
+```jsx
+import {useRedux, getStore} from 'hooks-for-redux'
+const [,, myVirtualStore] = useRedux("myStateName", myInitialState)
+myVirtualStore.subscribe(callback) => unsubscribe
+```
+
+  - **IN**:   callback(currentState => ...)
+  - **OUT**:  unsubscribe()
+
+The subscribe method works a little differently from a redux store. Like reduxStore.subscribe, it, too returns an function you can use to unsubscribe. Unlike reduxStore.subscribe, the callback passed to virtualStore.subscribe has two differences:
+
+1. callback is passed the current value of the virtualStore directly (same value returned by virutalStore.getState())
+2. callback is *only* called when virtualStore's currentState !== its previous value.
+
+
+```typescript
+virtualStore = {
+  getState:  () => currentState,
+  subscribe: ((currentState) => ) => unsubscribe()
+}
+```
 
 ### getStore
 
