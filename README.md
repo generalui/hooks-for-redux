@@ -15,6 +15,7 @@ This library's primary goal is to reduce Redux code while maintaining maximum co
 1. [ Comparison](#comparison)
 2. [ Tutorial ](#tutorial)
 2. [ API ](#api)
+2. [ TypeScript ](#typescript)
 2. [ License ](#license)
 2. [ Produced at GenUI ](#produced-at-genui)
 
@@ -365,6 +366,10 @@ Hooks-for-redux requires a store that supports the injectReducer. You only need 
 The injectReducer method is described here https://redux.js.org/recipes/code-splitting. Its signature looks like:
 
 > NOTE: Just as any other reducer passed to React.combineReducers, the reducer passed to injectReducer doesn't get passed the store's entire state. It only gets passed, and should return, its own state data which is stored in the top-level state under the provided reducerName.
+
+## TypeScript
+
+TypeScript support is provided in the library. Configuring the generics for H4R was tricky, particularly for the useRedux method. We'd welcome feedback on how we can improve our typing.
 
 ## License
 
