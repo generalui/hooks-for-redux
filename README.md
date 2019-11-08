@@ -279,18 +279,30 @@ myVirtualStore.subscribe(callback) => unsubscribe
   - **IN**:   callback(currentState => ...)
   - **OUT**:  unsubscribe()
 
-The subscribe method works a little differently from a redux store. Like reduxStore.subscribe, it, too returns an function you can use to unsubscribe. Unlike reduxStore.subscribe, the callback passed to virtualStore.subscribe has two differences:
+The subscribe method works a little differently from a redux store. Like reduxStore.subscribe, it too returns a function you can use to unsubscribe. Unlike reduxStore.subscribe, the callback passed to virtualStore.subscribe has two differences:
 
 1. callback is passed the current value of the virtualStore directly (same value returned by virutalStore.getState())
 2. callback is *only* called when virtualStore's currentState !== its previous value.
 
 
-```typescript
-virtualStore = {
-  getState:  () => currentState,
-  subscribe: ((currentState) => ) => unsubscribe()
-}
+### Provider
+
+```jsx
+import {Provider} from 'hooks-for-redux'
+<Provider>{/* render your App's root here*/}<Provider>
 ```
+
+hooks-for-redux includes its own `Provider` component shortcut. It is equivalent to:
+
+```jsx
+import {Provider} from 'react-redux'
+import {getState} from 'hooks-for-redux'
+
+<Provider state={getState()}>
+  {/* render your App's root here*/}
+<Provider>
+```
+
 
 ### getStore
 
@@ -330,24 +342,6 @@ Create a basic redux store with injectReducer support. Use this to configure you
   - **OPTIONAL**: preloadedState & enhancer: see Redux.createStore https://redux.js.org/api/createstore
 
 * **OUT**: redux store supporting .injectReducer
-
-### Provider Component
-
-```jsx
-import {Provider} from 'hooks-for-redux'
-<Provider>{/* render your App's root here*/}<Provider>
-```
-
-hooks-for-redux includes its own `Provider` component shortcut. It is equivalent to:
-
-```jsx
-import {Provider} from 'react-redux'
-import {getState} from 'hooks-for-redux'
-
-<Provider state={getState()}>
-  {/* render your App's root here*/}
-<Provider>
-```
 
 ### store.injectReducer
 
