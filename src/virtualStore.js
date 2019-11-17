@@ -5,7 +5,7 @@ module.exports.createVirtualStore = (store, storeKey) => {
     subscribe: f => {
       let lastState = getState();
       return store.subscribe(
-        () => lastState != getState() && f((lastState = getState()))
+        () => lastState !== getState() && f((lastState = getState()))
       );
     }
   };

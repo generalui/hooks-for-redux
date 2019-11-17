@@ -2,9 +2,11 @@
 
 > same redux, half the code
 
-Redux has many wonderful traits, but brevity isn't one of them. Hooks-for-redux strives to reduce the amount of code required to define and manage Redux state. Like how React added "hooks" to clean up Component state management, hooks-for-redux uses a similar, hooks-style API to clean up Redux state management.
+Redux has many wonderful traits, but brevity isn't one of them. Hooks-for-redux strives to reduce the amount of boilerplate code required to define and manage Redux state while maintaining maximum capability and compatibility with the Redux platform. Like how React added "hooks" to clean up Component state management, hooks-for-redux uses a similar, hooks-style API to clean up Redux state management.
 
-This library's primary goal is to reduce Redux code while maintaining maximum compatibility with the Redux platform. The primary strategy is to DRY up the API and use reasonable defaults, with overrides, wherever possible. H4R streamlines reducers, actions, dispatchers, store-creation and hooks for using redux in react as well.
+The primary strategy is to [DRY](https://www.essenceandartifact.com/2016_06_01_archive.html#dry) up the API and use reasonable defaults, with overrides, wherever possible. H4R streamlines reducers, actions, dispatchers, store-creation and hooks for using redux in react. This library has only two dependencies: [redux](https://www.npmjs.com/package/redux) and [react-redux](https://www.npmjs.com/package/react-redux).
+
+The result is a 2-3x reduction in code-size and near total elimination of all the boilerplate code you used to need to use Redux.
 
 > NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. react-redux already does this elegantly. Instead, this library wraps react-redux's useSelector, as well as many other standard Redux tools, to provide a more streamlined API.
 
@@ -12,14 +14,14 @@ This library's primary goal is to reduce Redux code while maintaining maximum co
 
 1. [ Install ](#install)
 1. [ Usage ](#usage)
-1. [ Comparison](#comparison)
-2. [ Tutorial ](#tutorial)
-2. [ API ](#api)
-2. [ TypeScript ](#typescript)
-2. [ Prior Work ](#prior-work)
-2. [ License ](#license)
-2. [ Produced at GenUI ](#produced-at-genui)
-
+1. [ Comparison ](#comparison)
+1. [ Tutorial ](#tutorial)
+1. [ API ](#api)
+1. [ How it Works ](#how-it-works)
+1. [ TypeScript ](#typescript)
+1. [ Prior Work ](#prior-work)
+1. [ License ](#license)
+1. [ Produced at GenUI ](#produced-at-genui)
 
 ## Install
 
@@ -32,39 +34,42 @@ npm install hooks-for-redux
 Tiny, complete example. See below for explanations.
 
 ```jsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {useRedux, Provider} from 'hooks-for-redux'
+import React from "react";
+import ReactDOM from "react-dom";
+import { useRedux, Provider } from "hooks-for-redux";
 
-const [useCount, {inc, add, reset}] = useRedux('count', 0, {
-  inc: (state) => state + 1,
+const [useCount, { inc, add, reset }] = useRedux("count", 0, {
+  inc: state => state + 1,
   add: (state, amount) => state + amount,
   reset: () => 0
-})
+});
 
-const App = () =>
+const App = () => (
   <p>
-    Count: {useCount()}
-    {' '}<input type="button" onClick={inc} value="+1"/>
-    {' '}<input type="button" onClick={() => add(10)} value="+10"/>
-    {' '}<input type="button" onClick={reset} value="reset"/>
+    Count: {useCount()} <input type="button" onClick={inc} value="+1" />{" "}
+    <input type="button" onClick={() => add(10)} value="+10" />{" "}
+    <input type="button" onClick={reset} value="reset" />
   </p>
+);
 
 ReactDOM.render(
-  <Provider><App /></Provider>,
-  document.getElementById('root')
+  <Provider>
+    <App />
+  </Provider>,
+  document.getElementById("root")
 );
 ```
 
-* source: [examples/tiny](https://github.com/generalui/hooks-for-redux/tree/master/examples/tiny)
+- source: [examples/tiny](https://github.com/generalui/hooks-for-redux/tree/master/examples/tiny)
 
 ## Comparison
 
-This is a quick comparison of a simple app implemented with both vanilla Redux and hooks-for-redux. In this example, 66% of redux-specific code was eliminated.
+This is a quick comparison of a simple app implemented with both plain Redux and hooks-for-redux. In this example, 66% of redux-specific code was eliminated.
 
 View the source:
-* [comparison-vanilla-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-vanilla-redux)
-* [comparison-hooks-for-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-hooks-for-redux)
+
+- [comparison-vanilla-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-vanilla-redux)
+- [comparison-hooks-for-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-hooks-for-redux)
 
 This example is primarilly intended to give a visual feel for how much code can be saved. Scroll down to learn more about what's going on.
 
@@ -73,9 +78,11 @@ This example is primarilly intended to give a visual feel for how much code can 
 ## Tutorial
 
 #### Example A: Use and Set
+
 The core of hooks-for-redux is the `useRedux` method. There are two ways to call useRedux - with and without custom reducers. This first example shows the first, easiest way to use hooks-for-redux.
 
 > Concept: `useRedux` initializes redux state under the property-name you provide and returns an array, containing three things:
+>
 > 1. react-hook to access named-state
 > 2. dispatcher-function to update that state
 > 3. virtual store
@@ -84,15 +91,16 @@ First, you'll need to define your redux state.
 
 ```jsx
 // NameReduxState.js
-import {useRedux} from 'hooks-for-redux'
+import { useRedux } from "hooks-for-redux";
 
 //  - initialize redux state.name = 'Alice'
 //  - export useCount hook for use in components
 //  - export setCount to update state.name
-export const [useCount, setCount] = useRedux('count', 0)
+export const [useCount, setCount] = useRedux("count", 0);
 ```
 
 Use your redux state:
+
 - add a "+" button that adds 1 to count
 - useCount()
   - returns the current count
@@ -115,52 +123,58 @@ export default () => {
 ```
 
 The last step is to wrap your root component with a Provider. H4R provides a streamlined version of the Provider component from [react-redux](https://react-redux.js.org/) to make your redux store available to the rest of your app. H4R's Provider automatically connects to the default store:
+
 ```jsx
 // index.jsx
-import React from 'react';
-import { Provider } from 'hooks-for-redux'
-import App from './App'
+import React from "react";
+import { Provider } from "hooks-for-redux";
+import App from "./App";
 
 ReactDOM.render(
-  <Provider><App /></Provider>,
-  document.getElementById('root')
+  <Provider>
+    <App />
+  </Provider>,
+  document.getElementById("root")
 );
 ```
 
 And that's all you need to do! Now, let's look at a fuller example with custom reducers.
 
 #### Example B: Custom Reducers
+
 Instead of returning the raw update reducer, you can build your own reducers. Your code will be less brittle and more testable the more specific you can make your transactional redux update functions ('reducers').
 
 > Concept: When you pass a reducer-map as the 3rd argument, useRedux returns set of matching map of dispatchers, one for each of your reducers.
 
 This example adds three reducer/dispatcher pairs: `inc`, `dec` and `reset`.
+
 ```jsx
 // NameReduxState.js
-import {useRedux} from 'hooks-for-redux'
+import { useRedux } from "hooks-for-redux";
 
-export const [useName, {inc, add, reset}] = useRedux('count', 0, {
-  inc: (state) => state + 1,
+export const [useName, { inc, add, reset }] = useRedux("count", 0, {
+  inc: state => state + 1,
   add: (state, amount) => state + amount,
   reset: () => 0
-})
+});
 ```
 
 Now the interface supports adding 1, adding 10 and resetting the count.
 
 ```jsx
 // App.jsx
-import React from 'react';
-import {useName, inc, add, reset} from './NameReduxState.js'
+import React from "react";
+import { useName, inc, add, reset } from "./NameReduxState.js";
 
-export default () =>
+export default () => (
   <p>
-    Count: {useCount()}
-    {' '}<input type="button" onClick={inc} value="+1"/>
-    {' '}<input type="button" onClick={() => add(10)} value="+10"/>
-    {' '}<input type="button" onClick={reset} value="reset"/>
+    Count: {useCount()} <input type="button" onClick={inc} value="+1" />{" "}
+    <input type="button" onClick={() => add(10)} value="+10" />{" "}
+    <input type="button" onClick={reset} value="reset" />
   </p>
+);
 ```
+
 > Use `index.js` from Example-A to complete this app.
 
 #### Example: Custom Middleware
@@ -168,32 +182,33 @@ export default () =>
 You may have noticed none of the code above actually calls Redux.createStore(). H4R introduces the concept of a default store accessible via the included `getStore()` and `setStore()` functions. The first time `getStore()` is called, a new redux store is automatically created for you. However, if you want to control how the store is created, call `setStore()` and pass in your custom store before calling `getStore` or any other function which calls it indirectly including `useRedux` and `Provider`.
 
 Below is an example of creating your own store with some custom middleware. It uses H4R's own createStore method which extends Redux's create store as required for H4R. More on that below.
+
 ```jsx
 // store.js
-import { setStore, createStore } from 'hooks-for-redux'
-import { applyMiddleware } from 'redux'
+import { setStore, createStore } from "hooks-for-redux";
+import { applyMiddleware } from "redux";
 
 // example middle-ware
 const logDispatch = store => next => action => {
-  console.log('dispatching', action)
-  return next(action)
-}
+  console.log("dispatching", action);
+  return next(action);
+};
 
-export default setStore(createStore(
-  {},
-  applyMiddleware(logDispatch)
-))
+export default setStore(createStore({}, applyMiddleware(logDispatch)));
 ```
+
 ```jsx
 // index.jsx
-import React from 'react';
-import './store'  // <<< import before calling useRedux or Provider
-import { Provider } from 'hooks-for-redux'
-import App from './App'
+import React from "react";
+import "./store"; // <<< import before calling useRedux or Provider
+import { Provider } from "hooks-for-redux";
+import App from "./App";
 
 ReactDOM.render(
-  <Provider><App /></Provider>,
-  document.getElementById('root')
+  <Provider>
+    <App />
+  </Provider>,
+  document.getElementById("root")
 );
 ```
 
@@ -202,6 +217,7 @@ ReactDOM.render(
 ## API
 
 ### useRedux
+
 ```jsx
 import {useRedux} from 'hooks-for-redux'
 useRedux(reduxStorePropertyName, initialState) =>
@@ -213,21 +229,22 @@ useRedux(reduxStorePropertyName, initialState, reducers) =>
 
 Define a top-level property of the redux state including its initial value, all related reducers, and returns a react-hook, dispatchers and virtualStore.
 
-* **IN**: (reduxStorePropertyName, initialState)
-  - reduxStorePropertyName:     string
+- **IN**: (reduxStorePropertyName, initialState)
+
+  - reduxStorePropertyName: string
   - initialState: non-null, non-undefined
   - reducers: object mapping action names to reducers
     - e.g. `{myAction: (state, payload) => newState}`
 
-* **OUT**: [useMyStore, setMyStore -or- myDispatchers, virtualStore]
+- **OUT**: [useMyStore, setMyStore -or- myDispatchers, virtualStore]
   - useMyStore: react hook returning current state
   - One of the following:
     - setMyStore: (newState) => dispatch structure
     - myDispatchers: object mapping action names to matching myDispatchers
   - virtualStore: object with API similar to a redux store, but just for the state defined in this useRedux call
 
-
 #### useMyStore
+
 ```jsx
 const [useMyStore] = useRedux(reduxStorePropertyName, initialState)
 const MyComponent = () => { // must be used in render function
@@ -235,13 +252,15 @@ const MyComponent = () => { // must be used in render function
   // ...
 }
 ```
-  - **OUT**: current state
-  - **REQUIRED**: must be called within a Component's render function
-  - **EFFECT**:
-    - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useMyStore` will return the latest, updated value within that render.
-    - Internally, useMyStore is simply:<br>`useSelector(state => state[reduxStorePropertyName])`<br>see: https://react-redux.js.org/next/api/hooks for details.
+
+- **OUT**: current state
+- **REQUIRED**: must be called within a Component's render function
+- **EFFECT**:
+  - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useMyStore` will return the latest, updated value within that render.
+  - Internally, useMyStore is simply:<br>`useSelector(state => state[reduxStorePropertyName])`<br>see: https://react-redux.js.org/next/api/hooks for details.
 
 #### myDispatchers
+
 ```jsx
 const [__, {myAction}] = useRedux(reduxStorePropertyName, initialState, {
   myAction: (state, payload) => state
@@ -249,17 +268,18 @@ const [__, {myAction}] = useRedux(reduxStorePropertyName, initialState, {
 myAction(payload) => {type: MyAction, payload}
 ```
 
-  - **IN**: payload - after dispatching, will arrive as the payload for the matching reducer
-  - **OUT**: {type, payload}
-    - type: the key string for the matching reducer
-    - payload: the payload that was passed in
-    - i.e. same as vanilla redux's store.dispatch()
+- **IN**: payload - after dispatching, will arrive as the payload for the matching reducer
+- **OUT**: {type, payload}
+  - type: the key string for the matching reducer
+  - payload: the payload that was passed in
+  - i.e. same as plain redux's store.dispatch()
 
 ### virtualStore API
 
 The virtual store is an object similar to the redux store, except it is only for the redux-state you created with useRedux. It supports a similar, but importantly different API from the redux store:
 
 #### virtualStore.getState
+
 ```jsx
 import {useRedux, getStore} from 'hooks-for-redux'
 const [,, myVirtualStore] = useRedux("myStateName", myInitialState)
@@ -269,24 +289,24 @@ myVirtualStore.getState() =>
 
 The getState method works exactly like a redux store except instead of returning the state of the entire redux store, it returns only the sub portion of that redux state defined by the useRedux call.
 
-  - **IN**: (nothing)
-  - **OUT**: your current state
+- **IN**: (nothing)
+- **OUT**: your current state
 
 #### virtualStore.subscribe
+
 ```jsx
 import {useRedux, getStore} from 'hooks-for-redux'
 const [,, myVirtualStore] = useRedux("myStateName", myInitialState)
 myVirtualStore.subscribe(callback) => unsubscribe
 ```
 
-  - **IN**:   callback(currentState => ...)
-  - **OUT**:  unsubscribe()
+- **IN**: callback(currentState => ...)
+- **OUT**: unsubscribe()
 
 The subscribe method works a little differently from a redux store. Like reduxStore.subscribe, it too returns a function you can use to unsubscribe. Unlike reduxStore.subscribe, the callback passed to virtualStore.subscribe has two differences:
 
 1. callback is passed the current value of the virtualStore directly (same value returned by virtualStore.getState())
-2. callback is *only* called when virtualStore's currentState !== its previous value.
-
+2. callback is _only_ called when virtualStore's currentState !== its previous value.
 
 ### Provider
 
@@ -306,7 +326,6 @@ import {getState} from 'hooks-for-redux'
 <Provider>
 ```
 
-
 ### Store Registry API
 
 Getting started, you can ignore the store registry. It's goal is to automatically manage creating your store and making sure all your code has access. However, if you want to customize your redux store, it's easy to do (see the [custom middleware example](#example-custom-middleware) above).
@@ -320,10 +339,11 @@ getStore() => store
 
 Auto-vivifies a store if setStore has not been called. Otherwise, it returns the store passed to setStore.
 
-* **IN**:     nothing
-* **OUT** :    redux store
+- **IN**: nothing
+- **OUT** : redux store
 
 #### setStore
+
 ```jsx
 import {setStore} from 'hooks-for-redux'
 setStore(store) => store
@@ -331,13 +351,14 @@ setStore(store) => store
 
 Call setStore to provide your own store for hooks-for-redux to use. You'll need to use this if you want to use middleware.
 
-* **IN**:   any redux store supporting .injectReducer
-* **OUT**:  the store passed in
-* **REQUIRED**:
+- **IN**: any redux store supporting .injectReducer
+- **OUT**: the store passed in
+- **REQUIRED**:
   - can only be called once
   - must be called before getStore or useRedux
 
 #### createStore
+
 ```jsx
 import {createStore} from 'hooks-for-redux'
 createStore(reducersMap, [preloadedState], [enhancer]) => store
@@ -345,32 +366,124 @@ createStore(reducersMap, [preloadedState], [enhancer]) => store
 
 Create a basic redux store with injectReducer support. Use this to configure your store's middleware.
 
-* **IN**
-  - reducersMap:    object suitable for Redux.combineReducers https://redux.js.org/api/combinereducers
+- **IN**
+
+  - reducersMap: object suitable for Redux.combineReducers https://redux.js.org/api/combinereducers
   - **OPTIONAL**: preloadedState & enhancer: see Redux.createStore https://redux.js.org/api/createstore
 
-* **OUT**: redux store supporting .injectReducer
+- **OUT**: redux store supporting .injectReducer
 
 #### store.injectReducer
 
 ```jsx
 store.injectReducer(reducerName, reducer) => ignored
 ```
+
 If you just want to use Redux's createStore with custom parameters, see the [Custom Middleware Example](#example-custom-middleware). However, if you want to go further and provide your own redux store, you'll need to implement `injectReducer`.
 
-* **IN**:
-  - reducerName:  String
-  - reducer:      (current-reducer-named-state) => nextState
+- **IN**:
 
-* **EFFECT**:   adds reducer to the reducersMaps passed in at creation time.
-* **REQUIRED**:
+  - reducerName: String
+  - reducer: (current-reducer-named-state) => nextState
+
+- **EFFECT**: adds reducer to the reducersMaps passed in at creation time.
+- **REQUIRED**:
   - {[reducerName]: reducer} should be suitable for React.combineReducers https://redux.js.org/api/combinereducers
 
-Hooks-for-redux requires a store that supports the injectReducer. You only need to worry about this if you are using setState to manually set your store *and* you are note using hooks-for-redux's own createStore function.
+Hooks-for-redux requires a store that supports the injectReducer. You only need to worry about this if you are using setState to manually set your store _and_ you are note using hooks-for-redux's own createStore function.
 
 The injectReducer method is described here https://redux.js.org/recipes/code-splitting. Its signature looks like:
 
 > NOTE: Just as any other reducer passed to React.combineReducers, the reducer passed to injectReducer doesn't get passed the store's entire state. It only gets passed, and should return, its own state data which is stored in the top-level state under the provided reducerName.
+
+## How it Works
+
+Are you curious what's happening behind the scenes? This is a tiny library for all the capabilities it gives you, below is a quick overview of what's going on. I urge you to look at the actual source for the latest, up-to-date implementation of the code.
+
+#### Store Registry
+
+> source: [src/storeRegistry.js](https://github.com/generalui/hooks-for-redux/blob/master/src/storeRegistry.js)
+
+```
+getStore, setStore, createStore
+```
+
+You might notice when using hooks-for-redux, you don't have to manually create your store, nor do you reference your store explicitly anywhere in your application. [Redux recommends](https://redux.js.org/faq/store-setup#can-or-should-i-create-multiple-stores-can-i-import-my-store-directly-and-use-it-in-components-myself) only using one store per application. H4R codifies that recommendation and defines a central registry to eliminate the need to explicitly pass the store around.
+
+#### Provider
+
+> source: [src/Provider.js](https://github.com/generalui/hooks-for-redux/blob/master/src/Provider.js)
+
+H4R wraps the react-redux Provider, combines it with the default store from store registry, and reduces a small amount of boilerplate:
+
+```jsx
+const Provider = props =>
+  React.createElement(
+    ReactReduxProvider,
+    {
+      store: props.store || getStore(),
+      context: props.context
+    },
+    props.children
+  );
+```
+
+#### useState
+
+> source: [src/useState.js](https://github.com/generalui/hooks-for-redux/blob/master/src/useState.js)
+
+The big win, however, comes from one key observation: if you are writing your own routing you are doing it wrong. The same can be said for dispatching and subscriptions. Hooks-for-redux automates all the manual routing previously required with the `useState` function. It takes as input only the essential data and functions necessary to define your your redux model works and it returns all the tools you need to use it.
+
+Below is a very-slightly simplified version of the useState implementation. Each of the 4 labeled parts are described below.
+
+```jsx
+const useState = (storeKey, initialState, reducers, store = getStore()) => {
+  /* 1 */ store.injectReducer(
+    storeKey,
+    (state = initialState, { type, payload }) =>
+      reducers[type] ? reducers[type](state, payload) : state
+  );
+
+  return [
+    /* 2 */ () => useSelector(storeState => storeState[storeKey]),
+    /* 3 */ mapKeys(reducers, type => payload =>
+      store.dispatch({ type, payload })
+    ),
+    /* 4 */ createVirtualStore(store, storeKey)
+  ];
+};
+```
+
+1. H4R's redux store uses the [injectReducer pattern recommended by Redux](https://redux.js.org/api/combinereducers) to add your reducers to the store. Because the reducers are defined as an object, routing is dramatically simplified. Instead of a huge switch-statement, reducer routing can be expressed as one line no matter how many reducers there are.
+2. The returned React Hook wraps react-redux's [useSelector](https://react-redux.js.org/next/api/hooks#useselector), selecting your state.
+3. The returned dispatchers object is generated from reducer. The `type` value is set from each key in reducers, and the dispatchers themselves take a payload as input and return the standard result of Redux's [dispatch](https://redux.js.org/api/store#dispatchaction).
+4. Last, a new virtual-store object is created for your state bound to the redux store via the storeKey. See below.
+
+#### VirtualStore
+
+> source: [src/createVirtualStore.js](https://github.com/generalui/hooks-for-redux/blob/master/src/createVirtualStore.js)
+
+The VirtualStore object allows you to access your state, a value bound to the Redux store via your storeKey, as-if it were a Redux store. It is implemented, again, as simple wrappers binding the virtual store to the state defined in useState.
+
+```jsx
+const createVirtualStore = (store, storeKey) => {
+  const /* 1 */ getState = () => store.getState()[storeKey];
+  return {
+    getState,
+    /* 2 */ subscribe: f => {
+      let lastState = getState();
+      return store.subscribe(
+        () => lastState !== getState() && f((lastState = getState()))
+      );
+    }
+  };
+};
+```
+
+1. `getState` wraps Redux's [getState](https://redux.js.org/api/store#getstate) and returns the state of your storeKey.
+2. `subscribe` wraps Redux's [subscribe](https://redux.js.org/api/store#subscribelistener), but it provides some additional functionality:
+   * It only calls `f` if your state changed (using a `!==` test). In Redux's subscribe, `f` is "called any time an action is dispatched" - which is extremely wasteful.
+   * `f` is passed your current state, so you don't have to manually call getState.
 
 ## TypeScript
 
@@ -382,9 +495,9 @@ TypeScript support is provided in the library. Configuring the generics for H4R 
 
 Several people have attempted to simplify Redux and/or make it act more like React hooks. We hope you'll find hooks-for-redux to be an excellent solution to the problem. If you have suggestions for improvement, please feel free to [start an issue on github](https://github.com/generalui/hooks-for-redux/issues).
 
-* https://www.npmjs.com/package/edux
-* https://www.npmjs.com/package/reduxless
-* https://www.npmjs.com/package/@mollycule/redux-hook
+- https://www.npmjs.com/package/edux
+- https://www.npmjs.com/package/reduxless
+- https://www.npmjs.com/package/@mollycule/redux-hook
 
 ## License
 

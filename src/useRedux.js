@@ -16,7 +16,7 @@ const simpleUseState = (storeKey, initialState) => {
   return [hook, dispatchers[UPDATE_ACTION], virtualStore];
 };
 
-const useState = (storeKey, initialState, reducers, store = getStore()) => {
+module.exports.useState = (storeKey, initialState, reducers, store = getStore()) => {
   if (!reducers) return simpleUseState(storeKey, initialState);
 
   store.injectReducer(storeKey, (state = initialState, { type, payload }) =>
@@ -29,5 +29,3 @@ const useState = (storeKey, initialState, reducers, store = getStore()) => {
     createVirtualStore(store, storeKey)
   ];
 };
-
-module.exports = useState;
