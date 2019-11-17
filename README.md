@@ -68,12 +68,12 @@ This is a quick comparison of a simple app implemented with both plain Redux and
 
 View the source:
 
-- [comparison-vanilla-redux](examples/comparison-plain-redux)
+- [comparison-plain-redux](examples/comparison-plain-redux)
 - [comparison-hooks-for-redux](examples/comparison-hooks-for-redux)
 
 This example is primarily intended to give a visual feel for how much code can be saved. Scroll down to learn more about what's going on.
 
-![hooks-for-redux vs vanilla-redux comparison](https://raw.githubusercontent.com/wiki/generalui/hooks-for-redux/hooks-for-redux-comparison.png)
+![hooks-for-redux vs plain-redux comparison](https://raw.githubusercontent.com/wiki/generalui/hooks-for-redux/hooks-for-redux-comparison.png)
 
 ## Tutorial
 
