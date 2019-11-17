@@ -8,16 +8,16 @@ const mapKeys = (o, f) => {
   return r;
 };
 
-const simpleUseState = (storeKey, initialState) => {
+const simpleUseRedux = (storeKey, initialState) => {
   const UPDATE_ACTION = `${storeKey}-update`;
-  const [hook, dispatchers, virtualStore] = useState(storeKey, initialState, {
+  const [hook, dispatchers, virtualStore] = useRedux(storeKey, initialState, {
     [UPDATE_ACTION]: (state, payload) => payload
   });
   return [hook, dispatchers[UPDATE_ACTION], virtualStore];
 };
 
-module.exports.useState = (storeKey, initialState, reducers, store = getStore()) => {
-  if (!reducers) return simpleUseState(storeKey, initialState);
+const useRedux = (storeKey, initialState, reducers, store = getStore()) => {
+  if (!reducers) return simpleUseRedux(storeKey, initialState);
 
   store.injectReducer(storeKey, (state = initialState, { type, payload }) =>
     reducers[type] ? reducers[type](state, payload) : state
@@ -29,3 +29,4 @@ module.exports.useState = (storeKey, initialState, reducers, store = getStore())
     createVirtualStore(store, storeKey)
   ];
 };
+module.exports = useRedux;

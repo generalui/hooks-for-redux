@@ -1,9 +1,8 @@
-const React = require('react')
-const {Provider} = require('react-redux');
-const {getStore} = require('./storeRegistry');
+const React = require("react");
+const { Provider: ReactReduxProvider } = require("react-redux");
+const { getStore } = require("./storeRegistry");
 
-module.exports = (props) =>
-  React.createElement(Provider, {
-    store: props.store || getStore(),
-    context: props.context
-  }, props.children);
+const Provider = ({ store = getStore(), context, children }) =>
+  React.createElement(ReactReduxProvider, { store, context }, children);
+
+module.exports = Provider;
