@@ -60,7 +60,7 @@ ReactDOM.render(
 );
 ```
 
-- source: [examples/tiny](https://github.com/generalui/hooks-for-redux/tree/master/examples/tiny)
+- source: [examples/tiny](examples/tiny)
 
 ## Comparison
 
@@ -68,10 +68,10 @@ This is a quick comparison of a simple app implemented with both plain Redux and
 
 View the source:
 
-- [comparison-vanilla-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-vanilla-redux)
-- [comparison-hooks-for-redux](https://github.com/generalui/hooks-for-redux/tree/master/examples/comparison-hooks-for-redux)
+- [comparison-vanilla-redux](examples/comparison-plain-redux)
+- [comparison-hooks-for-redux](examples/comparison-hooks-for-redux)
 
-This example is primarilly intended to give a visual feel for how much code can be saved. Scroll down to learn more about what's going on.
+This example is primarily intended to give a visual feel for how much code can be saved. Scroll down to learn more about what's going on.
 
 ![hooks-for-redux vs vanilla-redux comparison](https://raw.githubusercontent.com/wiki/generalui/hooks-for-redux/hooks-for-redux-comparison.png)
 
@@ -400,7 +400,7 @@ The injectReducer method is described here https://redux.js.org/recipes/code-spl
 
 Curious what's happening behind the scenes? This is a tiny library for all the capabilities it gives you. Below is a quick overview of what's going on.
 
-> Note: All code-examples in this section are approximations of the actual code. Minor simplifications were applied for the purpose of instruction and clarity. See the latest [source](https://github.com/generalui/hooks-for-redux/blob/master/src/) for complete, up-to-date implementations.
+> Note: All code-examples in this section are approximations of the actual code. Minor simplifications were applied for the purpose of instruction and clarity. See the latest [source](src/) for complete, up-to-date implementations.
 
 #### Dependencies
 
@@ -408,7 +408,7 @@ To keep things simple, this library has only two dependencies: [redux](https://w
 
 #### Store Registry
 
-- source: [src/storeRegistry.js](https://github.com/generalui/hooks-for-redux/blob/master/src/storeRegistry.js)
+- source: [src/storeRegistry.js](src/storeRegistry.js)
 
 You might notice when using hooks-for-redux, you don't have to manually create your store, nor do you need to reference your store explicitly anywhere in your application. [Redux recommends](https://redux.js.org/faq/store-setup#can-or-should-i-create-multiple-stores-can-i-import-my-store-directly-and-use-it-in-components-myself) only using one store per application. H4R codifies that recommendation and defines a central registry to eliminate the need to explicitly pass the store around.
 
@@ -422,7 +422,7 @@ const setStore = initialStore => (store = initialStore);
 
 #### Provider
 
-- source: [src/Provider.js](https://github.com/generalui/hooks-for-redux/blob/master/src/Provider.js)
+- source: [src/Provider.js](src/Provider.js)
 
 H4R wraps the react-redux [Provider](https://react-redux.js.org/api/provider#provider), combining it with a default store from the store registry. It reduces a small, but significant amount of boilerplate.
 
@@ -433,7 +433,7 @@ const Provider = ({ store = getStore(), context, children }) =>
 
 #### useRedux
 
-- source: [src/useRedux.js](https://github.com/generalui/hooks-for-redux/blob/master/src/useRedux.js)
+- source: [src/useRedux.js](src/useRedux.js)
 
 The big win, however, comes from one key observation: if you are writing your own routing, you are doing it wrong. The same can be said for dispatching and subscriptions.
 
@@ -466,7 +466,7 @@ const useRedux = (storeKey, initialState, reducers, store = getStore()) => {
 
 #### VirtualStore
 
-- source: [src/VirtualStore.js](https://github.com/generalui/hooks-for-redux/blob/master/src/createVirtualStore.js)
+- source: [src/VirtualStore.js](src/VirtualStore.js)
 
 The VirtualStore object allows you to access your state, a value bound to the Redux store via your storeKey, as-if it were a Redux store. It is implemented, again, as simple wrappers binding the virtual store to the state defined in useRedux.
 
@@ -494,7 +494,7 @@ const createVirtualStore = (store, storeKey) => {
 
 TypeScript support is provided in the library. Configuring the generics for H4R was tricky, particularly for the useRedux method. We'd welcome feedback on how we can improve our typing.
 
-- [hooks-for-redux type definition](https://github.com/generalui/hooks-for-redux/blob/master/index.d.ts)
+- [hooks-for-redux type definition](index.d.ts)
 
 ## Prior Work
 
