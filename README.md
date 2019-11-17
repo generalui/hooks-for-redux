@@ -5,6 +5,7 @@
 Redux has many wonderful traits, but brevity isn't one of them. Hooks-for-redux strives to reduce the amount of boilerplate code required to define and manage Redux state while maintaining maximum capability and compatibility with the Redux platform. Like how React added "hooks" to clean up Component state management, hooks-for-redux uses a similar, hooks-style API to clean up Redux state management.
 
 The primary strategy is to [DRY](https://www.essenceandartifact.com/2016_06_01_archive.html#dry) up the API and use reasonable defaults, with overrides, wherever possible. H4R streamlines reducers, actions, dispatchers, store-creation and hooks for using redux in react.
+
 The result is a 2-3x reduction in code-size and near total elimination of all the boilerplate code you used to need to use Redux.
 
 > NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. react-redux already does this elegantly. Instead, this library wraps react-redux's useSelector, as well as many other standard Redux tools, to provide a more streamlined API.
@@ -397,15 +398,13 @@ The injectReducer method is described here https://redux.js.org/recipes/code-spl
 
 ## How it Works
 
-Are you curious what's happening behind the scenes? This is a tiny library for all the capabilities it gives you, below is a quick overview of what's going on. I urge you to look at the actual source for the latest, up-to-date implementation of the code.
-
-> This library has only two dependencies: [redux](https://www.npmjs.com/package/redux) and [react-redux](https://www.npmjs.com/package/react-redux).
+Curious what's happening behind the scenes? This is a tiny library for all the capabilities it gives you. Below is a quick overview of what's going on. I urge you to look at the actual source for the latest, up-to-date implementation of the code.
 
 #### Store Registry
 
-> source: [src/storeRegistry.js](https://github.com/generalui/hooks-for-redux/blob/master/src/storeRegistry.js)
+* source: [src/storeRegistry.js](https://github.com/generalui/hooks-for-redux/blob/master/src/storeRegistry.js)
 
-You might notice when using hooks-for-redux, you don't have to manually create your store, nor do you reference your store explicitly anywhere in your application. [Redux recommends](https://redux.js.org/faq/store-setup#can-or-should-i-create-multiple-stores-can-i-import-my-store-directly-and-use-it-in-components-myself) only using one store per application. H4R codifies that recommendation and defines a central registry to eliminate the need to explicitly pass the store around.
+You might notice when using hooks-for-redux, you don't have to manually create your store, nor do you need to reference your store explicitly anywhere in your application. [Redux recommends](https://redux.js.org/faq/store-setup#can-or-should-i-create-multiple-stores-can-i-import-my-store-directly-and-use-it-in-components-myself) only using one store per application. H4R codifies that recommendation and defines a central registry to eliminate the need to explicitly pass the store around.
 
 ```jsx
 let store = null;
@@ -415,7 +414,7 @@ const setStore = initialStore => (store = initialStore);
 
 #### Provider
 
-> source: [src/Provider.js](https://github.com/generalui/hooks-for-redux/blob/master/src/Provider.js)
+* source: [src/Provider.js](https://github.com/generalui/hooks-for-redux/blob/master/src/Provider.js)
 
 H4R wraps the react-redux Provider, combines it with the default store from store registry, and reduces a small amount of boilerplate:
 
@@ -426,7 +425,7 @@ const Provider = ({ store = getStore(), context, children }) =>
 
 #### useRedux
 
-> source: [src/useRedux.js](https://github.com/generalui/hooks-for-redux/blob/master/src/useRedux.js)
+* source: [src/useRedux.js](https://github.com/generalui/hooks-for-redux/blob/master/src/useRedux.js)
 
 The big win, however, comes from one key observation: if you are writing your own routing you are doing it wrong. The same can be said for dispatching and subscriptions. Hooks-for-redux automates all the manual routing previously required with the `useRedux` function. It takes as input only the essential data and functions necessary to define your your redux model works and it returns all the tools you need to use it.
 
@@ -457,7 +456,7 @@ const useRedux = (storeKey, initialState, reducers, store = getStore()) => {
 
 #### VirtualStore
 
-> source: [src/createVirtualStore.js](https://github.com/generalui/hooks-for-redux/blob/master/src/createVirtualStore.js)
+* source: [src/VirtualStore.js](https://github.com/generalui/hooks-for-redux/blob/master/src/createVirtualStore.js)
 
 The VirtualStore object allows you to access your state, a value bound to the Redux store via your storeKey, as-if it were a Redux store. It is implemented, again, as simple wrappers binding the virtual store to the state defined in useRedux.
 

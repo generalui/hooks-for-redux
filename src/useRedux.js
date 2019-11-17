@@ -1,6 +1,6 @@
 const { getStore } = require("./storeRegistry");
 const { useSelector } = require("react-redux");
-const { createVirtualStore } = require("./virtualStore");
+const { createVirtualStore } = require("./VirtualStore");
 
 const mapKeys = (o, f) => {
   const r = {};
