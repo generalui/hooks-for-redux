@@ -20,6 +20,7 @@ The result is a 2-3x reduction in code-size and near total elimination of all th
 1. [ How it Works ](#how-it-works)
 1. [ TypeScript ](#typescript)
 1. [ Prior Work ](#prior-work)
+1. [ Contribution ](#contribution)
 1. [ License ](#license)
 1. [ Produced at GenUI ](#produced-at-genui)
 
@@ -492,17 +493,21 @@ const createVirtualStore = (store, storeKey) => {
 
 ## TypeScript
 
-TypeScript support is provided in the library. Configuring the generics for H4R was tricky, particularly for the useRedux method. We'd welcome feedback on how we can improve our typing.
+TypeScript support is provided in the library. Configuring the generics for H4R was tricky, particularly for the useRedux method. Please send feedback on how we can improve the typing.
 
 - [hooks-for-redux type definition](index.d.ts)
 
 ## Prior Work
 
-Several people have attempted to simplify Redux and/or make it act more like React hooks. We hope you'll find hooks-for-redux to be an excellent solution to the problem. If you have suggestions for improvement, please feel free to [start an issue on github](https://github.com/generalui/hooks-for-redux/issues).
+Several people have attempted to simplify Redux and/or make it act more like React hooks, but none have succeeded in providing a general-purpose, fully DRY solution.
 
 - https://www.npmjs.com/package/edux
 - https://www.npmjs.com/package/reduxless
 - https://www.npmjs.com/package/@mollycule/redux-hook
+
+## Contribution
+
+If you have suggestions for improvement, please feel free to [start an issue on github](https://github.com/generalui/hooks-for-redux/issues).
 
 ## License
 
