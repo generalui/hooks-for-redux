@@ -15,6 +15,13 @@
     "react-test-renderer": "^16.10.2",
     "hooks-for-redux": "file:."
   },
+  "keywords": [
+    "react",
+    "redux",
+    "hooks",
+    "DRY",
+    "boilerplate"
+  ],
   "author": "Shane Brinkman-Davis Delamore, GenUI",
   "bugs": "https://github.com/generalui/hooks-for-redux/issues",
   "homepage": "https://github.com/generalui/hooks-for-redux",
@@ -24,5 +31,5 @@
     "type": "git",
     "url": "https://github.com/generalui/hooks-for-redux.git"
   },
-  "version": "1.0.7"
+  "version": "1.0.8"
 }
