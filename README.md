@@ -2,13 +2,15 @@
 
 > same redux, half the code
 
-Redux has many wonderful traits, but brevity isn't one of them. Hooks-for-redux strives to reduce the amount of boilerplate code required to define and manage Redux state while maintaining maximum capability and compatibility with the Redux platform. Like how React added "hooks" to clean up Component state management, hooks-for-redux uses a similar, hooks-style API to clean up Redux state management.
+[Redux](https://www.npmjs.com/package/redux) has many wonderful traits, but brevity isn't one of them. Verbose code is not only tedious to write, but it increases the change of bugs.
 
-The primary strategy is to [DRY](https://www.essenceandartifact.com/2016_06_01_archive.html#dry) up the API and use reasonable defaults, with overrides, wherever possible. H4R streamlines reducers, actions, dispatchers, store-creation and hooks for using redux in react.
+Hooks-for-redux's goal is to reduce the amount of boilerplate code required to define and manage Redux state while maximizing capability and compatibility with the Redux ecosystem.
 
-The result is a 2-3x reduction in code-size and near total elimination of all the boilerplate code you used to need to use Redux.
+The primary strategy is to [DRY](https://www.essenceandartifact.com/2016_06_01_archive.html#dry) up the API and use reasonable defaults, with overrides, wherever possible. H4R streamlines reducers, actions, dispatchers, store-creation and hooks for React. In the same way that React added "hooks" to clean up Component state management, hooks-for-redux uses a similar, hooks-style API to clean up Redux state management.
 
-> NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. react-redux already does this elegantly. Instead, this library wraps react-redux's useSelector, as well as many other standard Redux tools, to provide a more streamlined API.
+The result is a elegant API with 2-3x reduction in client code and near total elimination of all the boilerplate code needed to use plain Redux.
+
+> NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. [react-redux](https://www.npmjs.com/package/react-redux) already does this elegantly. Instead, this library wraps react-redux's useSelector, as well as many other standard Redux tools, to provide a more streamlined API.
 
 ## Contents
 
@@ -504,6 +506,8 @@ Several people have attempted to simplify Redux and/or make it act more like Rea
 - https://www.npmjs.com/package/edux
 - https://www.npmjs.com/package/reduxless
 - https://www.npmjs.com/package/@mollycule/redux-hook
+- https://www.npmjs.com/package/@finn-no/redux-actions
+- https://www.npmjs.com/package/no-boilerplate-redux
 
 ## Contribution
 
