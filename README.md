@@ -2,7 +2,7 @@
 
 > Phenomenal Redux Powers! Itty, bitty code size...
 
-[Redux](https://www.npmjs.com/package/redux) has many wonderful traits, but brevity isn't one of them. Verbose code is not only tedious to write, but it increases the change of bugs.
+[Redux](https://www.npmjs.com/package/redux) has many wonderful traits, but brevity isn't one of them. Verbose code is not only tedious to write, but it increases the chance of bugs.
 
 Hooks-for-redux's goal is to reduce the amount of boilerplate code required to define and manage Redux state while maximizing capability and compatibility with the Redux ecosystem.
 
@@ -504,10 +504,12 @@ TypeScript support is provided in the library. Configuring the generics for H4R 
 Several people have attempted to simplify Redux and/or make it act more like React hooks, but none have succeeded in providing a general-purpose, fully DRY solution.
 
 - https://www.npmjs.com/package/edux
-- https://www.npmjs.com/package/reduxless
-- https://www.npmjs.com/package/@mollycule/redux-hook
-- https://www.npmjs.com/package/@finn-no/redux-actions
 - https://www.npmjs.com/package/no-boilerplate-redux
+- https://www.npmjs.com/package/reduxless
+- https://www.npmjs.com/package/redux-actions
+- https://www.npmjs.com/package/redux-arc
+- https://www.npmjs.com/package/@finn-no/redux-actions
+- https://www.npmjs.com/package/@mollycule/redux-hook
 
 ## Contribution
 
