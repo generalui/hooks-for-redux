@@ -1,6 +1,6 @@
 # hooks-for-redux (H4R) - DRY up redux
 
-> Phenomenal Redux Powers! Itty, bitty code size...
+> same redux, half the code
 
 [Redux](https://www.npmjs.com/package/redux) has many wonderful traits, but brevity isn't one of them. Verbose code is not only tedious to write, but it increases the chance of bugs.
 
