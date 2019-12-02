@@ -11,9 +11,9 @@ const [useCount, {inc, add, reset}] = useRedux('count', 0, {
 const App = () =>
   <p>
     Count: {useCount()}
-    {' '}<input type="button" onClick={inc} value="+1"/>
-    {' '}<input type="button" onClick={() => add(10)} value="+10"/>
-    {' '}<input type="button" onClick={reset} value="reset"/>
+    {' '}<input type="button" value="+1"    onClick={inc} />
+    {' '}<input type="button" value="+10"   onClick={() => add(10)} />
+    {' '}<input type="button" value="reset" onClick={reset} />
   </p>
 
 ReactDOM.render(
