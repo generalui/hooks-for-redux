@@ -21,7 +21,7 @@ const Toggle = () => {
   return (
     <div>
       <div>{JSON.stringify(toggle)}</div>
-      <input type="checkbox" value={toggle} onChange={() => toggleSwitch()} />
+      <input type="checkbox" value={toggle} onChange={toggleSwitch} />
     </div>
   );
 };

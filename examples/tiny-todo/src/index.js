@@ -21,16 +21,12 @@ const [useList, { addItem, deleteItem }] = useRedux(
 // components/ToDoItem.js
 const ToDoItem = ({ item }) =>
   <li>
-    {item.text}
-    &nbsp;
-    <button className="ToDoItem-Delete" onClick={() => deleteItem(item)}>
-      -
-    </button>
+    {item.text + " "}
+    <button onClick={() => deleteItem(item)}>{" - "}</button>
   </li>
 
 // components/ToDo.js
 const ToDo = () => {
-  const list = useList();
   const [text, setText] = useState("");
 
   const createNewToDoItem = () => {
@@ -42,9 +38,9 @@ const ToDo = () => {
   return <div>
     <h1>Todo with hooks-for-redux</h1>
     <ul>
-    {list.map(item => (
-      <ToDoItem key={item.id} item={item} />
-    ))}
+      {useList().map(item => (
+        <ToDoItem key={item.id} item={item} />
+      ))}
     </ul>
 
     <input
@@ -54,12 +50,9 @@ const ToDo = () => {
       onKeyPress={e => e.key === "Enter" && createNewToDoItem()}
     />
     &nbsp;
-    <button onClick={createNewToDoItem}>+</button>
+    <button onClick={createNewToDoItem}>{" + "}</button>
   </div>
 };
 
 // index.js
-ReactDOM.render(
-  <Provider><ToDo /></Provider>,
-  document.getElementById("root")
-);
+ReactDOM.render(<Provider><ToDo /></Provider>, document.getElementById("root"));
