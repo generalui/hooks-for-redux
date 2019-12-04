@@ -1,3 +1,5 @@
+# <a href='https://github.com/generalui/hooks-for-redux'><img src='https://raw.githubusercontent.com/wiki/generalui/hooks-for-redux/h4r-logo-with-full-name.png' height='60' alt='Hooks-for-Redux Logo' aria-label='hooks-for-redux' /></a>
+
 # hooks-for-redux (H4R) - DRY up redux
 
 > same redux, half the code
