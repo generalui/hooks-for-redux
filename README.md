@@ -509,6 +509,47 @@ Several people have attempted to simplify Redux and/or make it act more like Rea
 - https://www.npmjs.com/package/@finn-no/redux-actions
 - https://www.npmjs.com/package/@mollycule/redux-hook
 
+### What about Redux Toolkit?
+
+H4R attempts to accomplish close to the same goals, however, even Redux-Toolkit fails to be as clean or minimal as H4R. I'll give an example.
+
+Taking from the intermediate code-example provided in the Redux-Toolkit Package:
+
+* from the redux-toolkit tutorial: https://redux-toolkit.js.org/tutorials/intermediate-tutorial
+* redux-toolkit codesandbox: https://codesandbox.io/s/rtk-convert-todos-example-uqqy3
+
+I reduced the code by about 2x using H4R - including elliminating several files. Even the tests got simpler.
+
+* h4r codesandbox: https://codesandbox.io/s/github/shanebdavis/rtk-convert-todos-example-h4r-conversion
+* conversion with commit history on github: https://github.com/shanebdavis/rtk-convert-todos-example-h4r-conversion
+
+Here is a roughly apples-to-apples slice of the code from each project:
+
+* [Redux Toolkit gist - 104 lines](https://gist.github.com/shanebdavis/9e67be8a0874a4c295001ba6e91f79e2)
+* [Hooks-for-redux gist - 52 lines](https://gist.github.com/shanebdavis/ce02b4495f1bc0afa830796f58124604)
+
+Part of the key is how well H4R links into React. Redux-toolkit takes 50 lines of code just to do this:
+
+```javascript
+import React from 'react'
+import Todo from './Todo'
+import { useFilters } from '../filters/filtersSlice'
+import { useTodos } from './todosSlice'
+
+const VisibleTodoList = () =>
+  <ul>
+    {useTodos()
+      .filter(useFilters())
+      .map(todo => (
+        <Todo key={todo.id} {...todo} />
+      ))}
+  </ul>
+
+export default VisibleTodoList
+```
+
+NOTE: The normal use of H4R is React-specific while Redux-Toolkit is agnostic to the rendering engine. However, you can use H4R with non-react rendering engines as well with almost the same code-savings.
+
 ## Contribution
 
 If you have suggestions for improvement, please feel free to [start an issue on github](https://github.com/generalui/hooks-for-redux/issues).
