@@ -516,11 +516,13 @@ H4R attempts to accomplish close to the same goals, however, even Redux-Toolkit 
 Taking from the intermediate code-example provided in the Redux-Toolkit Package:
 
 * from the redux-toolkit tutorial: https://redux-toolkit.js.org/tutorials/intermediate-tutorial
-* redux-toolkit codesandbox: https://codesandbox.io/s/rtk-convert-todos-example-uqqy3
+* redux-toolkit codesandbox: https://codesandbox.io/s/rtk-convert-todos-example-uqqy3 <br>(~390 lines of JavaScript)
 
 I reduced the code by about 2x using H4R - including elliminating several files. Even the tests got simpler.
 
 * h4r codesandbox: https://codesandbox.io/s/github/shanebdavis/rtk-convert-todos-example-h4r-conversion
+<br>(~160 lines of JavaScript)
+
 * conversion with commit history on github: https://github.com/shanebdavis/rtk-convert-todos-example-h4r-conversion
 
 Here is a roughly apples-to-apples slice of the code from each project:
