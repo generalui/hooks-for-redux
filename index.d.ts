@@ -1,9 +1,7 @@
 /// <reference types="redux" />
 /// <reference types="react" />
-/// <reference types="react-redux" />
 import { Action, Unsubscribe, AnyAction, Store } from "redux";
 import { Component } from "react"
-import { ProviderProps } from "react-redux"
 
 /****************************
   util
@@ -132,6 +130,19 @@ export function setStore(store : ReduxStoreWithInjectReducers) : ReduxStoreWithI
  *   subscribe to changes.
  */
 export function createStore<TState>(reducers: Reducers<object>, initialState?: TState, enhancer?: any) : ReduxStoreWithInjectReducers
+
+export interface ProviderProps<A extends Action = AnyAction> {
+  /**
+   * The single Redux store in your application.
+   */
+  store?: Store<any, A>;
+  /**
+   * Optional context to be used internally in react-redux. Use React.createContext() to create a context to be used.
+   * If this is used, generate own connect HOC by using connectAdvanced, supplying the same context provided to the
+   * Provider. Initial value doesn't matter, as it is overwritten with the internal state of Provider.
+   */
+  context?: Context<ReactReduxContextValue>;
+}
 
 /**
  * Makes the Redux store available to the connect() calls in the component hierarchy below.
