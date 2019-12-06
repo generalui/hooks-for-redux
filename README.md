@@ -538,7 +538,7 @@ import Todo from './Todo'
 import { useFilters } from '../filters/filtersSlice'
 import { useTodos } from './todosSlice'
 
-const VisibleTodoList = () =>
+export const VisibleTodoList = () =>
   <ul>
     {useTodos()
       .filter(useFilters())
@@ -546,8 +546,6 @@ const VisibleTodoList = () =>
         <Todo key={todo.id} {...todo} />
       ))}
   </ul>
-
-export default VisibleTodoList
 ```
 
 NOTE: The normal use of H4R is React-specific while Redux-Toolkit is agnostic to the rendering engine. However, you can use H4R with non-react rendering engines as well with almost the same code-savings.
