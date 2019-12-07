@@ -573,7 +573,45 @@ Now to take on a bigger challenge. The advanced tutorial is a capable github iss
 1. It still makes you manually dispatch your updates. H4R avoids making you manually create and dispatch your actions entirely by returning ready-to-use dispatchers. They just look like normal functions you can call to start your updates.
 2. Redux-Toolkit's pattern mixes business-logic with view-logic. Redux-related code, particularly updates, should never be in the same files as view and view-logic files like components.
 
-Redux-Toolkit's solution, with business logic blended with UX-logic creative excessive inter-dependencies modules. This dependency hell literally took me hours to unwind and convert to H4R. Once I was done, though, the whole all simplified and became clear and easy to edit. If you open the code you will see that all the business logic in the H4R solution resides in the src/redux folder in 4 files and 100 lines of code - total. All the components are clean and have 0 business logic.
+Blending UX-logic with business-logic creates excessive dependencies between modules. This dependency hell literally took me hours to unwind before I could convert it to H4R. Once I was done, though, it all simplified and became clear and easy to edit. If you open the code you will see that all the business logic in the H4R solution resides in the src/redux folder in *4 files and 100 lines of code - total*. All the components are clean and have zero business logic.
+
+For example, compare the `IssueListPage.tsx` from each project:
+
+```typescript
+import React from 'react'
+import { useIssues } from 'redux/issues'
+import { RepoSearchForm } from './IssuesListLib/RepoSearchForm'
+import { IssuesPageHeader } from './IssuesListLib/IssuesPageHeader'
+import { IssuesList } from './IssuesListLib/IssuesList'
+import { IssuePagination } from './IssuesListLib/IssuePagination'
+
+export const IssuesListPage = () => {
+  const { loading, error } = useIssues()
+  return error
+    ? <div>
+      <h1>Something went wrong...</h1>
+      <div>{error.toString()}</div>
+    </div>
+    : <div id="issue-list-page">
+      <RepoSearchForm />
+      <IssuesPageHeader />
+      {loading ? <h3>Loading...</h3> : <IssuesList />}
+      <IssuePagination />
+    </div>
+}
+```
+
+* [github/h4r/IssuesListPage](https://github.com/shanebdavis/rtk-github-issues-example-h4r-conversion/blob/master/src/components/pages/IssuesListPage.tsx)
+* 21 lines, 693 bytes
+
+to this:
+
+* [github/redux-toolkit/IssuesListPage](https://github.com/reduxjs/rtk-github-issues-example/blob/master/src/features/issuesList/IssuesListPage.tsx)
+* 87 lines, 2000 bytes
+
+Redux-toolkit's solution mixes in the business logic of fetching the remote data. This is all handled by H4R's useRedux slices. Further, RT makes IssuesListPage dependent on many things such that it only passes to child-components but never uses itself - a false dependency. For example, the pagination details (currentPage, pageCount, etc...) should only be a dependency of IssuePagination.
+
+Compare the full source of each project below:
 
 Redux-Toolkit solution:
 * tutorial: [redux-toolkit.js.org](https://redux-toolkit.js.org/tutorials/advanced-tutorial)
