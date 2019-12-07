@@ -78,9 +78,9 @@ This example is primarily intended to give a visual feel for how much code can b
 
 ## Tutorial
 
-#### Example A: Use and Set
+#### Tutorial A: Use and Set
 
-The core of hooks-for-redux is the `useRedux` method. There are two ways to call useRedux - with and without custom reducers. This first example shows the first, easiest way to use hooks-for-redux.
+The core of hooks-for-redux is the `useRedux` method. There are two ways to call useRedux - with and without custom reducers. This first tutorial shows the first, easiest way to use hooks-for-redux.
 
 > Concept: `useRedux` initializes redux state under the property-name you provide and returns an array, containing three things:
 >
@@ -139,9 +139,9 @@ ReactDOM.render(
 );
 ```
 
-And that's all you need to do! Now, let's look at a fuller example with custom reducers.
+And that's all you need to do! Now, let's look at a fuller tutorial with custom reducers.
 
-#### Example B: Custom Reducers
+#### Tutorial B: Custom Reducers
 
 Instead of returning the raw update reducer, you can build your own reducers. Your code will be less brittle and more testable the more specific you can make your transactional redux update functions ('reducers').
 
@@ -178,7 +178,7 @@ export default () => (
 
 > Use `index.js` from Example-A to complete this app.
 
-#### Example: Custom Middleware
+#### Tutorial: Custom Middleware
 
 You may have noticed none of the code above actually calls Redux.createStore(). H4R introduces the concept of a default store accessible via the included `getStore()` and `setStore()` functions. The first time `getStore()` is called, a new redux store is automatically created for you. However, if you want to control how the store is created, call `setStore()` and pass in your custom store before calling `getStore` or any other function which calls it indirectly including `useRedux` and `Provider`.
 
@@ -214,6 +214,12 @@ ReactDOM.render(
 ```
 
 > NOTE: You don't have to use hooks-for-redux's createStore, but setStore must be passed a store that supports the injectReducer method as described here: https://redux.js.org/api/combinereducers
+
+#### Advanced Examples
+
+If you are interested in seeing a more complicated example in TypeScript with asynchronous remote requests, please see:
+
+* [ H4R vs Redux-Toolkit Advanced TypeScript Tutorial ](#h4r-vs-redux-toolkit-advanced-typescript-tutorial)
 
 ## API
 
@@ -508,22 +514,30 @@ Several people have attempted to simplify Redux and/or make it act more like Rea
 - https://www.npmjs.com/package/redux-arc
 - https://www.npmjs.com/package/@finn-no/redux-actions
 - https://www.npmjs.com/package/@mollycule/redux-hook
+- https://www.npmjs.com/package/easy-peasy
 
 ### What about Redux Toolkit?
 
-H4R attempts to accomplish close to the same goals, however, even Redux-Toolkit fails to be as clean or minimal as H4R. I'll give an example.
+> Redux Toolkit: The official, opinionated, batteries-included tool set for efficient Redux development - https://redux-toolkit.js.org
+
+Redux-Toolkit claims to be efficient, but when compared to H4R it still falls far short. I'll give an example.
+
+#### H4R vs Redux-Toolkit Intermediate-Example
+> 58% less code
 
 Taking from the intermediate code-example provided in the Redux-Toolkit Package:
 
-* from the redux-toolkit tutorial: https://redux-toolkit.js.org/tutorials/intermediate-tutorial
-* redux-toolkit codesandbox: https://codesandbox.io/s/rtk-convert-todos-example-uqqy3 <br>(~390 lines of JavaScript)
+Redux-Toolkit's implementation:
+* tutorial: [redux-toolkit.js.org](https://redux-toolkit.js.org/tutorials/intermediate-tutorial)
+* interactive: [codesandbox.io](https://codesandbox.io/s/rtk-convert-todos-example-uqqy3)
+* ~390 lines of JavaScript
 
-I reduced the code by about 2x using H4R - including elliminating several files. Even the tests got simpler.
+I reduced the code by about 2x using H4R - including eliminating several files. Even the tests got simpler.
 
-* h4r codesandbox: https://codesandbox.io/s/github/shanebdavis/rtk-convert-todos-example-h4r-conversion
-<br>(~160 lines of JavaScript)
-
-* conversion with commit history on github: https://github.com/shanebdavis/rtk-convert-todos-example-h4r-conversion
+H4R solution
+* interactive: [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-convert-todos-example-h4r-conversion)
+* source: [github](https://github.com/shanebdavis/rtk-convert-todos-example-h4r-conversion)
+* ~160 lines of JavaScript
 
 Here is a roughly apples-to-apples slice of the code from each project:
 
@@ -548,7 +562,29 @@ export const VisibleTodoList = () =>
   </ul>
 ```
 
-NOTE: The normal use of H4R is React-specific while Redux-Toolkit is agnostic to the rendering engine. However, you can use H4R with non-react rendering engines as well with almost the same code-savings.
+NOTE: The normal use of H4R is React-specific while Redux-Toolkit is agnostic to the rendering engine. Let me know if there is interest in non-react H4R support. It shouldn't be hard to do.
+
+#### H4R vs Redux-Toolkit Advanced TypeScript Tutorial
+
+> 48% less code
+
+Now to take on a bigger challenge. The advanced tutorial is a capable github issue and issue-comment-browser. Even here, H4R shines. Redux-Toolkit has two main problems:
+
+1. It still makes you manually dispatch your updates. H4R avoids making you manually create and dispatch your actions entirely by returning ready-to-use dispatchers. They just look like normal functions you can call to start your updates.
+2. Redux-Toolkit's pattern mixes business-logic with view-logic. Redux-related code, particularly updates, should never be in the same files as view and view-logic files like components.
+
+Redux-Toolkit's solution, with business logic blended with UX-logic creative excessive inter-dependencies modules. This dependency hell literally took me hours to unwind and convert to H4R. Once I was done, though, the whole all simplified and became clear and easy to edit. If you open the code you will see that all the business logic in the H4R solution resides in the src/redux folder in 4 files and 100 lines of code - total. All the components are clean and have 0 business logic.
+
+Redux-Toolkit solution:
+* tutorial: [redux-toolkit.js.org](https://redux-toolkit.js.org/tutorials/advanced-tutorial)
+* interactive: [codesandbox.io](https://codesandbox.io/s/rtk-github-issues-example-02-issues-display-tdx2w)
+* source: [github](https://github.com/reduxjs/rtk-github-issues-example)
+* ~1170 lines of TypeScript
+
+H4R solution:
+* interactive: [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-github-issues-example-h4r-conversion)
+* source: [github](https://github.com/shanebdavis/rtk-github-issues-example-h4r-conversion)
+* ~613 lines of TypeScript
 
 ## Contribution
 
