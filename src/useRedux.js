@@ -1,5 +1,5 @@
 const { getStore } = require("./storeRegistry");
-const { useSelector } = require("react-redux");
+const { useState, useLayoutEffect } = require("react");
 const { createVirtualStore } = require("./VirtualStore");
 
 const mapKeys = (o, f) => {
@@ -23,10 +23,16 @@ const useRedux = (storeKey, initialState, reducers, store = getStore()) => {
     reducers[type] ? reducers[type](state, payload) : state
   );
 
+  const virtualStore = createVirtualStore(store, storeKey)
+
   return [
-    () => useSelector(storeState => storeState[storeKey]),
+    () => {
+      const [state, setState] = useState(virtualStore.getState())
+      useLayoutEffect(() => virtualStore.subscribe(setState))
+      return state;
+    },
     mapKeys(reducers, type => payload => store.dispatch({ type, payload })),
-    createVirtualStore(store, storeKey)
+    virtualStore
   ];
 };
 module.exports = useRedux;

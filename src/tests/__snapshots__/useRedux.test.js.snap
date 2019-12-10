@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`basic mode subscribeToName works 1`] = `
+exports[`basic mode useName works 1`] = `
 <p>
   Hello there, 
   Alice
@@ -8,15 +8,9 @@ exports[`basic mode subscribeToName works 1`] = `
 </p>
 `;
 
-exports[`basic mode subscribeToName works 2`] = `
-<p>
-  Hello there, 
-  Shane
-  ! Click to change me.
-</p>
-`;
+exports[`basic mode useName works 2`] = `undefined`;
 
-exports[`reducers mode subscribeToName works 1`] = `
+exports[`reducers mode useName works 1`] = `
 <p>
   Hello there, 
   Alice
@@ -24,7 +18,7 @@ exports[`reducers mode subscribeToName works 1`] = `
 </p>
 `;
 
-exports[`reducers mode subscribeToName works 2`] = `
+exports[`reducers mode useName works 2`] = `
 <p>
   Hello there, 
   Shane
