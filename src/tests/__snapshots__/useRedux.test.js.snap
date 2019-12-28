@@ -25,3 +25,17 @@ exports[`reducers mode useName works 2`] = `
   ! Click to change me.
 </p>
 `;
+
+exports[`regression - function state values useFilter works 1`] = `
+<p>
+  Filter: 
+  t =&gt; !t.completed
+</p>
+`;
+
+exports[`regression - function state values useFilter works 2`] = `
+<p>
+  Filter: 
+  t =&gt; t.completed
+</p>
+`;

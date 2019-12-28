@@ -2,18 +2,12 @@ const { getStore } = require("./storeRegistry");
 const { useState, useLayoutEffect } = require("react");
 const { createVirtualStore } = require("./VirtualStore");
 
-const mapKeys = (o, f) => {
-  const r = {};
-  for (let k in o) r[k] = f(k);
-  return r;
-};
-
 const simpleUseRedux = (storeKey, initialState) => {
   const UPDATE_ACTION = `${storeKey}-update`;
-  const [hook, dispatchers, virtualStore] = useRedux(storeKey, initialState, {
+  const [useSlice, dispatchers, virtualStore] = useRedux(storeKey, initialState, {
     [UPDATE_ACTION]: (state, payload) => payload
   });
-  return [hook, dispatchers[UPDATE_ACTION], virtualStore];
+  return [useSlice, dispatchers[UPDATE_ACTION], virtualStore];
 };
 
 const useRedux = (storeKey, initialState, reducers, store = getStore()) => {
@@ -23,15 +17,21 @@ const useRedux = (storeKey, initialState, reducers, store = getStore()) => {
     reducers[type] ? reducers[type](state, payload) : state
   );
 
+  const useSlice = () => {
+    const [state, setState] = useState(() => virtualStore.getState());
+    useLayoutEffect(() => virtualStore.subscribe((v) => setState(() => v)), [setState]);
+    return state;
+  };
+
+  const dispatchers = {};
+  for (let type in reducers)
+    dispatchers[type] = payload => store.dispatch({ type, payload });
+
   const virtualStore = createVirtualStore(store, storeKey)
 
   return [
-    () => {
-      const [state, setState] = useState(virtualStore.getState())
-      useLayoutEffect(() => virtualStore.subscribe(setState))
-      return state;
-    },
-    mapKeys(reducers, type => payload => store.dispatch({ type, payload })),
+    useSlice,
+    dispatchers,
     virtualStore
   ];
 };

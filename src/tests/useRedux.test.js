@@ -122,3 +122,37 @@ describe("subscriptions outside react", () => {
     expect(lastValueSeen).toEqual(firstValueSeen + 1);
   });
 });
+
+
+describe("regression - function state values", () => {
+  const setup = () => {
+    const filterTypes = {
+      all: () => true,
+      completed: t => t.completed,
+      active: t => !t.completed
+    }
+
+    const STORE_KEY = 'filter';
+    const [useFilter, { setFilter }, { getState }] =
+      useRedux(STORE_KEY, filterTypes.all, {
+        setFilter: (__, filter) => filterTypes[filter] || filterTypes.all
+      })
+
+    const expectNameToEqual = (expected) => expect(getState()).toEqual(expected);
+
+    const App = () =>
+      <p>Filter: {useFilter().toString()}</p>
+    return { STORE_KEY, useFilter, setFilter, getState, App, expectNameToEqual }
+  }
+
+  it('useFilter works', () => {
+    const { setFilter, App } = setup()
+    setFilter("active")
+    const component = renderer.create(<App />);
+    expect(component.toJSON()).toMatchSnapshot();
+
+    renderer.act(() => { setFilter("completed"); })
+    expect(component.toJSON()).toMatchSnapshot();
+    component.unmount()
+  });
+})
