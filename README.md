@@ -1,16 +1,12 @@
 # <a href='https://github.com/generalui/hooks-for-redux'><img src='https://raw.githubusercontent.com/wiki/generalui/hooks-for-redux/h4r-logo-with-full-name.png' height='60' alt='Hooks-for-Redux Logo' aria-label='hooks-for-redux' /></a><br>hooks-for-redux (H4R)
 
-> same redux, half the code
+> modular redux: scalable redux in half the code
 
-[Redux](https://www.npmjs.com/package/redux) has many wonderful traits, but brevity isn't one of them. Verbose code is not only tedious to write, but it increases the chance of bugs.
+Hooks-for-redux implements the [Modular Redux](https://www.genui.com/insights/modular-redux) design pattern and gives you access to all the power of Redux in a way that's much easier to use and, more importantly, scales to very large applications.
 
-Hooks-for-redux's goal is to reduce the amount of boilerplate code required to define and manage Redux state while maximizing capability and compatibility with the Redux ecosystem.
+Hooks-for-redux's goal is to make Redux code dramatically easier to write, maintain and scale. The strategy is to consistently apply the [5 elements of modular design](https://www.genui.com/insights/5-essential-elements-of-modular-software-design) to Redux.
 
-The primary strategy is to [DRY](https://www.essenceandartifact.com/2016_06_01_archive.html#dry) up the API and use reasonable defaults, with overrides, wherever possible. H4R streamlines reducers, actions, dispatchers, store-creation and hooks for React. In the same way that React added "hooks" to clean up Component state management, hooks-for-redux uses a similar, hooks-style API to clean up Redux state management.
-
-The result is a elegant API with 2-3x reduction in client code and near total elimination of all the boilerplate code needed to use plain Redux.
-
-> NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. [react-redux](https://www.npmjs.com/package/react-redux) already does this elegantly. Instead, this library wraps react-redux's useSelector, as well as many other standard Redux tools, to provide a more streamlined API.
+The result is a elegant API that allows you to reduce Redux code by half and reduce Redux-related complexity by 3x.
 
 ## Contents
 
@@ -515,12 +511,17 @@ Several people have attempted to simplify Redux and/or make it act more like Rea
 - https://www.npmjs.com/package/@finn-no/redux-actions
 - https://www.npmjs.com/package/@mollycule/redux-hook
 - https://www.npmjs.com/package/easy-peasy
+- https://www.npmjs.com/package/conventional-redux
 
-### What about Redux Toolkit?
+And then there's
+
+- https://www.npmjs.com/package/@reduxjs/redux-toolkit
+
+## H4R vs Redux Toolkit
 
 > Redux Toolkit: The official, opinionated, batteries-included tool set for efficient Redux development - https://redux-toolkit.js.org
 
-Redux-Toolkit claims to be efficient, but when compared to H4R it still falls far short. I'll give an example.
+Redux-Toolkit claims to be efficient, but when compared to H4R it still falls far short. Below is a comparison H4R vs Redux-Toolkit using their own intermediate and advanced tutorials.
 
 #### H4R vs Redux-Toolkit Intermediate-Example
 > 58% less code
