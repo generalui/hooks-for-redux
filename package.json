@@ -3,7 +3,7 @@
   "dependencies": {
     "@types/react-redux": "^7.1.5",
     "react-redux": "^7.1.1",
-    "redux": "^4.0.5"
+    "redux": "^4.0.4"
   },
   "scripts": {
     "test": "react-scripts test"
@@ -31,5 +31,5 @@
     "type": "git",
     "url": "https://github.com/generalui/hooks-for-redux.git"
   },
-  "version": "2.0.0"
+  "version": "1.2.2"
 }
