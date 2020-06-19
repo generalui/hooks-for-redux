@@ -1,32 +1,12 @@
 const { getStore } = require("./storeRegistry");
-const { useSelector } = require("react-redux");
-const { createVirtualStore } = require("./VirtualStore");
+const createReduxModule = require('./createReduxModule');
 
-const mapKeys = (o, f) => {
-  const r = {};
-  for (let k in o) r[k] = f(k);
-  return r;
-};
-
-const simpleUseRedux = (storeKey, initialState) => {
-  const UPDATE_ACTION = `${storeKey}-update`;
-  const [hook, dispatchers, virtualStore] = useRedux(storeKey, initialState, {
-    [UPDATE_ACTION]: (state, payload) => payload
-  });
-  return [hook, dispatchers[UPDATE_ACTION], virtualStore];
-};
-
+let warnedOnce = false;
 const useRedux = (storeKey, initialState, reducers, store = getStore()) => {
-  if (!reducers) return simpleUseRedux(storeKey, initialState);
-
-  store.injectReducer(storeKey, (state = initialState, { type, payload }) =>
-    reducers[type] ? reducers[type](state, payload) : state
-  );
-
-  return [
-    () => useSelector(storeState => storeState[storeKey]),
-    mapKeys(reducers, type => payload => store.dispatch({ type, payload })),
-    createVirtualStore(store, storeKey)
-  ];
+  if (!warnedOnce) {
+    console.warn("DEPRECATED: hooks-for-redux - `useRedux` is deprecated. Use `createReduxModule` instead.\n(same API, new name that doesn't erroneously trigger the React warning: https://reactjs.org/warnings/invalid-hook-call-warning.html)");
+    warnedOnce = true;
+  }
+  return createReduxModule(storeKey, initialState, reducers, store);
 };
 module.exports = useRedux;
