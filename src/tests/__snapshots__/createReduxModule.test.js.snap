@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`basic mode subscribeToName works 1`] = `
+<p>
+  Hello there, 
+  Alice
+  ! Click to change me.
+</p>
+`;
+
+exports[`basic mode subscribeToName works 2`] = `
+<p>
+  Hello there, 
+  Shane
+  ! Click to change me.
+</p>
+`;
+
+exports[`reducers mode subscribeToName works 1`] = `
+<p>
+  Hello there, 
+  Alice
+  ! Click to change me.
+</p>
+`;
+
+exports[`reducers mode subscribeToName works 2`] = `
+<p>
+  Hello there, 
+  Shane
+  ! Click to change me.
+</p>
+`;

@@ -54,7 +54,7 @@ type Dispatchers<TReducers> = {
 };
 
 /****************************
-  useRedux function
+  createReduxModule function
 ****************************/
 
 /**
@@ -67,6 +67,33 @@ type Dispatchers<TReducers> = {
  * @param [reducers] is a map from reducer-name to reducer functions which take the currentState plus optional payload and return a new state.
  *
  * @returns a 3-element array: [reactHook, updateDispatcher or dispatcherMap, virtualStore]
+ */
+export function createReduxModule<TState>(
+  reduxStorePropertyName: string,
+  initialState: TState
+): [ReactReduxHook<TState>, SetterDispatcher<TState>, VirtualStore<TState>];
+export function createReduxModule<TState, TReducers extends Reducers<TState>>(
+  reduxStorePropertyName: string,
+  initialState: TState,
+  reducers: TReducers
+): [
+  ReactReduxHook<TState>,
+  Readonly<Dispatchers<TReducers>>,
+  VirtualStoreWithReducers<TState, TReducers>
+];
+
+/**
+ * Defines a top-level property of the redux state including its inital value, all related reducers, and returns a react-hook, dispatchers and virtualStore.
+ *
+ * @param reduxStorePropertyName is the name of the property off the root redux store you are declaring and initializing
+ *
+ * @param initialState is the initial value for your redux state
+ *
+ * @param [reducers] is a map from reducer-name to reducer functions which take the currentState plus optional payload and return a new state.
+ *
+ * @returns a 3-element array: [reactHook, updateDispatcher or dispatcherMap, virtualStore]
+ *
+ * @deprecated Use createReduxModule instead. Same API, new name.
  */
 export function useRedux<TState>(
   reduxStorePropertyName: string,
