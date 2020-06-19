@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {useRedux, Provider} from 'hooks-for-redux'
+import {createReduxModule, Provider} from 'hooks-for-redux'
 
-const [useCount, {inc, add, reset}] = useRedux('count', 0, {
+const [useCount, {inc, add, reset}] = createReduxModule('count', 0, {
   inc: (state) => state + 1,
   add: (state, amount) => state + amount,
   reset: () => 0

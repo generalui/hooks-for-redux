@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { applyMiddleware } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunkMiddleware from "redux-thunk";
-import { Provider, useRedux, createStore, setStore } from "hooks-for-redux";
+import { Provider, createReduxModule, createStore, setStore } from "hooks-for-redux";
 
 // store.js
 const store = setStore(
@@ -11,7 +11,7 @@ const store = setStore(
 );
 
 // toggleState.js
-const [useToggle, { toggleSwitch }] = useRedux("toggle", false, {
+const [useToggle, { toggleSwitch }] = createReduxModule("toggle", false, {
   toggleSwitch: state => !state
 });
 

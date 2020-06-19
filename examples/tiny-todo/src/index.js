@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { Provider, useRedux } from "hooks-for-redux";
+import { Provider, createReduxModule } from "hooks-for-redux";
 
 // redux/list.js
 const getUniqueId = list =>
   list.length > 0 ? Math.max(...list.map(t => t.id)) + 1 : 1;
 
-const [useList, { addItem, deleteItem }] = useRedux(
+const [useList, { addItem, deleteItem }] = createReduxModule(
   "list",
   [
     { id: 1, text: "clean the house" },

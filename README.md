@@ -39,9 +39,9 @@ Tiny, complete example. See below for explanations.
 ```jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {useRedux, Provider} from 'hooks-for-redux'
+import {createReduxModule, Provider} from 'hooks-for-redux'
 
-const [useCount, {inc, add, reset}] = useRedux('count', 0, {
+const [useCount, {inc, add, reset}] = createReduxModule('count', 0, {
   inc: (state) => state + 1,
   add: (state, amount) => state + amount,
   reset: () => 0
@@ -80,9 +80,9 @@ This example is primarily intended to give a visual feel for how much code can b
 
 #### Tutorial A: Use and Set
 
-The core of hooks-for-redux is the `useRedux` method. There are two ways to call useRedux - with and without custom reducers. This first tutorial shows the first, easiest way to use hooks-for-redux.
+The core of hooks-for-redux is the `createReduxModule` method. There are two ways to call createReduxModule - with and without custom reducers. This first tutorial shows the first, easiest way to use hooks-for-redux.
 
-> Concept: `useRedux` initializes redux state under the property-name you provide and returns an array, containing three things:
+> Concept: `createReduxModule` initializes redux state under the property-name you provide and returns an array, containing three things:
 >
 > 1. react-hook to access named-state
 > 2. dispatcher-function to update that state
@@ -92,12 +92,12 @@ First, you'll need to define your redux state.
 
 ```jsx
 // NameReduxState.js
-import { useRedux } from "hooks-for-redux";
+import { createReduxModule } from "hooks-for-redux";
 
 //  - initialize redux state.name = 'Alice'
 //  - export useCount hook for use in components
 //  - export setCount to update state.name
-export const [useCount, setCount] = useRedux("count", 0);
+export const [useCount, setCount] = createReduxModule("count", 0);
 ```
 
 Use your redux state:
@@ -145,15 +145,15 @@ And that's all you need to do! Now, let's look at a fuller tutorial with custom 
 
 Instead of returning the raw update reducer, you can build your own reducers. Your code will be less brittle and more testable the more specific you can make your transactional redux update functions ('reducers').
 
-> Concept: When you pass a reducer-map as the 3rd argument, useRedux returns set of matching map of dispatchers, one for each of your reducers.
+> Concept: When you pass a reducer-map as the 3rd argument, createReduxModule returns set of matching map of dispatchers, one for each of your reducers.
 
 This example adds three reducer/dispatcher pairs: `inc`, `dec` and `reset`.
 
 ```jsx
 // NameReduxState.js
-import { useRedux } from "hooks-for-redux";
+import { createReduxModule } from "hooks-for-redux";
 
-export const [useName, { inc, add, reset }] = useRedux("count", 0, {
+export const [useName, { inc, add, reset }] = createReduxModule("count", 0, {
   inc: state => state + 1,
   add: (state, amount) => state + amount,
   reset: () => 0
@@ -180,7 +180,7 @@ export default () => (
 
 #### Tutorial: Custom Middleware
 
-You may have noticed none of the code above actually calls Redux.createStore(). H4R introduces the concept of a default store accessible via the included `getStore()` and `setStore()` functions. The first time `getStore()` is called, a new redux store is automatically created for you. However, if you want to control how the store is created, call `setStore()` and pass in your custom store before calling `getStore` or any other function which calls it indirectly including `useRedux` and `Provider`.
+You may have noticed none of the code above actually calls Redux.createStore(). H4R introduces the concept of a default store accessible via the included `getStore()` and `setStore()` functions. The first time `getStore()` is called, a new redux store is automatically created for you. However, if you want to control how the store is created, call `setStore()` and pass in your custom store before calling `getStore` or any other function which calls it indirectly including `createReduxModule` and `Provider`.
 
 Below is an example of creating your own store with some custom middleware. It uses H4R's own createStore method which extends Redux's create store as required for H4R. More on that below.
 
@@ -201,7 +201,7 @@ export default setStore(createStore({}, applyMiddleware(logDispatch)));
 ```jsx
 // index.jsx
 import React from "react";
-import "./store"; // <<< import before calling useRedux or Provider
+import "./store"; // <<< import before calling createReduxModule or Provider
 import { Provider } from "hooks-for-redux";
 import App from "./App";
 
@@ -223,14 +223,14 @@ If you are interested in seeing a more complicated example in TypeScript with as
 
 ## API
 
-### useRedux
+### createReduxModule
 
 ```jsx
-import {useRedux} from 'hooks-for-redux'
-useRedux(reduxStorePropertyName, initialState) =>
+import {createReduxModule} from 'hooks-for-redux'
+createReduxModule(reduxStorePropertyName, initialState) =>
   [useMyStore, setMyStore, virtualStore]
 
-useRedux(reduxStorePropertyName, initialState, reducers) =>
+createReduxModule(reduxStorePropertyName, initialState, reducers) =>
   [useMyStore, myDispatchers, virtualStore]
 ```
 
@@ -248,12 +248,12 @@ Define a top-level property of the redux state including its initial value, all 
   - One of the following:
     - setMyStore: (newState) => dispatch structure
     - myDispatchers: object mapping action names to matching myDispatchers
-  - virtualStore: object with API similar to a redux store, but just for the state defined in this useRedux call
+  - virtualStore: object with API similar to a redux store, but just for the state defined in this createReduxModule call
 
 #### useMyStore
 
 ```jsx
-const [useMyStore] = useRedux(reduxStorePropertyName, initialState)
+const [useMyStore] = createReduxModule(reduxStorePropertyName, initialState)
 const MyComponent = () => { // must be used in render function
   useMyStore() => current state
   // ...
@@ -269,7 +269,7 @@ const MyComponent = () => { // must be used in render function
 #### myDispatchers
 
 ```jsx
-const [__, {myAction}] = useRedux(reduxStorePropertyName, initialState, {
+const [__, {myAction}] = createReduxModule(reduxStorePropertyName, initialState, {
   myAction: (state, payload) => state
 })
 myAction(payload) => {type: MyAction, payload}
@@ -283,18 +283,18 @@ myAction(payload) => {type: MyAction, payload}
 
 ### virtualStore API
 
-The virtual store is an object similar to the redux store, except it is only for the redux-state you created with useRedux. It supports a similar, but importantly different API from the redux store:
+The virtual store is an object similar to the redux store, except it is only for the redux-state you created with createReduxModule. It supports a similar, but importantly different API from the redux store:
 
 #### virtualStore.getState
 
 ```jsx
-import {useRedux, getStore} from 'hooks-for-redux'
-const [,, myVirtualStore] = useRedux("myStateName", myInitialState)
+import {createReduxModule, getStore} from 'hooks-for-redux'
+const [,, myVirtualStore] = createReduxModule("myStateName", myInitialState)
 myVirtualStore.getState() =>
   getStore().getState()["myStateName"]
 ```
 
-The getState method works exactly like a redux store except instead of returning the state of the entire redux store, it returns only the sub portion of that redux state defined by the useRedux call.
+The getState method works exactly like a redux store except instead of returning the state of the entire redux store, it returns only the sub portion of that redux state defined by the createReduxModule call.
 
 - **IN**: (nothing)
 - **OUT**: your current state
@@ -302,8 +302,8 @@ The getState method works exactly like a redux store except instead of returning
 #### virtualStore.subscribe
 
 ```jsx
-import {useRedux, getStore} from 'hooks-for-redux'
-const [,, myVirtualStore] = useRedux("myStateName", myInitialState)
+import {createReduxModule, getStore} from 'hooks-for-redux'
+const [,, myVirtualStore] = createReduxModule("myStateName", myInitialState)
 myVirtualStore.subscribe(callback) => unsubscribe
 ```
 
@@ -362,7 +362,7 @@ Call setStore to provide your own store for hooks-for-redux to use. You'll need 
 - **OUT**: the store passed in
 - **REQUIRED**:
   - can only be called once
-  - must be called before getStore or useRedux
+  - must be called before getStore or createReduxModule
 
 #### createStore
 
@@ -438,18 +438,18 @@ const Provider = ({ store = getStore(), context, children }) =>
   React.createElement(ReactReduxProvider, { store, context }, children);
 ```
 
-#### useRedux
+#### createReduxModule
 
-- source: [src/useRedux.js](src/useRedux.js)
+- source: [src/createReduxModule.js](src/createReduxModule.js)
 
 The big win, however, comes from one key observation: if you are writing your own routing, you are doing it wrong. The same can be said for dispatching and subscriptions.
 
-The `useRedux` function automates all the manual routing required to make plain Redux work. It inputs only the essential data and functions necessary to define a redux model, and it returns all the tools you need to use it.
+The `createReduxModule` function automates all the manual routing required to make plain Redux work. It inputs only the essential data and functions necessary to define a redux model, and it returns all the tools you need to use it.
 
-The implementation of useRedux is surprisingly brief. Details are explained below:
+The implementation of createReduxModule is surprisingly brief. Details are explained below:
 
 ```jsx
-const useRedux = (storeKey, initialState, reducers, store = getStore()) => {
+const createReduxModule = (storeKey, initialState, reducers, store = getStore()) => {
   /* 1 */ store.injectReducer(
     storeKey,
     (state = initialState, { type, payload }) =>
@@ -475,7 +475,7 @@ const useRedux = (storeKey, initialState, reducers, store = getStore()) => {
 
 - source: [src/VirtualStore.js](src/VirtualStore.js)
 
-The VirtualStore object allows you to access your state, a value bound to the Redux store via your storeKey, as-if it were a Redux store. It is implemented, again, as simple wrappers binding the virtual store to the state defined in useRedux.
+The VirtualStore object allows you to access your state, a value bound to the Redux store via your storeKey, as-if it were a Redux store. It is implemented, again, as simple wrappers binding the virtual store to the state defined in createReduxModule.
 
 ```jsx
 const createVirtualStore = (store, storeKey) => {
@@ -499,7 +499,7 @@ const createVirtualStore = (store, storeKey) => {
 
 ## TypeScript
 
-TypeScript support is provided in the library. Configuring the generics for H4R was tricky, particularly for the useRedux method. Please send feedback on how we can improve the typing.
+TypeScript support is provided in the library. Configuring the generics for H4R was tricky, particularly for the createReduxModule method. Please send feedback on how we can improve the typing.
 
 - [hooks-for-redux type definition](index.d.ts)
 
@@ -609,7 +609,7 @@ to this:
 * [github/redux-toolkit/IssuesListPage](https://github.com/reduxjs/rtk-github-issues-example/blob/master/src/features/issuesList/IssuesListPage.tsx)
 * 87 lines, 2000 bytes
 
-Redux-toolkit's solution mixes in the business logic of fetching the remote data. This is all handled by H4R's useRedux slices. Further, RT makes IssuesListPage dependent on many things such that it only passes to child-components but never uses itself - a false dependency. For example, the pagination details (currentPage, pageCount, etc...) should only be a dependency of IssuePagination.
+Redux-toolkit's solution mixes in the business logic of fetching the remote data. This is all handled by H4R's createReduxModule slices. Further, RT makes IssuesListPage dependent on many things such that it only passes to child-components but never uses itself - a false dependency. For example, the pagination details (currentPage, pageCount, etc...) should only be a dependency of IssuePagination.
 
 Compare the full source of each project below:
 
