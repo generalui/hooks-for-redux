@@ -2,13 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { applyMiddleware } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-import thunkMiddleware from "redux-thunk";
 import { Provider, createReduxModule, createStore, setStore } from "hooks-for-redux";
 
+// example middleware
+const logDispatch = store => next => action => {
+  console.log("dispatching", action);
+  return next(action);
+};
+
 // store.js
-const store = setStore(
-  createStore({}, composeWithDevTools(applyMiddleware(thunkMiddleware)))
-);
+export default setStore(createStore({}, composeWithDevTools(applyMiddleware(logDispatch))));
 
 // toggleState.js
 const [useToggle, { toggleSwitch }] = createReduxModule("toggle", false, {
@@ -21,7 +24,7 @@ const Toggle = () => {
   return (
     <div>
       <div>{JSON.stringify(toggle)}</div>
-      <input type="checkbox" value={toggle} onChange={toggleSwitch} />
+      <input type="checkbox" value={toggle} onChange={() => toggleSwitch()} />
     </div>
   );
 };

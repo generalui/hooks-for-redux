@@ -4,8 +4,8 @@
   "dependencies": {
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "react-scripts": "3.2.0",
-    "hooks-for-redux": "*"
+    "react-scripts": "^3.2.0",
+    "hooks-for-redux": "^1.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
