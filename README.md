@@ -1,6 +1,6 @@
 # <a href='https://github.com/generalui/hooks-for-redux'><img src='https://raw.githubusercontent.com/wiki/generalui/hooks-for-redux/h4r-logo-with-full-name.png' height='60' alt='Hooks-for-Redux Logo' aria-label='hooks-for-redux' /></a><br>hooks-for-redux (H4R)
 
-> same redux, half the code
+> still redux, half the code, built to scale
 
 [Redux](https://www.npmjs.com/package/redux) has many wonderful traits, but brevity isn't one of them. Verbose code is not only tedious to write, but it increases the chance of bugs.
 
@@ -10,7 +10,7 @@ The primary strategy is to [DRY](https://www.essenceandartifact.com/2016_06_01_a
 
 The result is a elegant API with 2-3x reduction in client code and near total elimination of all the boilerplate code needed to use plain Redux.
 
-> NOTE: This is NOT a library for "hooking" Redux into React, at least not primarily. [react-redux](https://www.npmjs.com/package/react-redux) already does this elegantly. Instead, this library wraps react-redux's useSelector, as well as many other standard Redux tools, to provide a more streamlined API.
+> H4R implements the [Modular Redux Design Pattern](https://medium.com/@shanebdavis/modular-redux-a-design-pattern-for-mastering-scalable-shared-state-82d4abc0d7b3).
 
 ## Contents
 
@@ -25,6 +25,23 @@ The result is a elegant API with 2-3x reduction in client code and near total el
 1. [ Contribution ](#contribution)
 1. [ License ](#license)
 1. [ Produced at GenUI ](#produced-at-genui)
+
+Additional resources:
+
+* 1st blog post: [How I Eliminated Redux Boilerplate with Hooks-for-Redux](https://medium.com/@shanebdavis/how-i-eliminated-redux-boilerplate-with-hooks-for-redux-bd308d5abbdd)
+* 2nd blog post: [The 5 Essential Elements of Modular Software Design](https://medium.com/@shanebdavis/the-5-essential-elements-of-modular-software-design-6b333918e543)
+* 3rd blog post: [Modular Redux — a Design Pattern for Mastering Scalable, Shared State in React](https://medium.com/@shanebdavis/modular-redux-a-design-pattern-for-mastering-scalable-shared-state-82d4abc0d7b3)
+
+Included Examples:
+
+* [tiny](./examples/tiny) - the simplest working example
+* [tiny-todo](./examples/tiny-todo) - a slightly more detailed example
+* [middleware](./examples/middleware) - an example of how to use Redux middleware with H4R
+* comparison [plain-redux](./examples/comparison-plain-redux) vs [hooks-for-redux](./examples/hooks-for-redux) - compare two, tiny working examples back-to-back
+
+Advanced Examples:
+* [todo with filters](https://github.com/shanebdavis/rtk-convert-todos-example-h4r-conversion) (try it now on [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-convert-todos-example-h4r-conversion))
+* [github-issues-browser](https://github.com/shanebdavis/rtk-github-issues-example-h4r-conversion) with typescript and asynchronous requests (try it now on [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-github-issues-example-h4r-conversion))
 
 ## Install
 
