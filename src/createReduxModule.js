@@ -4,14 +4,20 @@ const { createVirtualStore } = require("./VirtualStore");
 
 const mapKeys = (o, f) => {
   const r = {};
-  for (let k in o) r[k] = f(k);
+  o.forEach(k => r[k] = f(k));
   return r;
 };
 
+const renameReducerKeys = (reducers, storeKeygenerator) => {
+  let o = {}
+  for(const k in reducers) o[storeKeygenerator(k)] = reducers[k];
+  return o;
+}
+
 const createSimpleReduxModule = (storeKey, initialState) => {
-  const UPDATE_ACTION = `${storeKey}-update`;
+  const UPDATE_ACTION = 'update';
   const [hook, dispatchers, virtualStore] = createReduxModule(storeKey, initialState, {
-    [UPDATE_ACTION]: (state, payload) => payload
+    [UPDATE_ACTION]: (_state, payload) => payload
   });
   return [hook, dispatchers[UPDATE_ACTION], virtualStore];
 };
@@ -19,13 +25,19 @@ const createSimpleReduxModule = (storeKey, initialState) => {
 const createReduxModule = (storeKey, initialState, reducers, store = getStore()) => {
   if (!reducers) return createSimpleReduxModule(storeKey, initialState);
 
-  store.injectReducer(storeKey, (state = initialState, { type, payload }) =>
-    reducers[type] ? reducers[type](state, payload) : state
-  );
+  const storeKeygenerator = (key) => `${storeKey}#${key}`
+
+  let originalReducerKeys = [];
+  for(let k in reducers) {originalReducerKeys.push(k)}
+
+  reducers = renameReducerKeys(reducers, storeKeygenerator)
+  store.injectReducer(storeKey, (state = initialState, { type, payload }) => {
+    return reducers[type] ? reducers[type](state, payload) : state
+  });
 
   return [
     () => useSelector(storeState => storeState[storeKey]),
-    mapKeys(reducers, type => payload => store.dispatch({ type, payload })),
+    mapKeys(originalReducerKeys, type => payload => store.dispatch({ type: storeKeygenerator(type), payload })),
     createVirtualStore(store, storeKey)
   ];
 };
