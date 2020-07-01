@@ -1,3 +1,7 @@
+# v2.0.0
+
+Dispatched action types are now qualified by their store key. Most people should see no difference. If you were previously relying on the implicit match across redux modules, your code may break.
+
 # v1.3.0
 
 * NEW: `createReduxModule` - same API as useRedux, but new name.
