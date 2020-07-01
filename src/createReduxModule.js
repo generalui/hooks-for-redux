@@ -9,11 +9,10 @@ const mapKeys = (o, f) => {
 };
 
 const createSimpleReduxModule = (storeKey, initialState) => {
-  const UPDATE_ACTION = `${storeKey}-update`;
   const [hook, dispatchers, virtualStore] = createReduxModule(storeKey, initialState, {
-    [UPDATE_ACTION]: (state, payload) => payload
+    update: (state, payload) => payload
   });
-  return [hook, dispatchers[UPDATE_ACTION], virtualStore];
+  return [hook, dispatchers.update, virtualStore];
 };
 
 const createReduxModule = (storeKey, initialState, reducers, store = getStore()) => {
@@ -21,7 +20,7 @@ const createReduxModule = (storeKey, initialState, reducers, store = getStore())
 
   let getQualifiedActionType = (type) => `${storeKey}-${type}`;
   let qualifiedReducers = {}
-  Object.keys(reducers).map( key => {return qualifiedReducers[getQualifiedActionType(key)] = reducers[key]});
+  Object.keys(reducers).map(key => { return qualifiedReducers[getQualifiedActionType(key)] = reducers[key] });
 
   store.injectReducer(storeKey, (state = initialState, { type, payload }) =>
     qualifiedReducers[type] ? qualifiedReducers[type](state, payload) : state
