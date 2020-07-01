@@ -19,13 +19,17 @@ const createSimpleReduxModule = (storeKey, initialState) => {
 const createReduxModule = (storeKey, initialState, reducers, store = getStore()) => {
   if (!reducers) return createSimpleReduxModule(storeKey, initialState);
 
+  let getQualifiedActionType = (type) => `${storeKey}-${type}`;
+  let qualifiedReducers = {}
+  Object.keys(reducers).map( key => {return qualifiedReducers[getQualifiedActionType(key)] = reducers[key]});
+
   store.injectReducer(storeKey, (state = initialState, { type, payload }) =>
-    reducers[type] ? reducers[type](state, payload) : state
+    qualifiedReducers[type] ? qualifiedReducers[type](state, payload) : state
   );
 
   return [
     () => useSelector(storeState => storeState[storeKey]),
-    mapKeys(reducers, type => payload => store.dispatch({ type, payload })),
+    mapKeys(reducers, type => payload => store.dispatch({ type: getQualifiedActionType(type), payload })),
     createVirtualStore(store, storeKey)
   ];
 };

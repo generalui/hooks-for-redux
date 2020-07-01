@@ -107,3 +107,18 @@ describe("subcriptions outside react", () => {
     expect(lastValueSeen).toEqual(firstValueSeen + 1);
   });
 });
+
+
+describe("duplicate action names", () => {
+  const [useCountA, { increment: incrementCountA }, { getState: getCountAState }] = createReduxModule("count-a", 0, {increment: v => v + 1});
+  const [useCountB, { increment: incrementCountB }, { getState: getCountBState }] = createReduxModule("count-b", 0, {increment: v => v + 1});
+
+  it("doesn't interfere", () => {
+    expect(getCountAState()).toEqual(0);
+    expect(getCountBState()).toEqual(0);
+    incrementCountA()
+    expect(getCountAState()).toEqual(1);
+    expect(getCountBState()).toEqual(0);
+  })
+
+});
