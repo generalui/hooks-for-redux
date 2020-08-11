@@ -1,3 +1,8 @@
+# v3.0.0
+
+* CHANGE: createStore now has the same signature as redux's createStore. The first argument should be a function.
+* REMOVED: `useRedux` - use `createReduxModule` instead (same API!)
+
 # v2.0.0
 
 Dispatched action types are now qualified by their store key. Most people should see no difference. If you were previously relying on the implicit match across redux modules, your code may break.

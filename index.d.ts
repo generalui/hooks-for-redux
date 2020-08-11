@@ -18,10 +18,6 @@ type ReactReduxHook<TState> = () => TState;
 ****************************/
 type Reducer<TState> = (state: TState, payload: any) => TState;
 
-interface Reducers<TState> {
-  [reducerName: string]: Reducer<TState>;
-}
-
 /****************************
   virtualStores
 ****************************/
@@ -82,38 +78,11 @@ export function createReduxModule<TState, TReducers extends Reducers<TState>>(
   VirtualStoreWithReducers<TState, TReducers>
 ];
 
-/**
- * Defines a top-level property of the redux state including its inital value, all related reducers, and returns a react-hook, dispatchers and virtualStore.
- *
- * @param reduxStorePropertyName is the name of the property off the root redux store you are declaring and initializing
- *
- * @param initialState is the initial value for your redux state
- *
- * @param [reducers] is a map from reducer-name to reducer functions which take the currentState plus optional payload and return a new state.
- *
- * @returns a 3-element array: [reactHook, updateDispatcher or dispatcherMap, virtualStore]
- *
- * @deprecated Use createReduxModule instead. Same API, new name.
- */
-export function useRedux<TState>(
-  reduxStorePropertyName: string,
-  initialState: TState
-): [ReactReduxHook<TState>, SetterDispatcher<TState>, VirtualStore<TState>];
-export function useRedux<TState, TReducers extends Reducers<TState>>(
-  reduxStorePropertyName: string,
-  initialState: TState,
-  reducers: TReducers
-): [
-  ReactReduxHook<TState>,
-  Readonly<Dispatchers<TReducers>>,
-  VirtualStoreWithReducers<TState, TReducers>
-];
-
 /****************************
   other hooks-for-redux functions
 ****************************/
-export interface ReduxStoreWithInjectReducers extends Store {
-  injectReducer(key:string, reducer:Reducer<object>) : void
+export interface H4RReduxStore extends Store {
+  getReducer() : Reducer<object>
 }
 
 /**
@@ -121,7 +90,7 @@ export interface ReduxStoreWithInjectReducers extends Store {
  *
  * @returns current or newly crated store
  */
-export function getStore() : ReduxStoreWithInjectReducers
+export function getStore() : H4RReduxStore
 
 /**
  * Call setStore to provide your own store for hooks-for-redux to use. You'll need to use this if you want to use middleware.
@@ -130,7 +99,7 @@ export function getStore() : ReduxStoreWithInjectReducers
  *
  * @returns store
  */
-export function setStore(store : ReduxStoreWithInjectReducers) : ReduxStoreWithInjectReducers
+export function setStore(store : H4RReduxStore) : H4RReduxStore
 
 /**
  * Creates a Redux store that holds the state tree.
@@ -156,7 +125,7 @@ export function setStore(store : ReduxStoreWithInjectReducers) : ReduxStoreWithI
  * @returns A Redux store that lets you read the state, dispatch actions and
  *   subscribe to changes.
  */
-export function createStore<TState>(reducers: Reducers<object>, initialState?: TState, enhancer?: any) : ReduxStoreWithInjectReducers
+export function createStore<TState>(reducer: Reducer<TState>, initialState?: TState, enhancer?: any) : H4RReduxStore
 
 export interface ProviderProps<A extends Action = AnyAction> {
   /**

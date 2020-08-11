@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`basic mode subscribeToName works 1`] = `
+exports[`createReduxModule-basic subscribeToName works 1`] = `
 <p>
   Hello there, 
   Alice
@@ -8,7 +8,7 @@ exports[`basic mode subscribeToName works 1`] = `
 </p>
 `;
 
-exports[`basic mode subscribeToName works 2`] = `
+exports[`createReduxModule-basic subscribeToName works 2`] = `
 <p>
   Hello there, 
   Shane
@@ -16,7 +16,7 @@ exports[`basic mode subscribeToName works 2`] = `
 </p>
 `;
 
-exports[`reducers mode subscribeToName works 1`] = `
+exports[`reducers mode - username subscribeToName works 1`] = `
 <p>
   Hello there, 
   Alice
@@ -24,7 +24,7 @@ exports[`reducers mode subscribeToName works 1`] = `
 </p>
 `;
 
-exports[`reducers mode subscribeToName works 2`] = `
+exports[`reducers mode - username subscribeToName works 2`] = `
 <p>
   Hello there, 
   Shane

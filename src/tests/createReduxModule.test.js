@@ -3,7 +3,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { Provider, createReduxModule, getStore } from '../../index'
 
-describe("basic mode",() => {
+describe("createReduxModule-basic",() => {
   const STORE_KEY = 'basicModeName';
   const [subscribeToName, updateName, {getState}] = createReduxModule(STORE_KEY, 'Alice')
 
@@ -33,8 +33,8 @@ describe("basic mode",() => {
   })
 })
 
-describe("reducers mode",() => {
-  const STORE_KEY = 'reducerModeName';
+describe("reducers mode - username",() => {
+  const STORE_KEY = 'username';
   const [subscribeToName, {toggleName, mrName, updateName}, {getState, getReducers}] = createReduxModule(STORE_KEY, 'Alice', {
     toggleName: (name) => name == 'Alice' ? 'Bob' : 'Alice',
     mrName: (name) => name == 'Alice' ? 'Mrs Alice' : 'Mr Bob',
@@ -77,24 +77,22 @@ describe("reducers mode",() => {
     expect(typeof getState()).toEqual("string")
     expect(getState()).toEqual(getStore().getState()[STORE_KEY])
   })
-
-  it('getStore', () => {
-    expect(typeof getStore().injectReducer).toEqual("function")
-  })
 })
 
-describe("subcriptions outside react", () => {
+describe("subscriptions outside react", () => {
   const STORE_KEY = "createReduxModule testCounter";
+  const initialState = 123;
   const [
     useName,
     { increment },
     { getState, getReducers, subscribe }
-  ] = createReduxModule(STORE_KEY, 0, {
+  ] = createReduxModule(STORE_KEY, initialState, {
     increment: v => v + 1
   });
 
   it("subscribe", () => {
     let lastValueSeen = getState();
+    expect(lastValueSeen).toEqual(initialState);
     let firstValueSeen = lastValueSeen;
     const unsubscribe = subscribe(newValue => {
       expect(newValue).toEqual(lastValueSeen + 1);

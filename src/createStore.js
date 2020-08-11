@@ -1,18 +1,39 @@
 const { createStore: reduxCreateStore, combineReducers } = require('redux')
 
-module.exports = (initialReducers = {}, ...args) => {
-  if (typeof initialReducers !== "object") {
-    console.error({initialReducers, args})
-    throw new Error("initialReducers should be an object suitable to be passed to combineReducers")
+const noop = (a) => a;
+
+module.exports = (passedInReducer = noop, ...args) => {
+  if (typeof passedInReducer !== "function") {
+    console.error({passedInReducer, args})
+    throw new Error("passedInReducer should be a function")
   }
 
-  const reducers = {...initialReducers, _stub_: (s) => s || 0}
-  const store = reduxCreateStore(combineReducers(reducers), ...args)
+  const reducers = {
+    __initialize: (state, action) => ({...state, ...action.payload})
+  }
 
-  store.injectReducer = (key, reducer) => {
-    if (reducers[key]) console.warn(`injectReducer: replacing reducer for key '${key}'`);
-    reducers[key] = reducer
-    store.replaceReducer(combineReducers(reducers))
+  const reducer = (state, action) => {
+    state = passedInReducer(state);
+    let reducer = reducers[action != null ? action.type : undefined];
+    if (reducer)  return reducer(state, action);
+    else          return state;
+  }
+
+  const store = reduxCreateStore(reducer, ...args)
+
+  store.getReducer = () => reducer;
+  store.__redux_replaceReducer = store.replaceReducer
+  store.replaceReducer = function (r) {
+    return this.__redux_replaceReducer(reducer = r);
+  }
+
+  store.initializeSlice = (sliceKey, initialValue) =>
+    store.dispatch({ type: "__initialize", payload: {[sliceKey]: initialValue} })
+
+  store.registerReducers = (newReducers) => {
+    for (let key in newReducers) {
+      reducers[key] = newReducers[key];
+    }
   }
 
   return store

@@ -5,6 +5,5 @@ module.exports = {
   setStore,
   createStore:        require("./createStore"),
   Provider:           require("./Provider"),
-  useRedux:           require("./useRedux"),
   createReduxModule:  require("./createReduxModule")
 }

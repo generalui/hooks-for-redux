@@ -20,11 +20,19 @@ const createReduxModule = (storeKey, initialState, reducers, store = getStore())
 
   let getQualifiedActionType = (type) => `${storeKey}-${type}`;
   let qualifiedReducers = {}
-  Object.keys(reducers).map(key => { return qualifiedReducers[getQualifiedActionType(key)] = reducers[key] });
+  Object.keys(reducers).forEach(key => {
+    let reducer = reducers[key];
+    qualifiedReducers[getQualifiedActionType(key)] = (state, action) => {
+      let stateValue = state != null && state[storeKey];
+      return {...state, [storeKey]: reducer(
+        stateValue == null ? initialState : stateValue,
+        action.payload
+      )}
+    }
+  });
 
-  store.injectReducer(storeKey, (state = initialState, { type, payload }) =>
-    qualifiedReducers[type] ? qualifiedReducers[type](state, payload) : state
-  );
+  store.registerReducers(qualifiedReducers);
+  store.initializeSlice(storeKey, initialState);
 
   return [
     () => useSelector(storeState => storeState[storeKey]),
