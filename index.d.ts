@@ -82,6 +82,18 @@ export function createReduxModule<TState, TReducers extends Reducers<TState>>(
   other hooks-for-redux functions
 ****************************/
 export interface H4RReduxStore extends Store {
+  /**
+   * Returns the current root-reducer of the store. Initially, this will be a reducer which
+   * combines the optional reducer passed if you created the store manually and the reducers
+   * added for every hooks-for-redux module you created.
+   *
+   * If you later call replaceReducer(X), this will return X. As long as X calls the original
+   * reducer at some point, all the hooks-for-redux modules' reducers will get handled, even if
+   * the modules were defined *after* replaceReducer was called.
+   * (This is done via a hidden, mutable reducer.)
+   *
+   * @returns current root-reducer.
+   */
   getReducer() : Reducer<object>
 }
 
