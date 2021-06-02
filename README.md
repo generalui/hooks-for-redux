@@ -14,35 +14,18 @@ The result is a elegant API with 2-3x reduction in client code and near total el
 
 ## Contents
 
-1. [ Install ](#install)
-1. [ Usage ](#usage)
-1. [ Comparison ](#comparison)
-1. [ Tutorial ](#tutorial)
-1. [ API ](#api)
-1. [ How it Works ](#how-it-works)
-1. [ TypeScript ](#typescript)
-1. [ Prior Work ](#prior-work)
-1. [ Contribution ](#contribution)
-1. [ License ](#license)
-1. [ Produced at GenUI ](#produced-at-genui)
-
-Additional resources:
-
-* 1st blog post: [How I Eliminated Redux Boilerplate with Hooks-for-Redux](https://medium.com/@shanebdavis/how-i-eliminated-redux-boilerplate-with-hooks-for-redux-bd308d5abbdd)
-* 2nd blog post: [The 5 Essential Elements of Modular Software Design](https://medium.com/@shanebdavis/the-5-essential-elements-of-modular-software-design-6b333918e543)
-* 3rd blog post: [Modular Redux — a Design Pattern for Mastering Scalable, Shared State in React](https://medium.com/@shanebdavis/modular-redux-a-design-pattern-for-mastering-scalable-shared-state-82d4abc0d7b3)
-
-Included Examples:
-
-* [tiny](./examples/tiny) - the simplest working example
-* [tiny-todo](./examples/tiny-todo) - a slightly more detailed example
-* [middleware](./examples/middleware) - an example of how to use Redux middleware with H4R
-* comparison [plain-redux](./examples/comparison-plain-redux) vs [hooks-for-redux](./examples/hooks-for-redux) - compare two, tiny working examples back-to-back
-
-Advanced Examples:
-* [todo with filters](https://github.com/shanebdavis/rtk-convert-todos-example-h4r-conversion) (try it now on [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-convert-todos-example-h4r-conversion))
-* [github-issues-browser](https://github.com/shanebdavis/rtk-github-issues-example-h4r-conversion) with typescript and asynchronous requests (try it now on [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-github-issues-example-h4r-conversion))
-
+1. [ Install](#install)
+1. [ Usage](#usage)
+1. [ Comparison](#comparison)
+1. [ Tutorial](#tutorial)
+1. [ API](#api)
+1. [ How it Works](#how-it-works)
+1. [ TypeScript](#typescript)
+1. [ Prior Work](#prior-work) (Redux Toolkit and others)
+1. [ Additional Resources](#additional-resources)
+1. [ Contribution](#contribution)
+1. [ License](#license)
+1. [ Produced at GenUI](#produced-at-genui)
 ## Install
 
 ```
@@ -556,12 +539,16 @@ H4R solution
 * source: [github](https://github.com/shanebdavis/rtk-convert-todos-example-h4r-conversion)
 * ~160 lines of JavaScript
 
-Here is a roughly apples-to-apples slice of the code from each project:
+Here is an apples-to-apples comparison of some of the main files from each project:
 
 * [Redux Toolkit gist - 104 lines](https://gist.github.com/shanebdavis/9e67be8a0874a4c295001ba6e91f79e2)
 * [Hooks-for-redux gist - 52 lines](https://gist.github.com/shanebdavis/ce02b4495f1bc0afa830796f58124604)
 
-Part of the key is how well H4R links into React. Redux-toolkit takes 50 lines of code just to do this:
+Perhaps the most dramatic difference is how H4R simplifies the interdependencies between files. Boxes are files, lines are imports:
+
+![](assets/h4r-vs-reduxToolkit-intermediate-example.png)
+
+Part of the key is how well H4R links into React. Redux-toolkit takes 50 lines of code just to do this.
 
 ```javascript
 import React from 'react'
@@ -640,6 +627,28 @@ H4R solution:
 * interactive: [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-github-issues-example-h4r-conversion)
 * source: [github](https://github.com/shanebdavis/rtk-github-issues-example-h4r-conversion)
 * ~613 lines of TypeScript
+
+The file and inter-file dependency reduction is dramatic. With H4R your code will be significantly more agile and easier to adapt to new changes. Boxes are files, lines are imports:
+
+![](assets/h4r-vs-reduxToolkit-advanced-example.png)
+
+## Additional Resources
+Blog Posts:
+
+* [How I Eliminated Redux Boilerplate with Hooks-for-Redux](https://medium.com/@shanebdavis/how-i-eliminated-redux-boilerplate-with-hooks-for-redux-bd308d5abbdd) - an introduction and explanation of H4R with examples
+* [The 5 Essential Elements of Modular Software Design](https://medium.com/@shanebdavis/the-5-essential-elements-of-modular-software-design-6b333918e543) - how and why to write modular code - a precursor to why you should use Modular Redux (e.g. H4R)
+* [Modular Redux — a Design Pattern for Mastering Scalable, Shared State in React](https://medium.com/@shanebdavis/modular-redux-a-design-pattern-for-mastering-scalable-shared-state-82d4abc0d7b3) - the Modular Redux design pattern H4R is based on and detailed comparison with Redux Toolkit
+
+Included Examples:
+
+* [tiny](./examples/tiny) - the simplest working example
+* [tiny-todo](./examples/tiny-todo) - a slightly more detailed example
+* [middleware](./examples/middleware) - an example of how to use Redux middleware with H4R
+* comparison [plain-redux](./examples/comparison-plain-redux) vs [hooks-for-redux](./examples/hooks-for-redux) - compare two, tiny working examples back-to-back
+
+Advanced Examples:
+* [todo with filters](https://github.com/shanebdavis/rtk-convert-todos-example-h4r-conversion) (try it now on [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-convert-todos-example-h4r-conversion))
+* [github-issues-browser](https://github.com/shanebdavis/rtk-github-issues-example-h4r-conversion) with typescript and asynchronous requests (try it now on [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-github-issues-example-h4r-conversion))
 
 ## Contribution
 
