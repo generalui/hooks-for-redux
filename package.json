@@ -25,7 +25,7 @@
   "author": "Shane Brinkman-Davis Delamore, GenUI",
   "bugs": "https://github.com/generalui/hooks-for-redux/issues",
   "homepage": "https://github.com/generalui/hooks-for-redux",
-  "description": "The Standard Library for JavaScript that aught to be.",
+  "description": "All the power of Redux in half the code.",
   "license": "MIT",
   "repository": {
     "type": "git",
