@@ -546,7 +546,8 @@ Here is an apples-to-apples comparison of some of the main files from each proje
 
 Perhaps the most dramatic difference is how H4R simplifies the interdependencies between files. Boxes are files, lines are imports:
 
-![](assets/h4r-vs-reduxToolkit-intermediate-example.png)
+![](https://github.com/generalui/hooks-for-redux/raw/master/assets/h4r-vs-reduxToolkit-intermediate-example.png)
+
 
 Part of the key is how well H4R links into React. Redux-toolkit takes 50 lines of code just to do this.
 
@@ -630,7 +631,7 @@ H4R solution:
 
 The file and inter-file dependency reduction is dramatic. With H4R your code will be significantly more agile and easier to adapt to new changes. Boxes are files, lines are imports:
 
-![](assets/h4r-vs-reduxToolkit-advanced-example.png)
+![](https://github.com/generalui/hooks-for-redux/raw/master/assets/h4r-vs-reduxToolkit-advanced-example.png)
 
 ## Additional Resources
 Blog Posts:
