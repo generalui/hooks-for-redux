@@ -9,14 +9,15 @@
     "test": "react-scripts test"
   },
   "devDependencies": {
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
-    "react-scripts": "^3.2.0",
-    "react-test-renderer": "^16.10.2",
-    "hooks-for-redux": "file:."
+    "hooks-for-redux": "file:.",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "^4.0.3",
+    "react-test-renderer": "^17.0.2"
   },
   "keywords": [
     "react",
+    "h4r",
     "redux",
     "hooks",
     "DRY",
