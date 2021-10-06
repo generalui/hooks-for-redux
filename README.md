@@ -94,9 +94,9 @@ First, you'll need to define your redux state.
 // NameReduxState.js
 import { createReduxModule } from "hooks-for-redux";
 
-//  - initialize redux state.name = 'Alice'
+//  - initialize redux state.count = 0
 //  - export useCount hook for use in components
-//  - export setCount to update state.name
+//  - export setCount to update state.count
 export const [useCount, setCount] = createReduxModule("count", 0);
 ```
 
@@ -236,7 +236,7 @@ createReduxModule(reduxStorePropertyName, initialState, reducers) =>
 
 Define a top-level property of the redux state including its initial value, all related reducers, and returns a react-hook, dispatchers and virtualStore.
 
-- **IN**: (reduxStorePropertyName, initialState)
+- **IN**: (reduxStorePropertyName, initialState, reducers)
 
   - reduxStorePropertyName: string
   - initialState: non-null, non-undefined
@@ -246,8 +246,9 @@ Define a top-level property of the redux state including its initial value, all 
 - **OUT**: [useMyStore, setMyStore -or- myDispatchers, virtualStore]
   - useMyStore: react hook returning current state
   - One of the following:
-    - setMyStore: (newState) => dispatch structure
-    - myDispatchers: object mapping action names to matching myDispatchers
+    - setMyStore: `(newState) => dispatcher-results`
+    - myDispatchers: object mapping action names to dispatchers
+      - `{myAction: (payload) => dispatcher-results}`}
   - virtualStore: object with API similar to a redux store, but just for the state defined in this createReduxModule call
 
 #### useMyStore
@@ -335,7 +336,7 @@ import {getState} from 'hooks-for-redux'
 
 ### Store Registry API
 
-Getting started, you can ignore the store registry. It's goal is to automatically manage creating your store and making sure all your code has access. However, if you want to customize your redux store, it's easy to do (see the [custom middleware example](#example-custom-middleware) above).
+Getting started, you can ignore the store registry. Its goal is to automatically manage creating your store and making sure all your code has access. However, if you want to customize your redux store, it's easy to do (see the [custom middleware example](#example-custom-middleware) above).
 
 #### getStore
 
@@ -442,7 +443,7 @@ const Provider = ({ store = getStore(), context, children }) =>
 
 - source: [src/createReduxModule.js](src/createReduxModule.js)
 
-The big win, however, comes from one key observation: if you are writing your own routing, you are doing it wrong. The same can be said for dispatching and subscriptions.
+H4R's biggest win comes from one key observation: *if you are writing your own routing, you are doing it wrong.* The same can be said for dispatching and subscriptions.
 
 The `createReduxModule` function automates all the manual routing required to make plain Redux work. It inputs only the essential data and functions necessary to define a redux model, and it returns all the tools you need to use it.
 
