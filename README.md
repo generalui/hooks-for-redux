@@ -153,7 +153,7 @@ This example adds three reducer/dispatcher pairs: `inc`, `dec` and `reset`.
 // NameReduxState.js
 import { createReduxModule } from "hooks-for-redux";
 
-export const [useName, { inc, add, reset }] = createReduxModule("count", 0, {
+export const [useCount, { inc, add, reset }] = createReduxModule("count", 0, {
   inc: state => state + 1,
   add: (state, amount) => state + amount,
   reset: () => 0
@@ -165,7 +165,7 @@ Now the interface supports adding 1, adding 10 and resetting the count.
 ```jsx
 // App.jsx
 import React from "react";
-import { useName, inc, add, reset } from "./NameReduxState.js";
+import { useCount, inc, add, reset } from "./NameReduxState.js";
 
 export default () => (
   <p>
