@@ -28,7 +28,13 @@ const createReduxModule = (storeKey, initialState, reducers, store = getStore())
 
   return [
     () => useSelector(storeState => storeState[storeKey]),
-    mapKeys(reducers, type => payload => store.dispatch({ type: getQualifiedActionType(type), payload })),
+      mapKeys(reducers, type => {
+        const actionType = getQualifiedActionType(type)
+        const actionCreater = payload => store.dispatch({ type: actionType, payload })
+        actionCreater.type = actionType
+        actionCreater.toAction = payload => { return { type: actionType, payload }}
+        return actionCreater
+      }),
     createVirtualStore(store, storeKey)
   ];
 };
