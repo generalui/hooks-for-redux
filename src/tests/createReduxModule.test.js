@@ -19,7 +19,7 @@ describe("basic mode",() => {
 
   it('subscribeToName works', () => {
     updateName("Alice")
-    const component = renderer.create(<Provider><App/></Provider>);
+    const component = renderer.create(<Provider><App /></Provider>);
     expect(component.toJSON()).toMatchSnapshot();
 
     renderer.act(() => {updateName("Shane");})
