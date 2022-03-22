@@ -120,5 +120,44 @@ describe("duplicate action names", () => {
     expect(getCountAState()).toEqual(1);
     expect(getCountBState()).toEqual(0);
   })
+});
 
+
+describe('use state subset', () => {
+  const STORE_KEY = 'subsetModeName';
+  const [useName, {setFirstName, setLastName}] = createReduxModule(
+    STORE_KEY,
+    {
+      firstName: 'Marty',
+      lastName: 'McFly'
+    }, 
+    {
+      setFirstName: (state, firstName) => ({ ...state, firstName }),
+      setLastName: (state, lastName) => ({ ...state, lastName })
+    }
+  )
+
+  const App = () => {
+    renderCount++;
+    return (<p>Hello {useName(({firstName}) => firstName)}!</p>)
+  }
+
+  let renderCount = 0;
+
+  it ('initial render', () => {
+    renderer.create(<Provider><App/></Provider>)
+    expect(renderCount).toBe(1);
+  })
+
+  // Changing first name should trigger a render
+  it ('re-render on change', () => {
+    renderer.act(() => { setFirstName('Emmett') })
+    expect(renderCount).toBe(2);
+  })
+  
+  // Changing last name should not trigger a render
+  it ('does not re-render on change', () => {
+    renderer.act(() => { setLastName('Brown') })
+    expect(renderCount).toBe(2);
+  })
 });
