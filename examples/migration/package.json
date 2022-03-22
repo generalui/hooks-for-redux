@@ -8,6 +8,6 @@
     "parcel": "^2.4.0"
   },
   "dependencies": {
-    "hooks-for-redux": "^2.0.3"
+    "hooks-for-redux": "^2.0.4"
   }
 }
