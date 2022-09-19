@@ -1,7 +1,7 @@
 /// <reference types="redux" />
 /// <reference types="react" />
 import { Action, Unsubscribe, AnyAction, Store } from "redux";
-import { Component } from "react"
+import { Component } from "react";
 
 /****************************
   util
@@ -11,7 +11,13 @@ type RestParams<TFunction> = TFunction extends (arg: any, ...args: infer A) => v
 /****************************
   hook
 ****************************/
-type ReactReduxHook<TState> = () => TState;
+/**
+ * use(), a React hook for the Redux Model's state
+ * @param selector optional function to select-from or transform the Redux Model's state. See https://react-redux.js.org/api/hooks#useselector
+ */
+type ReactReduxHookWithOptionalSelector<TState> =
+  | (<TFunction extends (TState) => any>(f: TFunction) => ReturnType<TFunction>)
+  | (() => TState);
 
 /****************************
   reducers
@@ -45,9 +51,7 @@ interface PayloadAction<TPayload> extends Action<string> {
 
 type SetterDispatcher<TState> = (state: TState) => PayloadAction<TState>;
 
-type Dispatcher<TReducer> = (
-  ...args: RestParams<TReducer>
-) => PayloadAction<RestParams<TReducer>[0]>;
+type Dispatcher<TReducer> = (...args: RestParams<TReducer>) => PayloadAction<RestParams<TReducer>[0]>;
 
 type Dispatchers<TReducers> = {
   [K in keyof TReducers]: Dispatcher<TReducers[K]>;
@@ -71,13 +75,13 @@ type Dispatchers<TReducers> = {
 export function createReduxModule<TState>(
   reduxStorePropertyName: string,
   initialState: TState
-): [ReactReduxHook<TState>, SetterDispatcher<TState>, VirtualStore<TState>];
+): [ReactReduxHookWithOptionalSelector<TState>, SetterDispatcher<TState>, VirtualStore<TState>];
 export function createReduxModule<TState, TReducers extends Reducers<TState>>(
   reduxStorePropertyName: string,
   initialState: TState,
   reducers: TReducers
 ): [
-  ReactReduxHook<TState>,
+  ReactReduxHookWithOptionalSelector<TState>,
   Readonly<Dispatchers<TReducers>>,
   VirtualStoreWithReducers<TState, TReducers>
 ];
@@ -98,13 +102,13 @@ export function createReduxModule<TState, TReducers extends Reducers<TState>>(
 export function useRedux<TState>(
   reduxStorePropertyName: string,
   initialState: TState
-): [ReactReduxHook<TState>, SetterDispatcher<TState>, VirtualStore<TState>];
+): [ReactReduxHookWithOptionalSelector<TState>, SetterDispatcher<TState>, VirtualStore<TState>];
 export function useRedux<TState, TReducers extends Reducers<TState>>(
   reduxStorePropertyName: string,
   initialState: TState,
   reducers: TReducers
 ): [
-  ReactReduxHook<TState>,
+  ReactReduxHookWithOptionalSelector<TState>,
   Readonly<Dispatchers<TReducers>>,
   VirtualStoreWithReducers<TState, TReducers>
 ];
@@ -113,7 +117,7 @@ export function useRedux<TState, TReducers extends Reducers<TState>>(
   other hooks-for-redux functions
 ****************************/
 export interface ReduxStoreWithInjectReducers extends Store {
-  injectReducer(key:string, reducer:Reducer<object>) : void
+  injectReducer(key: string, reducer: Reducer<object>): void;
 }
 
 /**
@@ -121,7 +125,7 @@ export interface ReduxStoreWithInjectReducers extends Store {
  *
  * @returns current or newly crated store
  */
-export function getStore() : ReduxStoreWithInjectReducers
+export function getStore(): ReduxStoreWithInjectReducers;
 
 /**
  * Call setStore to provide your own store for hooks-for-redux to use. You'll need to use this if you want to use middleware.
@@ -130,7 +134,7 @@ export function getStore() : ReduxStoreWithInjectReducers
  *
  * @returns store
  */
-export function setStore(store : ReduxStoreWithInjectReducers) : ReduxStoreWithInjectReducers
+export function setStore(store: ReduxStoreWithInjectReducers): ReduxStoreWithInjectReducers;
 
 /**
  * Creates a Redux store that holds the state tree.
@@ -156,7 +160,11 @@ export function setStore(store : ReduxStoreWithInjectReducers) : ReduxStoreWithI
  * @returns A Redux store that lets you read the state, dispatch actions and
  *   subscribe to changes.
  */
-export function createStore<TState>(reducers: Reducers<object>, initialState?: TState, enhancer?: any) : ReduxStoreWithInjectReducers
+export function createStore<TState>(
+  reducers: Reducers<object>,
+  initialState?: TState,
+  enhancer?: any
+): ReduxStoreWithInjectReducers;
 
 export interface ProviderProps<A extends Action = AnyAction> {
   /**
@@ -174,7 +182,7 @@ export interface ProviderProps<A extends Action = AnyAction> {
 /**
  * Makes the Redux store available to the connect() calls in the component hierarchy below.
  */
-export class Provider<A extends Action = AnyAction> extends Component<ProviderProps<A>> { }
+export class Provider<A extends Action = AnyAction> extends Component<ProviderProps<A>> {}
 
 /****************************
   type testing
