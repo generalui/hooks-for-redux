@@ -1,96 +1,106 @@
 // index.js
-import React from 'react';
-import renderer from 'react-test-renderer';
-import { Provider, createReduxModule, getStore } from '../../index'
+import React from "react";
+import renderer from "react-test-renderer";
+import { Provider, createReduxModule, getStore } from "../../index";
 
-describe("basic mode",() => {
-  const STORE_KEY = 'basicModeName';
-  const [subscribeToName, updateName, {getState}] = createReduxModule(STORE_KEY, 'Alice')
+describe("basic mode", () => {
+  const STORE_KEY = "basicModeName";
+  const [subscribeToName, updateName, { getState }] = createReduxModule(STORE_KEY, "Alice");
 
-  const expectNameToEqual = (expected) => expect(getState()).toEqual(expected);
+  const expectNameToEqual = expected => expect(getState()).toEqual(expected);
 
-  it('updateName(newState) works', () => {
+  it("updateName(newState) works", () => {
     updateName("Al");
     expectNameToEqual("Al");
   });
 
-  const App = () =>
-    <p>Hello there, {subscribeToName()}! Click to change me.</p>
+  const App = () => <p>Hello there, {subscribeToName()}! Click to change me.</p>;
 
-  it('subscribeToName works', () => {
-    updateName("Alice")
-    const component = renderer.create(<Provider><App/></Provider>);
+  it("subscribeToName works", () => {
+    updateName("Alice");
+    const component = renderer.create(
+      <Provider>
+        <App />
+      </Provider>
+    );
     expect(component.toJSON()).toMatchSnapshot();
 
-    renderer.act(() => {updateName("Shane");})
+    renderer.act(() => {
+      updateName("Shane");
+    });
     expect(component.toJSON()).toMatchSnapshot();
-    component.unmount()
+    component.unmount();
   });
 
-  it('getState', () => {
-    expect(typeof getState()).toEqual("string")
-    expect(getState()).toEqual(getStore().getState()[STORE_KEY])
-  })
-})
+  it("getState", () => {
+    expect(typeof getState()).toEqual("string");
+    expect(getState()).toEqual(getStore().getState()[STORE_KEY]);
+  });
+});
 
-describe("reducers mode",() => {
-  const STORE_KEY = 'reducerModeName';
-  const [subscribeToName, {toggleName, mrName, updateName}, {getState, getReducers}] = createReduxModule(STORE_KEY, 'Alice', {
-    toggleName: (name) => name == 'Alice' ? 'Bob' : 'Alice',
-    mrName: (name) => name == 'Alice' ? 'Mrs Alice' : 'Mr Bob',
-    updateName: (name, newName) => newName
-  })
+describe("reducers mode", () => {
+  const STORE_KEY = "reducerModeName";
+  const [subscribeToName, { toggleName, mrName, updateName }, { getState, getReducers }] = createReduxModule(
+    STORE_KEY,
+    "Alice",
+    {
+      toggleName: name => (name == "Alice" ? "Bob" : "Alice"),
+      mrName: name => (name == "Alice" ? "Mrs Alice" : "Mr Bob"),
+      updateName: (name, newName) => newName,
+    }
+  );
 
-  const expectNameToEqual = (expected) => expect(getState()).toEqual(expected);
+  const expectNameToEqual = expected => expect(getState()).toEqual(expected);
 
-  const App = () =>
-    <p>Hello there, {subscribeToName()}! Click to change me.</p>
+  const App = () => <p>Hello there, {subscribeToName()}! Click to change me.</p>;
 
-  it('subscribeToName works', () => {
-    updateName("Alice")
-    const component = renderer.create(<Provider><App/></Provider>);
+  it("subscribeToName works", () => {
+    updateName("Alice");
+    const component = renderer.create(
+      <Provider>
+        <App />
+      </Provider>
+    );
     expect(component.toJSON()).toMatchSnapshot();
 
-    renderer.act(() => {updateName("Shane");})
+    renderer.act(() => {
+      updateName("Shane");
+    });
     expect(component.toJSON()).toMatchSnapshot();
-    component.unmount()
+    component.unmount();
   });
 
-  it('updateName(newState) works', () => {
+  it("updateName(newState) works", () => {
     updateName("Al");
     expectNameToEqual("Al");
   });
 
-  it('toggleName from addReducers works', () => {
-    updateName("Alice")
+  it("toggleName from addReducers works", () => {
+    updateName("Alice");
     toggleName();
     expectNameToEqual("Bob");
   });
 
-  it('mrName from addReducers works', () => {
-    updateName("Alice")
+  it("mrName from addReducers works", () => {
+    updateName("Alice");
     mrName();
     expectNameToEqual("Mrs Alice");
   });
 
-  it('getState', () => {
-    expect(typeof getState()).toEqual("string")
-    expect(getState()).toEqual(getStore().getState()[STORE_KEY])
-  })
+  it("getState", () => {
+    expect(typeof getState()).toEqual("string");
+    expect(getState()).toEqual(getStore().getState()[STORE_KEY]);
+  });
 
-  it('getStore', () => {
-    expect(typeof getStore().injectReducer).toEqual("function")
-  })
-})
+  it("getStore", () => {
+    expect(typeof getStore().injectReducer).toEqual("function");
+  });
+});
 
 describe("subcriptions outside react", () => {
   const STORE_KEY = "createReduxModule testCounter";
-  const [
-    useName,
-    { increment },
-    { getState, getReducers, subscribe }
-  ] = createReduxModule(STORE_KEY, 0, {
-    increment: v => v + 1
+  const [useName, { increment }, { getState, getReducers, subscribe }] = createReduxModule(STORE_KEY, 0, {
+    increment: v => v + 1,
   });
 
   it("subscribe", () => {
@@ -108,56 +118,163 @@ describe("subcriptions outside react", () => {
   });
 });
 
-
 describe("duplicate action names", () => {
-  const [useCountA, { increment: incrementCountA }, { getState: getCountAState }] = createReduxModule("count-a", 0, {increment: v => v + 1});
-  const [useCountB, { increment: incrementCountB }, { getState: getCountBState }] = createReduxModule("count-b", 0, {increment: v => v + 1});
+  const [useCountA, { increment: incrementCountA }, { getState: getCountAState }] = createReduxModule("count-a", 0, {
+    increment: v => v + 1,
+  });
+  const [useCountB, { increment: incrementCountB }, { getState: getCountBState }] = createReduxModule("count-b", 0, {
+    increment: v => v + 1,
+  });
 
   it("doesn't interfere", () => {
     expect(getCountAState()).toEqual(0);
     expect(getCountBState()).toEqual(0);
-    incrementCountA()
+    incrementCountA();
     expect(getCountAState()).toEqual(1);
     expect(getCountBState()).toEqual(0);
-  })
+  });
 });
 
-
-describe('use state subset', () => {
-  const STORE_KEY = 'subsetModeName';
-  const [useName, {setFirstName, setLastName}] = createReduxModule(
+describe("use state subset", () => {
+  const STORE_KEY = "subsetModeName";
+  const [useName, { setFirstName, setLastName }] = createReduxModule(
     STORE_KEY,
     {
-      firstName: 'Marty',
-      lastName: 'McFly'
-    }, 
+      firstName: "Marty",
+      lastName: "McFly",
+    },
     {
       setFirstName: (state, firstName) => ({ ...state, firstName }),
-      setLastName: (state, lastName) => ({ ...state, lastName })
+      setLastName: (state, lastName) => ({ ...state, lastName }),
     }
-  )
+  );
 
   const App = () => {
     renderCount++;
-    return (<p>Hello {useName(({firstName}) => firstName)}!</p>)
-  }
+    return <p>Hello {useName(({ firstName }) => firstName)}!</p>;
+  };
 
   let renderCount = 0;
 
-  it ('initial render', () => {
-    renderer.create(<Provider><App/></Provider>)
+  it("initial render", () => {
+    renderer.create(
+      <Provider>
+        <App />
+      </Provider>
+    );
     expect(renderCount).toBe(1);
-  })
+  });
 
   // Changing first name should trigger a render
-  it ('re-render on change', () => {
-    renderer.act(() => { setFirstName('Emmett') })
+  it("re-render on change", () => {
+    renderer.act(() => {
+      setFirstName("Emmett");
+    });
     expect(renderCount).toBe(2);
-  })
-  
+  });
+
   // Changing last name should not trigger a render
-  it ('does not re-render on change', () => {
-    renderer.act(() => { setLastName('Brown') })
+  it("does not re-render on change", () => {
+    renderer.act(() => {
+      setLastName("Brown");
+    });
     expect(renderCount).toBe(2);
-  })
+  });
+});
+
+describe("use state subset with custom comparator", () => {
+  const STORE_KEY = "subsetModeName2";
+  const [useName, { setFirstName, setLastName }] = createReduxModule(
+    STORE_KEY,
+    {
+      firstName: "Marty",
+      lastName: "McFly",
+    },
+    {
+      setFirstName: (state, firstName) => ({ ...state, firstName }),
+      setLastName: (state, lastName) => ({ ...state, lastName }),
+    }
+  );
+
+  describe("App1 does not have the custom comparator and always re-renders", () => {
+    const App1 = () => {
+      renderCount++;
+      return <p>Hello {useName(({ firstName }) => [firstName])[0]}!</p>;
+    };
+
+    let renderCount = 0;
+
+    it("initial render App1", () => {
+      renderer.create(
+        <Provider>
+          <App1 />
+        </Provider>
+      );
+      expect(renderCount).toBe(1);
+    });
+
+    // Changing first name should trigger a render
+    it("App1 re-renders on change", () => {
+      renderer.act(() => {
+        setFirstName("Emmett");
+      });
+      expect(renderCount).toBe(2);
+    });
+
+    // Changing last name should not trigger a render
+    it("App1 re-renders all the time without the custom comparator", () => {
+      renderer.act(() => {
+        setLastName("Brown");
+      });
+      expect(renderCount).toBe(3);
+    });
+  });
+
+  describe("App2 has a custom comparator and only re-renders when firstName changes", () => {
+    const App2 = () => {
+      renderCount++;
+      return (
+        <p>
+          Hello{" "}
+          {
+            useName(
+              ({ firstName }) => [firstName],
+              (a, b) => a[0] === b[0]
+            )[0]
+          }
+          !
+        </p>
+      );
+    };
+
+    let renderCount = 0;
+
+    it("initial render App2", () => {
+      renderer.act(() => {
+        setFirstName("Marty");
+      });
+      renderer.create(
+        <Provider>
+          <App2 />
+        </Provider>
+      );
+      expect(renderCount).toBe(1);
+    });
+
+    // Changing first name should trigger a render
+    it("App2 re-renders on change", () => {
+      renderer.act(() => {
+        setFirstName("Emmett");
+      });
+      expect(renderCount).toBe(2);
+    });
+
+    // Changing last name should not trigger a render
+    it("App2 re-renders all the time without the custom comparator", () => {
+      renderer.act(() => {
+        setLastName("Brown");
+      });
+      expect(renderCount).toBe(2);
+    });
+  });
 });

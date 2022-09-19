@@ -16,7 +16,10 @@ type RestParams<TFunction> = TFunction extends (arg: any, ...args: infer A) => v
  * @param selector optional function to select-from or transform the Redux Model's state. See https://react-redux.js.org/api/hooks#useselector
  */
 type ReactReduxHookWithOptionalSelector<TState> =
-  | (<TFunction extends (TState) => any>(f: TFunction) => ReturnType<TFunction>)
+  | (<TFunction extends (TState) => any>(
+      selector: TFunction,
+      comparator?: (a: ReturnType<TFunction>, b: ReturnType<TFunction>) => boolean
+    ) => ReturnType<TFunction>)
   | (() => TState);
 
 /****************************

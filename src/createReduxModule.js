@@ -10,7 +10,7 @@ const mapKeys = (o, f) => {
 
 const createSimpleReduxModule = (storeKey, initialState) => {
   const [hook, dispatchers, virtualStore] = createReduxModule(storeKey, initialState, {
-    update: (state, payload) => payload
+    update: (state, payload) => payload,
   });
   return [hook, dispatchers.update, virtualStore];
 };
@@ -18,18 +18,23 @@ const createSimpleReduxModule = (storeKey, initialState) => {
 const createReduxModule = (storeKey, initialState, reducers, store = getStore()) => {
   if (!reducers) return createSimpleReduxModule(storeKey, initialState);
 
-  let getQualifiedActionType = (type) => `${storeKey}-${type}`;
-  let qualifiedReducers = {}
-  Object.keys(reducers).map(key => { return qualifiedReducers[getQualifiedActionType(key)] = reducers[key] });
+  let getQualifiedActionType = type => `${storeKey}-${type}`;
+  let qualifiedReducers = {};
+  Object.keys(reducers).map(key => {
+    return (qualifiedReducers[getQualifiedActionType(key)] = reducers[key]);
+  });
 
   store.injectReducer(storeKey, (state = initialState, { type, payload }) =>
     qualifiedReducers[type] ? qualifiedReducers[type](state, payload) : state
   );
 
   return [
-    (fn = null) => useSelector(storeState => { return typeof fn === 'function' ? fn(storeState[storeKey]) : storeState[storeKey] }),
+    (fn = undefined, comparator = undefined) =>
+      useSelector(storeState => {
+        return typeof fn === "function" ? fn(storeState[storeKey]) : storeState[storeKey];
+      }, comparator),
     mapKeys(reducers, type => payload => store.dispatch({ type: getQualifiedActionType(type), payload })),
-    createVirtualStore(store, storeKey)
+    createVirtualStore(store, storeKey),
   ];
 };
 module.exports = createReduxModule;

@@ -26,6 +26,7 @@ The result is a elegant API with 2-3x reduction in client code and near total el
 1. [ Contribution](#contribution)
 1. [ License](#license)
 1. [ Produced at GenUI](#produced-at-genui)
+
 ## Install
 
 ```
@@ -37,27 +38,28 @@ npm install hooks-for-redux
 Tiny, complete example. See below for explanations.
 
 ```jsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {createReduxModule, Provider} from 'hooks-for-redux'
+import React from "react";
+import ReactDOM from "react-dom";
+import { createReduxModule, Provider } from "hooks-for-redux";
 
-const [useCount, {inc, add, reset}] = createReduxModule('count', 0, {
-  inc: (state) => state + 1,
+const [useCount, { inc, add, reset }] = createReduxModule("count", 0, {
+  inc: state => state + 1,
   add: (state, amount) => state + amount,
-  reset: () => 0
-})
+  reset: () => 0,
+});
 
-const App = () =>
+const App = () => (
   <p>
-    Count: {useCount()}
-    {' '}<input type="button" value="+1"    onClick={inc} />
-    {' '}<input type="button" value="+10"   onClick={() => add(10)} />
-    {' '}<input type="button" value="reset" onClick={reset} />
+    Count: {useCount()} <input type="button" value="+1" onClick={inc} />{" "}
+    <input type="button" value="+10" onClick={() => add(10)} /> <input type="button" value="reset" onClick={reset} />
   </p>
+);
 
 ReactDOM.render(
-  <Provider><App /></Provider>,
-  document.getElementById('root')
+  <Provider>
+    <App />
+  </Provider>,
+  document.getElementById("root")
 );
 ```
 
@@ -156,7 +158,7 @@ import { createReduxModule } from "hooks-for-redux";
 export const [useCount, { inc, add, reset }] = createReduxModule("count", 0, {
   inc: state => state + 1,
   add: (state, amount) => state + amount,
-  reset: () => 0
+  reset: () => 0,
 });
 ```
 
@@ -170,8 +172,7 @@ import { useCount, inc, add, reset } from "./NameReduxState.js";
 export default () => (
   <p>
     Count: {useCount()} <input type="button" onClick={inc} value="+1" />{" "}
-    <input type="button" onClick={() => add(10)} value="+10" />{" "}
-    <input type="button" onClick={reset} value="reset" />
+    <input type="button" onClick={() => add(10)} value="+10" /> <input type="button" onClick={reset} value="reset" />
   </p>
 );
 ```
@@ -219,7 +220,7 @@ ReactDOM.render(
 
 If you are interested in seeing a more complicated example in TypeScript with asynchronous remote requests, please see:
 
-* [ H4R vs Redux-Toolkit Advanced TypeScript Tutorial ](#h4r-vs-redux-toolkit-advanced-typescript-tutorial)
+- [ H4R vs Redux-Toolkit Advanced TypeScript Tutorial ](#h4r-vs-redux-toolkit-advanced-typescript-tutorial)
 
 ## API
 
@@ -256,16 +257,24 @@ Define a top-level property of the redux state including its initial value, all 
 ```jsx
 const [useMyStore] = createReduxModule(reduxStorePropertyName, initialState)
 const MyComponent = () => { // must be used in render function
-  useMyStore() => current state
+  useMyStore(selector = undefined) => current state
   // ...
 }
 ```
 
+- **IN**: (selector?, comparator?) =>
+  - selector (optional): `(state) => selectorResult` default: `(state) => state`
+    - Optionally, you can provide a selector function taking the current state as input and returning anything.
+    - Typically, one returns a sub-slice of the current state, but one can return anything.
+    - The selector function should be deterministic and "pure" (i.e. it ONLY depends on its inputs).
+  - comparator (optional): `(selectorResultA, selectorResultB) => boolean` default: `(a, b) => a === b`
+    - Compares the current and previous return values of the selector function and tests if they are the same.
+    - If comparator returns `false`, the enclosing component will re-render.
 - **OUT**: current state
 - **REQUIRED**: must be called within a Component's render function
 - **EFFECT**:
   - Establishes a subscription for any component that uses it. The component will re-render whenever `update` is called, and `useMyStore` will return the latest, updated value within that render.
-  - Internally, useMyStore is simply:<br>`useSelector(state => state[reduxStorePropertyName])`<br>see: https://react-redux.js.org/next/api/hooks for details.
+  - Note, this hook will only trigger re-renders if the `comparator` function returns `false`.
 
 #### myDispatchers
 
@@ -443,7 +452,7 @@ const Provider = ({ store = getStore(), context, children }) =>
 
 - source: [src/createReduxModule.js](src/createReduxModule.js)
 
-H4R's biggest win comes from one key observation: *if you are writing your own routing, you are doing it wrong.* The same can be said for dispatching and subscriptions.
+H4R's biggest win comes from one key observation: _if you are writing your own routing, you are doing it wrong._ The same can be said for dispatching and subscriptions.
 
 The `createReduxModule` function automates all the manual routing required to make plain Redux work. It inputs only the essential data and functions necessary to define a redux model, and it returns all the tools you need to use it.
 
@@ -451,18 +460,14 @@ The implementation of createReduxModule is surprisingly brief. Details are expla
 
 ```jsx
 const createReduxModule = (storeKey, initialState, reducers, store = getStore()) => {
-  /* 1 */ store.injectReducer(
-    storeKey,
-    (state = initialState, { type, payload }) =>
-      reducers[type] ? reducers[type](state, payload) : state
+  /* 1 */ store.injectReducer(storeKey, (state = initialState, { type, payload }) =>
+    reducers[type] ? reducers[type](state, payload) : state
   );
 
   return [
     /* 2 */ () => useSelector(storeState => storeState[storeKey]),
-    /* 3 */ mapKeys(reducers, type => payload =>
-      store.dispatch({ type, payload })
-    ),
-    /* 4 */ createVirtualStore(store, storeKey)
+    /* 3 */ mapKeys(reducers, type => payload => store.dispatch({ type, payload })),
+    /* 4 */ createVirtualStore(store, storeKey),
   ];
 };
 ```
@@ -485,10 +490,8 @@ const createVirtualStore = (store, storeKey) => {
     getState,
     /* 2 */ subscribe: f => {
       let lastState = getState();
-      return store.subscribe(
-        () => lastState !== getState() && f((lastState = getState()))
-      );
-    }
+      return store.subscribe(() => lastState !== getState() && f((lastState = getState())));
+    },
   };
 };
 ```
@@ -524,41 +527,43 @@ Several people have attempted to simplify Redux and/or make it act more like Rea
 Redux-Toolkit claims to be efficient, but when compared to H4R it still falls far short. I'll give an example.
 
 #### H4R vs Redux-Toolkit Intermediate-Example
+
 > 58% less code
 
 Taking from the intermediate code-example provided in the Redux-Toolkit Package:
 
 Redux-Toolkit's implementation:
-* tutorial: [redux-toolkit.js.org](https://redux-toolkit.js.org/tutorials/intermediate-tutorial)
-* interactive: [codesandbox.io](https://codesandbox.io/s/rtk-convert-todos-example-uqqy3)
-* ~390 lines of JavaScript
+
+- tutorial: [redux-toolkit.js.org](https://redux-toolkit.js.org/tutorials/intermediate-tutorial)
+- interactive: [codesandbox.io](https://codesandbox.io/s/rtk-convert-todos-example-uqqy3)
+- ~390 lines of JavaScript
 
 I reduced the code by about 2x using H4R - including eliminating several files. Even the tests got simpler.
 
 H4R solution
-* interactive: [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-convert-todos-example-h4r-conversion)
-* source: [github](https://github.com/shanebdavis/rtk-convert-todos-example-h4r-conversion)
-* ~160 lines of JavaScript
+
+- interactive: [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-convert-todos-example-h4r-conversion)
+- source: [github](https://github.com/shanebdavis/rtk-convert-todos-example-h4r-conversion)
+- ~160 lines of JavaScript
 
 Here is an apples-to-apples comparison of some of the main files from each project:
 
-* [Redux Toolkit gist - 104 lines](https://gist.github.com/shanebdavis/9e67be8a0874a4c295001ba6e91f79e2)
-* [Hooks-for-redux gist - 52 lines](https://gist.github.com/shanebdavis/ce02b4495f1bc0afa830796f58124604)
+- [Redux Toolkit gist - 104 lines](https://gist.github.com/shanebdavis/9e67be8a0874a4c295001ba6e91f79e2)
+- [Hooks-for-redux gist - 52 lines](https://gist.github.com/shanebdavis/ce02b4495f1bc0afa830796f58124604)
 
 Perhaps the most dramatic difference is how H4R simplifies the interdependencies between files. Boxes are files, lines are imports:
 
 ![](https://github.com/generalui/hooks-for-redux/raw/master/assets/h4r-vs-reduxToolkit-intermediate-example.png)
 
-
 Part of the key is how well H4R links into React. Redux-toolkit takes 50 lines of code just to do this.
 
 ```javascript
-import React from 'react'
-import Todo from './Todo'
-import { useFilters } from '../filters/filtersSlice'
-import { useTodos } from './todosSlice'
+import React from "react";
+import Todo from "./Todo";
+import { useFilters } from "../filters/filtersSlice";
+import { useTodos } from "./todosSlice";
 
-export const VisibleTodoList = () =>
+export const VisibleTodoList = () => (
   <ul>
     {useTodos()
       .filter(useFilters())
@@ -566,6 +571,7 @@ export const VisibleTodoList = () =>
         <Todo key={todo.id} {...todo} />
       ))}
   </ul>
+);
 ```
 
 NOTE: The normal use of H4R is React-specific while Redux-Toolkit is agnostic to the rendering engine. Let me know if there is interest in non-react H4R support. It shouldn't be hard to do.
@@ -579,78 +585,84 @@ Now to take on a bigger challenge. The advanced tutorial is a capable github iss
 1. It still makes you manually dispatch your updates. H4R avoids making you manually create and dispatch your actions entirely by returning ready-to-use dispatchers. They just look like normal functions you can call to start your updates.
 2. Redux-Toolkit's pattern mixes business-logic with view-logic. Redux-related code, particularly updates, should never be in the same files as view and view-logic files like components.
 
-Blending UX-logic with business-logic creates excessive dependencies between modules. This dependency hell literally took me hours to unwind before I could convert it to H4R. Once I was done, though, it all simplified and became clear and easy to edit. If you open the code you will see that all the business logic in the H4R solution resides in the src/redux folder in *4 files and 100 lines of code - total*. All the components are clean and have zero business logic.
+Blending UX-logic with business-logic creates excessive dependencies between modules. This dependency hell literally took me hours to unwind before I could convert it to H4R. Once I was done, though, it all simplified and became clear and easy to edit. If you open the code you will see that all the business logic in the H4R solution resides in the src/redux folder in _4 files and 100 lines of code - total_. All the components are clean and have zero business logic.
 
 For example, compare the `IssueListPage.tsx` from each project:
 
 ```typescript
-import React from 'react'
-import { useIssues } from 'redux/issues'
-import { RepoSearchForm } from './IssuesListLib/RepoSearchForm'
-import { IssuesPageHeader } from './IssuesListLib/IssuesPageHeader'
-import { IssuesList } from './IssuesListLib/IssuesList'
-import { IssuePagination } from './IssuesListLib/IssuePagination'
+import React from "react";
+import { useIssues } from "redux/issues";
+import { RepoSearchForm } from "./IssuesListLib/RepoSearchForm";
+import { IssuesPageHeader } from "./IssuesListLib/IssuesPageHeader";
+import { IssuesList } from "./IssuesListLib/IssuesList";
+import { IssuePagination } from "./IssuesListLib/IssuePagination";
 
 export const IssuesListPage = () => {
-  const { loading, error } = useIssues()
-  return error
-    ? <div>
+  const { loading, error } = useIssues();
+  return error ? (
+    <div>
       <h1>Something went wrong...</h1>
       <div>{error.toString()}</div>
     </div>
-    : <div id="issue-list-page">
+  ) : (
+    <div id="issue-list-page">
       <RepoSearchForm />
       <IssuesPageHeader />
       {loading ? <h3>Loading...</h3> : <IssuesList />}
       <IssuePagination />
     </div>
-}
+  );
+};
 ```
 
-* [github/h4r/IssuesListPage](https://github.com/shanebdavis/rtk-github-issues-example-h4r-conversion/blob/master/src/components/pages/IssuesListPage.tsx)
-* 21 lines, 693 bytes
+- [github/h4r/IssuesListPage](https://github.com/shanebdavis/rtk-github-issues-example-h4r-conversion/blob/master/src/components/pages/IssuesListPage.tsx)
+- 21 lines, 693 bytes
 
 to this:
 
-* [github/redux-toolkit/IssuesListPage](https://github.com/reduxjs/rtk-github-issues-example/blob/master/src/features/issuesList/IssuesListPage.tsx)
-* 87 lines, 2000 bytes
+- [github/redux-toolkit/IssuesListPage](https://github.com/reduxjs/rtk-github-issues-example/blob/master/src/features/issuesList/IssuesListPage.tsx)
+- 87 lines, 2000 bytes
 
 Redux-toolkit's solution mixes in the business logic of fetching the remote data. This is all handled by H4R's createReduxModule slices. Further, RT makes IssuesListPage dependent on many things such that it only passes to child-components but never uses itself - a false dependency. For example, the pagination details (currentPage, pageCount, etc...) should only be a dependency of IssuePagination.
 
 Compare the full source of each project below:
 
 Redux-Toolkit solution:
-* tutorial: [redux-toolkit.js.org](https://redux-toolkit.js.org/tutorials/advanced-tutorial)
-* interactive: [codesandbox.io](https://codesandbox.io/s/rtk-github-issues-example-02-issues-display-tdx2w)
-* source: [github](https://github.com/reduxjs/rtk-github-issues-example)
-* ~1170 lines of TypeScript
+
+- tutorial: [redux-toolkit.js.org](https://redux-toolkit.js.org/tutorials/advanced-tutorial)
+- interactive: [codesandbox.io](https://codesandbox.io/s/rtk-github-issues-example-02-issues-display-tdx2w)
+- source: [github](https://github.com/reduxjs/rtk-github-issues-example)
+- ~1170 lines of TypeScript
 
 H4R solution:
-* interactive: [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-github-issues-example-h4r-conversion)
-* source: [github](https://github.com/shanebdavis/rtk-github-issues-example-h4r-conversion)
-* ~613 lines of TypeScript
+
+- interactive: [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-github-issues-example-h4r-conversion)
+- source: [github](https://github.com/shanebdavis/rtk-github-issues-example-h4r-conversion)
+- ~613 lines of TypeScript
 
 The file and inter-file dependency reduction is dramatic. With H4R your code will be significantly more agile and easier to adapt to new changes. Boxes are files, lines are imports:
 
 ![](https://github.com/generalui/hooks-for-redux/raw/master/assets/h4r-vs-reduxToolkit-advanced-example.png)
 
 ## Additional Resources
+
 Blog Posts:
 
-* [How I Eliminated Redux Boilerplate with Hooks-for-Redux](https://medium.com/@shanebdavis/how-i-eliminated-redux-boilerplate-with-hooks-for-redux-bd308d5abbdd) - an introduction and explanation of H4R with examples
-* [The 5 Essential Elements of Modular Software Design](https://medium.com/@shanebdavis/the-5-essential-elements-of-modular-software-design-6b333918e543) - how and why to write modular code - a precursor to why you should use Modular Redux (e.g. H4R)
-* [Modular Redux — a Design Pattern for Mastering Scalable, Shared State in React](https://medium.com/@shanebdavis/modular-redux-a-design-pattern-for-mastering-scalable-shared-state-82d4abc0d7b3) - the Modular Redux design pattern H4R is based on and detailed comparison with Redux Toolkit
+- [How I Eliminated Redux Boilerplate with Hooks-for-Redux](https://medium.com/@shanebdavis/how-i-eliminated-redux-boilerplate-with-hooks-for-redux-bd308d5abbdd) - an introduction and explanation of H4R with examples
+- [The 5 Essential Elements of Modular Software Design](https://medium.com/@shanebdavis/the-5-essential-elements-of-modular-software-design-6b333918e543) - how and why to write modular code - a precursor to why you should use Modular Redux (e.g. H4R)
+- [Modular Redux — a Design Pattern for Mastering Scalable, Shared State in React](https://medium.com/@shanebdavis/modular-redux-a-design-pattern-for-mastering-scalable-shared-state-82d4abc0d7b3) - the Modular Redux design pattern H4R is based on and detailed comparison with Redux Toolkit
 
 Included Examples:
 
-* [tiny](./examples/tiny) - the simplest working example
-* [tiny-todo](./examples/tiny-todo) - a slightly more detailed example
-* [middleware](./examples/middleware) - an example of how to use Redux middleware with H4R
-* comparison [plain-redux](./examples/comparison-plain-redux) vs [hooks-for-redux](./examples/hooks-for-redux) - compare two, tiny working examples back-to-back
+- [tiny](./examples/tiny) - the simplest working example
+- [tiny-todo](./examples/tiny-todo) - a slightly more detailed example
+- [middleware](./examples/middleware) - an example of how to use Redux middleware with H4R
+- comparison [plain-redux](./examples/comparison-plain-redux) vs [hooks-for-redux](./examples/hooks-for-redux) - compare two, tiny working examples back-to-back
 
 Advanced Examples:
-* [todo with filters](https://github.com/shanebdavis/rtk-convert-todos-example-h4r-conversion) (try it now on [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-convert-todos-example-h4r-conversion))
-* [github-issues-browser](https://github.com/shanebdavis/rtk-github-issues-example-h4r-conversion) with typescript and asynchronous requests (try it now on [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-github-issues-example-h4r-conversion))
+
+- [todo with filters](https://github.com/shanebdavis/rtk-convert-todos-example-h4r-conversion) (try it now on [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-convert-todos-example-h4r-conversion))
+- [github-issues-browser](https://github.com/shanebdavis/rtk-github-issues-example-h4r-conversion) with typescript and asynchronous requests (try it now on [codesandbox.io](https://codesandbox.io/s/github/shanebdavis/rtk-github-issues-example-h4r-conversion))
 
 ## Contribution
 
