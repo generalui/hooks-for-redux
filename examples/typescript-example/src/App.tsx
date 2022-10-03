@@ -4,7 +4,8 @@ import "./App.css";
 import * as MyModel from "./MyModel";
 
 function App() {
-  const a = MyModel.use(() => "hi");
+  const myModel = MyModel.use(); // myModel should be MyModelState
+  const isOn = MyModel.use(({ isOn }) => isOn); // isOn should be boolean
 
   return (
     <div className="App">
