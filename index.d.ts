@@ -13,14 +13,22 @@ type RestParams<TFunction> = TFunction extends (arg: any, ...args: infer A) => v
 ****************************/
 /**
  * use(), a React hook for the Redux Model's state
- * @param selector optional function to select-from or transform the Redux Model's state. See https://react-redux.js.org/api/hooks#useselector
+ * @param selector optional function to select-from or transform the Redux Model's state.
+ * @param equalityFn optional function to compare two results from your selector; return true if they are different enough to justify trigging a re-render
+ *
+ * `selector` and `equalityFn` work the same as https://react-redux.js.org/api/hooks#useselector. The main difference here is that the selector is optional since
+ * H4R already applies a pre-selector to select your module's "slice" out of the whole redux state. Note, the pre-selector is *always* applied to the entire redux state, and then your optional selector is applied to your module's state.
  */
-type ReactReduxHookWithOptionalSelector<TState> =
-  | (<TFunction extends (TState) => any>(
-      selector: TFunction,
-      comparator?: (a: ReturnType<TFunction>, b: ReturnType<TFunction>) => boolean
-    ) => ReturnType<TFunction>)
-  | (() => TState);
+interface ReactReduxHookWithOptionalSelector<TState> {
+  <TSelected>(
+    selector: (state: TState) => TSelected,
+    equalityFn?: (left: TSelected, right: TSelected) => boolean
+  ): TSelected;
+}
+
+interface ReactReduxHookWithOptionalSelector<TState> {
+  (): TState;
+}
 
 /****************************
   reducers
